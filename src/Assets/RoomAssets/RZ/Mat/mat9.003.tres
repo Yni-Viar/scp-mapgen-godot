@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://e34517ums27v"]
+
+[ext_resource type="Texture2D" uid="uid://71amvbjssjqi" path="res://Assets/RoomAssets/RZ/papertexture.jpg" id="1_sj0r3"]
+
+[resource]
+resource_name = "mat9.003"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_sj0r3")
+roughness = 0.950589

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7dn2737ffxjd"]
+
+[ext_resource type="Script" path="res://MapGen/MapGenerator.cs" id="1_6ypk0"]
+[ext_resource type="Script" path="res://addons/free_look_camera.gd" id="3_b0slv"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MapGen" type="Node" parent="."]
+script = ExtResource("1_6ypk0")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+script = ExtResource("3_b0slv")

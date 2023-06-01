@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://bs06w10x1aexx"]
+
+[ext_resource type="Texture2D" uid="uid://f1xelt5iad1w" path="res://Assets/RoomAssets/LCZ/dirtymetal.jpg" id="1_fan3t"]
+
+[resource]
+resource_name = "mat1.009"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_fan3t")
+roughness = 0.950589

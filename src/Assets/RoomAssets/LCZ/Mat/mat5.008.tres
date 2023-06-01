@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://gmy8gu6agnic"]
+
+[ext_resource type="Texture2D" uid="uid://bb1aisblrm6v1" path="res://Assets/RoomAssets/LCZ/concretefloor.jpg" id="1_lde76"]
+
+[resource]
+resource_name = "mat5.008"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_lde76")
+roughness = 0.950589
