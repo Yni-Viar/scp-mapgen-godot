@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://37b33scp2sc8"]
+
+[ext_resource type="Texture2D" uid="uid://dkbdp5fvwf8nf" path="res://Assets/RoomAssets/LCZ/tilefloor.jpg" id="1_2aolh"]
+
+[resource]
+resource_name = "mat2.009"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_2aolh")
+roughness = 0.950589

@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ckteqgq4t86ma"]
+
+[ext_resource type="Texture2D" uid="uid://cuprenobqwfk1" path="res://Assets/RoomAssets/RZ/officewall.jpg" id="1_blrdr"]
+
+[resource]
+resource_name = "mat6.004"
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_blrdr")
+roughness = 0.950589

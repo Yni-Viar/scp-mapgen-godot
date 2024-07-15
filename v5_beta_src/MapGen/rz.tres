@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=13 format=3 uid="uid://cutxs3gy1syws"]
+
+[ext_resource type="Resource" uid="uid://b8g3e1dyn7i6x" path="res://MapGen/Resources/Rz/RZ_room2C.tres" id="1_etu6q"]
+[ext_resource type="Script" path="res://MapGen/MapGenRoomResource.gd" id="1_f1lub"]
+[ext_resource type="Resource" uid="uid://dbo71i4c3ueag" path="res://MapGen/Resources/Rz/RZ_room4.tres" id="2_lf1p3"]
+[ext_resource type="Resource" uid="uid://dg58puu8ha4rh" path="res://MapGen/Resources/Rz/RZ_room1_endroom.tres" id="3_fqgad"]
+[ext_resource type="Resource" uid="uid://d16k3tmnhhv4a" path="res://MapGen/Resources/Rz/RZ_exit1_gatea.tres" id="4_atvq4"]
+[ext_resource type="Resource" uid="uid://c4cxgdrljl0bk" path="res://MapGen/Resources/Rz/RZ_exit1_gateb.tres" id="5_0ewwb"]
+[ext_resource type="Resource" uid="uid://rq2x6ajsp4jn" path="res://MapGen/Resources/Rz/RZ_room2_toilets.tres" id="6_v7snd"]
+[ext_resource type="Resource" uid="uid://d04o44bybntwq" path="res://MapGen/Resources/Rz/RZ_room2_offices2.tres" id="7_7mx73"]
+[ext_resource type="Resource" uid="uid://dfkrs13k21rx0" path="res://MapGen/Resources/Rz/RZ_room2_offices.tres" id="8_w3v35"]
+[ext_resource type="Resource" uid="uid://0fytq547n7sf" path="res://MapGen/Resources/Rz/RZ_room2_walkway.tres" id="9_0nj5c"]
+[ext_resource type="Resource" uid="uid://ctaspleyd6ite" path="res://MapGen/Resources/Rz/RZ_room2_poffices.tres" id="10_e138o"]
+[ext_resource type="Resource" uid="uid://dvufrtci4xh43" path="res://MapGen/Resources/Rz/RZ_room3.tres" id="12_nqehe"]
+
+[resource]
+script = ExtResource("1_f1lub")
+endrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("3_fqgad")])
+endrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("4_atvq4"), ExtResource("5_0ewwb")])
+hallways = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("6_v7snd"), ExtResource("7_7mx73"), ExtResource("8_w3v35"), ExtResource("9_0nj5c")])
+hallways_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("10_e138o")])
+corners = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("1_etu6q")])
+corners_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
+trooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("12_nqehe")])
+trooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
+crossrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("2_lf1p3")])
+crossrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
