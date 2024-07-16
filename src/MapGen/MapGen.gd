@@ -16,7 +16,7 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 ## Amount of zones
 @export var zones_amount: int = 0
 #@export var large_room_support: bool = false
-@export_range(0.5, 2) var room_amount: float = 1
+@export_range(0.25, 2) var room_amount: float = 1
 
 var mapgen: Array[Array] = []
 
@@ -59,9 +59,12 @@ func generate_zone_astar():
 		mapgen[size / 2][(size_y / (zones_amount + 2) * (zone_counter + 1)) / 2].exist = true
 		var temp_x: int = size / 2
 		var temp_y: int = size_y / (zones_amount + 2) * (zone_counter + 1) / 2
-		#if necessary_rooms > (size - 2) * 4:
-			#printerr("Necessary to spawn rooms more than available room slots, generator won't work further")
-			#return
+		if number_of_rooms > (size - 2) * 4:
+			printerr("Too many rooms, map won't spawn")
+			return
+		elif number_of_rooms < 1:
+			printerr("Too few rooms, map won't spawn")
+			return
 		# Walk before need-to-sapwn rooms runs out
 		while number_of_rooms > 0:
 			var random_room = Vector2(rng.randi_range(0, mapgen.size() - 1), rng.randi_range(0, size_y / (zones_amount + 1) * (zone_counter + 1) - 1))
@@ -74,23 +77,19 @@ func generate_zone_astar():
 	place_room_positions()
 ## for future map customization
 #func customize_room_connections():
-	#for i in range(size):
-		#for j in range(size_y):
+	#for i in range(1, size - 1):
+		#for j in range(1, size_y - 1):
 			#if generate_more_hallways:
-				#if i > 0:
-					#if mapgen[i][j].north && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && mapgen[i-1][j].west && !mapgen[i-1][j].north:
+				#if mapgen[i][j].north && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && mapgen[i-1][j].west && !mapgen[i-1][j].north:
 						#mapgen[i][j].north = false
 						#mapgen[i - 1][j].south = false
-				#if i < size - 1:
-					#if mapgen[i][j].south && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].north && mapgen[i + 1][j].north && mapgen[i+1][j].east && mapgen[i+1][j].west && !mapgen[i+1][j].south:
+				#if mapgen[i][j].south && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].north && mapgen[i + 1][j].north && mapgen[i+1][j].east && mapgen[i+1][j].west && !mapgen[i+1][j].south:
 						#mapgen[i][j].south = false
 						#mapgen[i + 1][j].north = false
-				#if j > 0:
-					#if mapgen[i][j].north && !mapgen[i][j].east && mapgen[i][j].west && mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && !mapgen[i-1][j].west && mapgen[i-1][j].north:
+				#if mapgen[i][j].north && !mapgen[i][j].east && mapgen[i][j].west && mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && !mapgen[i-1][j].west && mapgen[i-1][j].north:
 						#mapgen[i][j].west = false
 						#mapgen[i - 1][j].east = false
-				#if j < size_y - 1:
-					#if mapgen[i][j].north && mapgen[i][j].east && !mapgen[i][j].west && mapgen[i][j].south && mapgen[i + 1][j].south && !mapgen[i+1][j].east && mapgen[i+1][j].west && mapgen[i+1][j].north:
+				#if mapgen[i][j].north && mapgen[i][j].east && !mapgen[i][j].west && mapgen[i][j].south && mapgen[i + 1][j].south && !mapgen[i+1][j].east && mapgen[i+1][j].west && mapgen[i+1][j].north:
 						#mapgen[i][j].east = false
 						#mapgen[i + 1][j].west = false
 	#place_room_positions()
@@ -292,7 +291,7 @@ func spawn_rooms():
 							if i == rooms[zone_counter].hallways.size() - 1:
 								selected_room = rooms[zone_counter].hallways[i].prefab
 					else:
-						selected_room = rooms[zone_counter].hallways_single[room1_count[zone_counter]].prefab
+						selected_room = rooms[zone_counter].hallways_single[room2_count[zone_counter]].prefab
 					room2_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
@@ -307,7 +306,7 @@ func spawn_rooms():
 							if i == rooms[zone_counter].corners.size() - 1:
 								selected_room = rooms[zone_counter].corners[i].prefab
 					else:
-						selected_room = rooms[zone_counter].corners_single[room1_count[zone_counter]].prefab
+						selected_room = rooms[zone_counter].corners_single[room2c_count[zone_counter]].prefab
 					room2c_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
@@ -322,7 +321,7 @@ func spawn_rooms():
 							if i == rooms[zone_counter].trooms.size() - 1:
 								selected_room = rooms[zone_counter].trooms[i].prefab
 					else:
-						selected_room = rooms[zone_counter].trooms_single[room1_count[zone_counter]].prefab
+						selected_room = rooms[zone_counter].trooms_single[room3_count[zone_counter]].prefab
 					room3_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
@@ -337,7 +336,7 @@ func spawn_rooms():
 							if i == rooms[zone_counter].crossrooms.size() - 1:
 								selected_room = rooms[zone_counter].crossrooms[i].prefab
 					else:
-						selected_room = rooms[zone_counter].crossrooms_single[room1_count[zone_counter]].prefab
+						selected_room = rooms[zone_counter].crossrooms_single[room4_count[zone_counter]].prefab
 					room4_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
