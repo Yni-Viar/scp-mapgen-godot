@@ -7,19 +7,16 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export var rng_seed: int = -1
 ## Rooms that will be used
 @export var rooms: Array[MapGenZone]
-#currently not ported to gdscript
-#@export var generate_more_endrooms: bool = false
-#@export var generate_more_crossrooms: bool = false
+# Unfinished, can lead to unconnected rooms
+#@export var generate_more_hallways: bool = false
 ## Map size
 @export_range(4, 256, 2) var size: int = 6
 ## Room in grid size
 @export var grid_size: float = 20.48
 ## Amount of zones
 @export var zones_amount: int = 0
-### Zone transitions (first transition MUST be 0, last - more then size value, and the rest divide the zones)
-#@export var zone_transitions: Array[int] = []
 #@export var large_room_support: bool = false
-@export_range(1, 5) var room_amount: float = 2
+@export_range(0.5, 2) var room_amount: float = 1
 
 var mapgen: Array[Array] = []
 
@@ -32,7 +29,6 @@ class Room:
 	var west: bool
 	var room_type: RoomTypes
 	var angle: float
-	var zone: int
 
 var size_y: int
 
@@ -53,57 +49,8 @@ func _ready():
 			mapgen[g][h].west = false
 			mapgen[g][h].room_type = RoomTypes.EMPTY
 			mapgen[g][h].angle = 0
-			mapgen[g][h].zone = 0
 	generate_zone_astar()
-## DEPRECATED use generate_zone_astar() instead...
-#func generate_zone_old():
-## center of map is ALWAYS exist.
-	#var zone_counter: int = 0
-	#var number_of_rooms: int = size * room_amount
-	##The map generator works in this way:
-	##1.Randomize direction
-	##2.Move in the right direction.
-	##That's all :)
-	#
-	#while zone_counter <= zones_amount:
-		#mapgen[size / 2][(size_y / (zones_amount + 2) * (zone_counter + 1)) / 2].exist = true
-		#var temp_x: int = size / 2
-		#var temp_y: int = size_y / (zones_amount + 2) * (zone_counter + 1) / 2
-		##if zone_counter != zones_amount:
-			##var random_checkpoint_room = mapgen[rng.randi_range(0, size - 1)][size_y / (zones_amount + 1) * (zone_counter + 1)]
-			##random_checkpoint_room.exist = true
-			##random_checkpoint_room.special = true
-		#for i in range(number_of_rooms + 1):
-			#var dir: int = rng.randi_range(0, 4)
-			#
-			#if dir < 1 && temp_x < size - 1:
-				#temp_x += 1
-				#mapgen[temp_x][temp_y].exist = true
-				#if mapgen[temp_x - 1][temp_y].exist:
-					#mapgen[temp_x - 1][temp_y].east = true
-					#mapgen[temp_x][temp_y].west = true
-			#elif dir < 2 && temp_x > 0:
-				#temp_x -= 1
-				#mapgen[temp_x][temp_y].exist = true
-				#if mapgen[temp_x + 1][temp_y].exist:
-					#mapgen[temp_x + 1][temp_y].west = true
-					#mapgen[temp_x][temp_y].east = true
-			#elif dir < 3 && temp_y < (size_y / (zones_amount + 1) * (zone_counter + 1)) - 1:
-				#temp_y += 1
-				#mapgen[temp_x][temp_y].exist = true
-				#if mapgen[temp_x][temp_y - 1].exist:
-					#mapgen[temp_x][temp_y - 1].north = true
-					#mapgen[temp_x][temp_y].south = true
-			#elif dir < 4 && temp_y > 0:
-				#temp_y -= 1
-				#mapgen[temp_x][temp_y].exist = true
-				#if mapgen[temp_x][temp_y + 1].exist:
-					#mapgen[temp_x][temp_y + 1].south = true
-					#mapgen[temp_x][temp_y].north = true
-			#mapgen[temp_x][temp_y].zone = zone_counter
-		#zone_counter += 1
-		#
-	#place_room_positions()
+
 ## Main function, that generate the zones
 func generate_zone_astar():
 	var zone_counter: int = 0
@@ -122,43 +69,30 @@ func generate_zone_astar():
 			number_of_rooms -= 1
 		# Connect two zones
 		if zone_counter < zones_amount:
-			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, size_y / (zones_amount + 2) * (zone_counter + 2) / 2))
+			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, size_y / (zones_amount + 1) * (zone_counter + 2) / 2))
 		zone_counter += 1
 	place_room_positions()
 ## for future map customization
 #func customize_room_connections():
 	#for i in range(size):
 		#for j in range(size_y):
-			#if mapgen[i][j].exist:
-				#if i < size - 1:
-					#if mapgen[i + 1][j].exist:
-						#mapgen[i + 1][j].west = true
-						#mapgen[i][j].east = true
+			#if generate_more_hallways:
 				#if i > 0:
-					#if mapgen[i - 1][j].exist:
-						#mapgen[i - 1][j].east = true
-						#mapgen[i][j].west = true
-				#if j < size_y - 1:
-					#if mapgen[i][j + 1].exist:
-						#mapgen[i][j + 1].south = true
-						#mapgen[i][j].north = true
-				#if j > 0:
-					#if mapgen[i][j - 1].exist:
-						#mapgen[i][j - 1].north = true
-						#mapgen[i][j].south = true
-				
-			#if rng.randi_range(0, 1) == 1 && mapgen[i][j].north && mapgen[i][j].south && mapgen[i][j].east && mapgen[i][j].west:
-				#match rng.randi_range(0, 1):
-					#0:
-						#mapgen[i][j + 1].south = false
+					#if mapgen[i][j].north && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && mapgen[i-1][j].west && !mapgen[i-1][j].north:
 						#mapgen[i][j].north = false
+						#mapgen[i - 1][j].south = false
+				#if i < size - 1:
+					#if mapgen[i][j].south && mapgen[i][j].east && mapgen[i][j].west && !mapgen[i][j].north && mapgen[i + 1][j].north && mapgen[i+1][j].east && mapgen[i+1][j].west && !mapgen[i+1][j].south:
 						#mapgen[i][j].south = false
-						#mapgen[i][j - 1].north = false
-					#1:
-						#mapgen[i + 1][j].east = false
+						#mapgen[i + 1][j].north = false
+				#if j > 0:
+					#if mapgen[i][j].north && !mapgen[i][j].east && mapgen[i][j].west && mapgen[i][j].south && mapgen[i - 1][j].south && mapgen[i-1][j].east && !mapgen[i-1][j].west && mapgen[i-1][j].north:
 						#mapgen[i][j].west = false
+						#mapgen[i - 1][j].east = false
+				#if j < size_y - 1:
+					#if mapgen[i][j].north && mapgen[i][j].east && !mapgen[i][j].west && mapgen[i][j].south && mapgen[i + 1][j].south && !mapgen[i+1][j].east && mapgen[i+1][j].west && mapgen[i+1][j].north:
 						#mapgen[i][j].east = false
-						#mapgen[i - 1][j].west = false
+						#mapgen[i + 1][j].west = false
 	#place_room_positions()
 
 ## Main walker function, using AStarGrid2D
@@ -216,14 +150,14 @@ func place_room_positions():
 			var south: bool
 			var west: bool
 			if mapgen[l][m].exist:
-				if l > 0:
-					west = mapgen[l][m].west
-				if l < size - 1:
-					east = mapgen[l][m].east
-				if m > 0:
-					north = mapgen[l][m].north
-				if m < size_y - 1:
-					south = mapgen[l][m].south
+				#if l > 0:
+				west = mapgen[l][m].west
+				#if l < size - 1:
+				east = mapgen[l][m].east
+				#if m > 0:
+				north = mapgen[l][m].north
+				#if m < size_y - 1:
+				south = mapgen[l][m].south
 				if north && south:
 					if east && west:
 						#room4
@@ -332,18 +266,6 @@ func spawn_rooms():
 			var room: StaticBody3D
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
-					
-					#for p in range(rooms[zone_counter].endrooms.size()):
-						#if rooms[zone_counter].endrooms[p].single && !room1_count.has(p):
-							#selected_room = rooms[zone_counter].endrooms[p].prefab
-							#room1_count.append(p)
-							#break
-						#else:
-							#if p < rooms[zone_counter].endrooms.size() - 1 && rng.randf() * 100 <= rooms[zone_counter].endrooms[p]:
-								#
-					
-					
-					
 					if (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
 						for i in range(rooms[zone_counter].endrooms.size()):
 							if rng.randf() * 100 >= rooms[zone_counter].endrooms[i].spawn_chance:

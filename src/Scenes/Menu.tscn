@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://ylguyi8gn0g3"]
+[gd_scene load_steps=3 format=3 uid="uid://7bdu731r2s3f"]
 
-[ext_resource type="Texture2D" uid="uid://d3t2di3b2hykr" path="res://icon_256.png" id="1_57rnc"]
-[ext_resource type="Script" path="res://Scenes/Menu.cs" id="1_px44q"]
+[ext_resource type="Script" path="res://Scripts/Menu.gd" id="1_gwwi5"]
+[ext_resource type="Texture2D" uid="uid://0uu3jqtf8hrs" path="res://icon_64.png" id="2_se8lb"]
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_px44q")
+script = ExtResource("1_gwwi5")
 
 [node name="GenerateButton" type="Button" parent="."]
 layout_mode = 1
@@ -55,20 +55,7 @@ offset_right = 258.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 48
-text = "SCP Map Generator v2"
-
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.141
-anchor_top = 0.769
-anchor_right = 0.141
-anchor_bottom = 0.769
-offset_left = -128.432
-offset_top = -128.312
-offset_right = 127.568
-offset_bottom = 127.688
-texture = ExtResource("1_57rnc")
+text = "SCP Map Generator v5"
 
 [node name="Credits" type="Panel" parent="."]
 visible = false
@@ -94,10 +81,20 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Map generator made by Yni.
 
-Some code was used from
-(https://undertowgames.com/forum/viewtopic.php?t=5265)
-
 Free Fly Camera by MarcPhi."
 
-[connection signal="pressed" from="GenerateButton" to="." method="OnGenerateButtonPressed"]
-[connection signal="pressed" from="CreditsButton" to="." method="OnCreditsButtonPressed"]
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.236
+anchor_top = 0.949
+anchor_right = 0.236
+anchor_bottom = 0.949
+offset_left = -31.872
+offset_top = -31.952
+offset_right = 32.128
+offset_bottom = 32.048
+texture = ExtResource("2_se8lb")
+
+[connection signal="pressed" from="GenerateButton" to="." method="_on_generate_button_pressed"]
+[connection signal="pressed" from="CreditsButton" to="." method="_on_credits_button_pressed"]
