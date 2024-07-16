@@ -20,6 +20,7 @@ sky = SubResource("Sky_nttp5")
 script = ExtResource("1_8h4s1")
 rooms = Array[Resource("res://MapGen/MapGenRoomResource.gd")]([ExtResource("2_oitgb"), ExtResource("3_3ll7f")])
 zones_amount = 1
+room_amount = 0.5
 
 [node name="Camera3D" type="Camera3D" parent="."]
 script = ExtResource("3_b0slv")
