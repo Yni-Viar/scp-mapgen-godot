@@ -1,5 +1,5 @@
-# scp-mapgen-v3
- Facility map generator
+# scp-mapgen-v5
+ SCP-CB-like facility map generator
 
 # License?
 - Code - [MIT](/LICENSE.MIT)
