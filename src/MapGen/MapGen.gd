@@ -80,32 +80,32 @@ func generate_zone_astar():
 		elif number_of_rooms < 1:
 			printerr("Too few rooms, map won't spawn")
 			return
-		var available_room_position: Array[Vector2] = [Vector2(0, size - 1),Vector2(size_y / (zones_amount + 1) * zone_counter, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)]
-		var large_room_check: bool = false
+		var available_room_position: Array[Vector2] = [Vector2(0, size - 1),Vector2(0, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)]
 		var random_room
-		if !large_room_check:
-			if rooms[zone_counter].endrooms_single_large.size() > 0 && rooms[zone_counter].endrooms_single_large.size() <= 4:
-				for k in range(rooms[zone_counter].endrooms_single_large.size()):
-					match k:
-						0:
-							random_room = Vector2(1, 1)
-							available_room_position[0] = Vector2(2, size - 1)
-							available_room_position[1] = Vector2(size_y / (zones_amount + 1) * (zone_counter + 1) + 2, size_y / (zones_amount + 1) * (zone_counter + 2) - 1)
-						1:
-							random_room = Vector2(1, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
-							available_room_position[1] = Vector2(size_y / (zones_amount + 1) * (zone_counter + 1) + 2, size_y / (zones_amount + 1) * (zone_counter + 2) - 2)
-						2:
-							random_room = Vector2(size - 2, 1)
-							available_room_position[0] = Vector2(2, size - 2)
-						3:
-							random_room = Vector2(size - 3, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
-					mapgen[random_room.x][random_room.y].large = true
-					walk_astar(Vector2(temp_x, temp_y), random_room)
-				large_room_check = true
-			elif rooms[zone_counter].endrooms_single_large.size() == 0:
-				large_room_check = true
-			else:
-				printerr("Invalid amount of large rooms, map won't spawn. You should set in zone's large_rooms_amount only values between 0 and 4 (inclusive).")
+		if rooms[zone_counter].endrooms_single_large.size() > 0 && rooms[zone_counter].endrooms_single_large.size() <= 4:
+			var branch_position: Vector2
+			for k in range(rooms[zone_counter].endrooms_single_large.size()):
+				match k:
+					0:
+						random_room = Vector2(1, 1)
+						branch_position = Vector2(1, zone_center)
+						available_room_position[0] = Vector2(2, size - 1)
+						available_room_position[1] = Vector2(2, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)
+					1:
+						random_room = Vector2(1, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
+						available_room_position[1] = Vector2(2, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
+					2:
+						random_room = Vector2(size - 2, 1)
+						branch_position = Vector2(size-1, zone_center)
+						available_room_position[0] = Vector2(2, size - 2)
+					3:
+						random_room = Vector2(size - 3, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
+				mapgen[random_room.x][random_room.y].large = true
+				walk_astar(Vector2(temp_x, temp_y), branch_position)
+				walk_astar(branch_position, random_room)
+		elif rooms[zone_counter].endrooms_single_large.size() > 4:
+			printerr("Invalid amount of large rooms, map won't spawn. You should set in zone's large_rooms_amount only values between 0 and 4 (inclusive).")
+			return
 		# Walk before need-to-spawn rooms runs out
 		while number_of_rooms > 0:
 			random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
