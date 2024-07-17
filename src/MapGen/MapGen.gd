@@ -34,6 +34,10 @@ var size_y: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pass
+
+## Prepares room generation
+func prepare_generation():
 	size_y = size * (zones_amount + 1)
 	if rng_seed != -1:
 		rng.seed = rng_seed
@@ -56,9 +60,16 @@ func generate_zone_astar():
 	var zone_counter: int = 0
 	while zone_counter <= zones_amount:
 		var number_of_rooms: int = size * room_amount
-		mapgen[size / 2][(size_y / (zones_amount + 2) * (zone_counter + 1)) / 2].exist = true
+		# Bugfix - we need to center value for each zone.
+		var tmp_1: float
+		if (zone_counter % 2 == 1):
+			tmp_1 = (zone_counter + 2 * zone_counter)
+		else: # add one to be an odd number
+			tmp_1 = (zone_counter + 1 + 2 * zone_counter)
+		var zone_center: float = size_y * (tmp_1 / ((zones_amount + 1) * 2))
+		mapgen[size / 2][roundi(zone_center)].exist = true
 		var temp_x: int = size / 2
-		var temp_y: int = size_y / (zones_amount + 2) * (zone_counter + 1) / 2
+		var temp_y: int = roundi(zone_center)
 		if number_of_rooms > (size - 2) * 4:
 			printerr("Too many rooms, map won't spawn")
 			return
@@ -72,7 +83,13 @@ func generate_zone_astar():
 			number_of_rooms -= 1
 		# Connect two zones
 		if zone_counter < zones_amount:
-			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, size_y / (zones_amount + 1) * (zone_counter + 2) / 2))
+			var tmp_2: float
+			if (zone_counter + 1 % 2 == 1):
+				tmp_2 = (zone_counter + 2 + 2 * zone_counter)
+			else: # add one to be an odd number
+				tmp_2 = (zone_counter + 3 + 2 * zone_counter)
+			zone_center = size_y * (tmp_2 / ((zones_amount + 1) * 2))
+			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, roundi(zone_center)))
 		zone_counter += 1
 	place_room_positions()
 ## for future map customization
@@ -149,13 +166,9 @@ func place_room_positions():
 			var south: bool
 			var west: bool
 			if mapgen[l][m].exist:
-				#if l > 0:
 				west = mapgen[l][m].west
-				#if l < size - 1:
 				east = mapgen[l][m].east
-				#if m > 0:
 				north = mapgen[l][m].north
-				#if m < size_y - 1:
 				south = mapgen[l][m].south
 				if north && south:
 					if east && west:
@@ -243,6 +256,7 @@ func place_room_positions():
 
 ## Spawns room prefab on the grid
 func spawn_rooms():
+	# Checks the zone
 	var zone_counter: int = 0
 	var selected_room: PackedScene
 	var room1_count: Array[int] = [0]
@@ -266,12 +280,19 @@ func spawn_rooms():
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
 					if (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
-						for i in range(rooms[zone_counter].endrooms.size()):
-							if rng.randf() * 100 >= rooms[zone_counter].endrooms[i].spawn_chance:
+						var counter: float = 0.0
+						var all_spawn_chances: Array[float] = []
+						var spawn_chances: float = 0
+						for j in range(rooms[zone_counter].endrooms.size()):
+							all_spawn_chances.append(rooms[zone_counter].endrooms[j].spawn_chance)
+							spawn_chances += rooms[zone_counter].endrooms[j].spawn_chance
+						var random_room: float = rng.randf_range(0.0, spawn_chances)
+						for i in range(all_spawn_chances.size()):
+							counter += all_spawn_chances[i]
+							if random_room <= counter || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].endrooms[i].prefab
-								break
-							if i == rooms[zone_counter].endrooms.size() - 1:
-								selected_room = rooms[zone_counter].endrooms[i].prefab
+						all_spawn_chances.clear()
+						counter = 0
 					else:
 						selected_room = rooms[zone_counter].endrooms_single[room1_count[zone_counter]].prefab
 					room1_count[zone_counter] += 1
@@ -283,13 +304,20 @@ func spawn_rooms():
 					#if enable_zones && get_zone(o) != get_zone(o + 1):
 						#selected_room = checkpoints[get_zone(o) - 1]
 					#else:
-					if (room1_count[zone_counter] >= rooms[zone_counter].hallways_single.size()):
-						for i in range(rooms[zone_counter].hallways.size()):
-							if rng.randf() * 100 >= rooms[zone_counter].hallways[i].spawn_chance:
+					if (room2_count[zone_counter] >= rooms[zone_counter].hallways_single.size()):
+						var counter: float = 0.0
+						var all_spawn_chances: Array[float] = []
+						var spawn_chances: float = 0
+						for j in range(rooms[zone_counter].hallways.size()):
+							all_spawn_chances.append(rooms[zone_counter].hallways[j].spawn_chance)
+							spawn_chances += rooms[zone_counter].hallways[j].spawn_chance
+						var random_room: float = rng.randf_range(0.0, spawn_chances)
+						for i in range(all_spawn_chances.size()):
+							counter += all_spawn_chances[i]
+							if random_room <= counter || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].hallways[i].prefab
-								break
-							if i == rooms[zone_counter].hallways.size() - 1:
-								selected_room = rooms[zone_counter].hallways[i].prefab
+						all_spawn_chances.clear()
+						counter = 0
 					else:
 						selected_room = rooms[zone_counter].hallways_single[room2_count[zone_counter]].prefab
 					room2_count[zone_counter] += 1
@@ -298,13 +326,20 @@ func spawn_rooms():
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM2C:
-					if (room1_count[zone_counter] >= rooms[zone_counter].corners_single.size()):
-						for i in range(rooms[zone_counter].corners.size()):
-							if rng.randf() * 100 >= rooms[zone_counter].corners[i].spawn_chance:
+					if (room2c_count[zone_counter] >= rooms[zone_counter].corners_single.size()):
+						var counter: float = 0.0
+						var all_spawn_chances: Array[float] = []
+						var spawn_chances: float = 0
+						for j in range(rooms[zone_counter].corners.size()):
+							all_spawn_chances.append(rooms[zone_counter].corners[j].spawn_chance)
+							spawn_chances += rooms[zone_counter].corners[j].spawn_chance
+						var random_room: float = rng.randf_range(0.0, spawn_chances)
+						for i in range(all_spawn_chances.size()):
+							counter += all_spawn_chances[i]
+							if random_room <= counter || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].corners[i].prefab
-								break
-							if i == rooms[zone_counter].corners.size() - 1:
-								selected_room = rooms[zone_counter].corners[i].prefab
+						all_spawn_chances.clear()
+						counter = 0
 					else:
 						selected_room = rooms[zone_counter].corners_single[room2c_count[zone_counter]].prefab
 					room2c_count[zone_counter] += 1
@@ -313,13 +348,20 @@ func spawn_rooms():
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM3:
-					if (room1_count[zone_counter] >= rooms[zone_counter].trooms_single.size()):
-						for i in range(rooms[zone_counter].trooms.size()):
-							if rng.randf() * 100 >= rooms[zone_counter].trooms[i].spawn_chance:
+					if (room3_count[zone_counter] >= rooms[zone_counter].trooms_single.size()):
+						var counter: float = 0.0
+						var all_spawn_chances: Array[float] = []
+						var spawn_chances: float = 0
+						for j in range(rooms[zone_counter].trooms.size()):
+							all_spawn_chances.append(rooms[zone_counter].trooms[j].spawn_chance)
+							spawn_chances += rooms[zone_counter].trooms[j].spawn_chance
+						var random_room: float = rng.randf_range(0.0, spawn_chances)
+						for i in range(all_spawn_chances.size()):
+							counter += all_spawn_chances[i]
+							if random_room <= counter || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].trooms[i].prefab
-								break
-							if i == rooms[zone_counter].trooms.size() - 1:
-								selected_room = rooms[zone_counter].trooms[i].prefab
+						all_spawn_chances.clear()
+						counter = 0
 					else:
 						selected_room = rooms[zone_counter].trooms_single[room3_count[zone_counter]].prefab
 					room3_count[zone_counter] += 1
@@ -328,13 +370,20 @@ func spawn_rooms():
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM4:
-					if (room1_count[zone_counter] >= rooms[zone_counter].crossrooms_single.size()):
-						for i in range(rooms[zone_counter].crossrooms.size()):
-							if rng.randf() * 100 >= rooms[zone_counter].crossrooms[i].spawn_chance:
+					if (room4_count[zone_counter] >= rooms[zone_counter].crossrooms_single.size()):
+						var counter: float = 0.0
+						var all_spawn_chances: Array[float] = []
+						var spawn_chances: float = 0
+						for j in range(rooms[zone_counter].crossrooms.size()):
+							all_spawn_chances.append(rooms[zone_counter].crossrooms[j].spawn_chance)
+							spawn_chances += rooms[zone_counter].crossrooms[j].spawn_chance
+						var random_room: float = rng.randf_range(0.0, spawn_chances)
+						for i in range(all_spawn_chances.size()):
+							counter += all_spawn_chances[i]
+							if random_room <= counter || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].crossrooms[i].prefab
-								break
-							if i == rooms[zone_counter].crossrooms.size() - 1:
-								selected_room = rooms[zone_counter].crossrooms[i].prefab
+						all_spawn_chances.clear()
+						counter = 0
 					else:
 						selected_room = rooms[zone_counter].crossrooms_single[room4_count[zone_counter]].prefab
 					room4_count[zone_counter] += 1
@@ -343,7 +392,11 @@ func spawn_rooms():
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 		zone_counter = 0
-
+## Clears the map generation
+func clear():
+	mapgen = []
+	for node in get_children():
+		node.queue_free()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
