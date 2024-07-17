@@ -16,7 +16,8 @@
 [resource]
 script = ExtResource("1_f1lub")
 endrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("3_fqgad")])
-endrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("4_atvq4"), ExtResource("5_0ewwb")])
+endrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
+endrooms_single_large = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("4_atvq4"), ExtResource("5_0ewwb")])
 hallways = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("7_7mx73"), ExtResource("8_w3v35"), ExtResource("6_v7snd"), ExtResource("9_0nj5c")])
 hallways_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("10_e138o")])
 corners = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("1_etu6q")])

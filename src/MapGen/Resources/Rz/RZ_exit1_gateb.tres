@@ -6,5 +6,6 @@
 [resource]
 script = ExtResource("2_68q5q")
 name = "rz_exit1_gateb"
+large = true
 prefab = ExtResource("1_3bgkm")
 spawn_chance = 20.0
