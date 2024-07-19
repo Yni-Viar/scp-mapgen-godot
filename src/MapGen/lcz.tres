@@ -1,21 +1,26 @@
-[gd_resource type="Resource" script_class="MapGenZone" load_steps=7 format=3 uid="uid://dikkljwi8jg4b"]
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=11 format=3 uid="uid://7prvjngodfs1"]
 
-[ext_resource type="Resource" uid="uid://dfc74o3qe5bcj" path="res://MapGen/Resources/Lcz/room2c.tres" id="1_3mq2m"]
-[ext_resource type="Script" path="res://MapGen/MapGenRoomResource.gd" id="1_rwx03"]
-[ext_resource type="Resource" uid="uid://lq8rqiy5365r" path="res://MapGen/Resources/Lcz/room4.tres" id="2_1h7vi"]
-[ext_resource type="Resource" uid="uid://dpm2wv6jf6864" path="res://MapGen/Resources/Lcz/room1.tres" id="3_kded5"]
-[ext_resource type="Resource" uid="uid://dvu0kpigb8jqw" path="res://MapGen/Resources/Lcz/room2.tres" id="4_sx5qc"]
-[ext_resource type="Resource" uid="uid://cpxhs04yvtqce" path="res://MapGen/Resources/Lcz/room3.tres" id="6_dm20b"]
+[ext_resource type="Script" path="res://MapGen/MapGenRoomResource.gd" id="1_mti3u"]
+[ext_resource type="Resource" uid="uid://dkax2pgmsnpbr" path="res://MapGen/Resources/Lcz/lc_room2C.tres" id="1_rpggd"]
+[ext_resource type="Resource" uid="uid://defw3e0yk60rh" path="res://MapGen/Resources/Lcz/lc_room4.tres" id="2_665au"]
+[ext_resource type="Resource" uid="uid://dto18wf3e4ol4" path="res://MapGen/Resources/Lcz/lc_cont1_testroom.tres" id="3_oukqp"]
+[ext_resource type="Resource" uid="uid://bduthaq6sihom" path="res://MapGen/Resources/Lcz/lc_cont1_079.tres" id="4_bm6sj"]
+[ext_resource type="Resource" uid="uid://cjkhvveue1tae" path="res://MapGen/Resources/Lcz/lc_room2.tres" id="5_gpbd2"]
+[ext_resource type="Resource" uid="uid://cs2tk6fwt6jl1" path="res://MapGen/Resources/Lcz/lc_room2_vent.tres" id="6_ppfcp"]
+[ext_resource type="Resource" uid="uid://ptmyhm1w8uow" path="res://MapGen/Resources/Lcz/lc_cont2_650.tres" id="7_gt4pa"]
+[ext_resource type="Resource" uid="uid://c3khhgpfxarm1" path="res://MapGen/Resources/Lcz/lc_cont2_scps.tres" id="8_7fj7o"]
+[ext_resource type="Resource" uid="uid://bx5nj144uqlqs" path="res://MapGen/Resources/Lcz/lc_room3.tres" id="10_lyern"]
 
 [resource]
-script = ExtResource("1_rwx03")
-endrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("3_kded5")])
-endrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
-hallways = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("4_sx5qc")])
-hallways_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
-corners = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("1_3mq2m")])
+script = ExtResource("1_mti3u")
+endrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("3_oukqp")])
+endrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("4_bm6sj")])
+endrooms_single_large = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
+hallways = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("5_gpbd2"), ExtResource("6_ppfcp")])
+hallways_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("7_gt4pa"), ExtResource("8_7fj7o")])
+corners = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("1_rpggd")])
 corners_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
-trooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("6_dm20b")])
+trooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("10_lyern")])
 trooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
-crossrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("2_1h7vi")])
+crossrooms = Array[Resource("res://MapGen/MapGenRoom.gd")]([ExtResource("2_665au")])
 crossrooms_single = Array[Resource("res://MapGen/MapGenRoom.gd")]([])
