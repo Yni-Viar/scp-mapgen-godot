@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://MapGen/MapGen.gd" id="1_8h4s1"]
 [ext_resource type="Resource" uid="uid://cutxs3gy1syws" path="res://MapGen/rz.tres" id="2_oitgb"]
-[ext_resource type="Resource" uid="uid://dikkljwi8jg4b" path="res://MapGen/lcz.tres" id="3_3ll7f"]
+[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/lcz.tres" id="3_0ehlh"]
 [ext_resource type="Script" path="res://addons/free_look_camera.gd" id="3_b0slv"]
 [ext_resource type="Script" path="res://Scripts/Test.gd" id="5_hh3v8"]
 
@@ -19,7 +19,7 @@ sky = SubResource("Sky_nttp5")
 
 [node name="MapGen" type="Node" parent="."]
 script = ExtResource("1_8h4s1")
-rooms = Array[Resource("res://MapGen/MapGenRoomResource.gd")]([ExtResource("2_oitgb"), ExtResource("3_3ll7f")])
+rooms = Array[Resource("res://MapGen/MapGenRoomResource.gd")]([ExtResource("2_oitgb"), ExtResource("3_0ehlh")])
 zones_amount = 1
 room_amount = 0.5
 
@@ -79,8 +79,9 @@ offset_top = -75.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Map generation by Yni,
-rooms are used from SCP: Containment Breach
-and SCP: CB Ultimate Edition"
+rooms are used from SCP: Containment Breach,
+SCP: CB Ultimate Edition and SCP: Site Online
+Camera script by MarcPhi"
 horizontal_alignment = 1
 vertical_alignment = 1
 

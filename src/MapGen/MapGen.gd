@@ -1,4 +1,5 @@
 extends Node
+class_name FacilityGenerator
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -9,6 +10,8 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export var rooms: Array[MapGenZone]
 # Unfinished, can lead to unconnected rooms
 #@export var generate_more_hallways: bool = false
+## EXPERIMENTAL. Enables large endrooms. Note, that this changes map generation behaviour.
+@export var enable_large_endrooms: bool = false
 ## Map size
 @export_range(8, 256, 2) var size: int = 8
 ## Room in grid size
@@ -80,22 +83,27 @@ func generate_zone_astar():
 		elif number_of_rooms < 1:
 			printerr("Too few rooms, map won't spawn")
 			return
+		# Available room position (for AStar walk)
 		var available_room_position: Array[Vector2] = [Vector2(0, size - 1),Vector2(0, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)]
-		var random_room
-		if rooms[zone_counter].endrooms_single_large.size() > 0 && rooms[zone_counter].endrooms_single_large.size() <= 4:
+		# Random room position. If large rooms enabled, also used for large room coordinates
+		var random_room: Vector2
+		# Large room module
+		if rooms[zone_counter].endrooms_single_large.size() > 0 && rooms[zone_counter].endrooms_single_large.size() <= 4 && enable_large_endrooms:
+			# Room, that connects large room and center of the map
 			var branch_position: Vector2
+			# If there is a large room, decrease available size
 			for k in range(rooms[zone_counter].endrooms_single_large.size()):
 				match k:
 					0:
-						random_room = Vector2(1, 1)
+						random_room = Vector2(0, 0)
 						branch_position = Vector2(1, zone_center)
 						available_room_position[0] = Vector2(2, size - 1)
 						available_room_position[1] = Vector2(2, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)
 					1:
-						random_room = Vector2(1, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
+						random_room = Vector2(0, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
 						available_room_position[1] = Vector2(2, size_y / (zones_amount + 1) * (zone_counter + 1) - 2)
 					2:
-						random_room = Vector2(size - 2, 1)
+						random_room = Vector2(size - 1, 1)
 						branch_position = Vector2(size-1, zone_center)
 						available_room_position[0] = Vector2(2, size - 2)
 					3:
@@ -114,7 +122,7 @@ func generate_zone_astar():
 		# Connect two zones
 		if zone_counter < zones_amount:
 			var tmp_2: float
-			if (zone_counter + 1 % 2 == 1):
+			if (zone_counter % 2 == 1):
 				tmp_2 = (zone_counter + 2 + 2 * zone_counter)
 			else: # add one to be an odd number
 				tmp_2 = (zone_counter + 3 + 2 * zone_counter)
@@ -311,10 +319,14 @@ func spawn_rooms():
 			var room: StaticBody3D
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
-					if mapgen[n][o].large:
+					if mapgen[n][o].large && enable_large_endrooms:
 						selected_room = rooms[zone_counter].endrooms_single_large[large_room_counter[zone_counter]].prefab
+						large_room_counter[zone_counter] += 1
 					else:
-						if (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
+						if rooms[zone_counter].endrooms_single_large.size() > 0 && !enable_large_endrooms && large_room_counter[zone_counter] < rooms[zone_counter].endrooms_single_large.size():
+							selected_room = rooms[zone_counter].endrooms_single_large[large_room_counter[zone_counter]].prefab
+							large_room_counter[zone_counter] += 1
+						elif (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
 							var counter: float = 0.0
 							var all_spawn_chances: Array[float] = []
 							var spawn_chances: float = 0
@@ -330,8 +342,8 @@ func spawn_rooms():
 							counter = 0
 						else:
 							selected_room = rooms[zone_counter].endrooms_single[room1_count[zone_counter]].prefab
+							room1_count[zone_counter] += 1
 					
-					room1_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)

@@ -7,4 +7,4 @@
 script = ExtResource("2_1yxpn")
 name = "rz_room2"
 prefab = ExtResource("1_d6e66")
-spawn_chance = 100.0
+spawn_chance = 40.0
