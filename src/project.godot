@@ -11,10 +11,10 @@ config_version=5
 [application]
 
 config/name="SCP Map Generator v5"
+config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 run/main_scene="res://Scenes/Site19.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon_64.png"
-config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 
 [dotnet]
 

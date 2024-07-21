@@ -303,6 +303,8 @@ func spawn_rooms():
 	var room3_count: Array[int] = [0]
 	var room4_count: Array[int] = [0]
 	var large_room_counter: Array[int] = [0]
+	var counter: float = 0.0
+	var prev_counter: float = 0.0
 	if zones_amount > 0:
 		for i in range(zones_amount):
 			room1_count.append(0)
@@ -327,7 +329,6 @@ func spawn_rooms():
 							selected_room = rooms[zone_counter].endrooms_single_large[large_room_counter[zone_counter]].prefab
 							large_room_counter[zone_counter] += 1
 						elif (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
-							var counter: float = 0.0
 							var all_spawn_chances: Array[float] = []
 							var spawn_chances: float = 0
 							for j in range(rooms[zone_counter].endrooms.size()):
@@ -336,10 +337,13 @@ func spawn_rooms():
 							var random_room: float = rng.randf_range(0.0, spawn_chances)
 							for i in range(all_spawn_chances.size()):
 								counter += all_spawn_chances[i]
-								if random_room <= counter || i == all_spawn_chances.size() - 1:
+								if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
 									selected_room = rooms[zone_counter].endrooms[i].prefab
+									break
+								prev_counter = counter
 							all_spawn_chances.clear()
 							counter = 0
+							prev_counter = 0
 						else:
 							selected_room = rooms[zone_counter].endrooms_single[room1_count[zone_counter]].prefab
 							room1_count[zone_counter] += 1
@@ -353,7 +357,6 @@ func spawn_rooms():
 						#selected_room = checkpoints[get_zone(o) - 1]
 					#else:
 					if (room2_count[zone_counter] >= rooms[zone_counter].hallways_single.size()):
-						var counter: float = 0.0
 						var all_spawn_chances: Array[float] = []
 						var spawn_chances: float = 0
 						for j in range(rooms[zone_counter].hallways.size()):
@@ -362,10 +365,13 @@ func spawn_rooms():
 						var random_room: float = rng.randf_range(0.0, spawn_chances)
 						for i in range(all_spawn_chances.size()):
 							counter += all_spawn_chances[i]
-							if random_room <= counter || i == all_spawn_chances.size() - 1:
+							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].hallways[i].prefab
+								break
+							prev_counter = counter
 						all_spawn_chances.clear()
 						counter = 0
+						prev_counter = 0
 					else:
 						selected_room = rooms[zone_counter].hallways_single[room2_count[zone_counter]].prefab
 					room2_count[zone_counter] += 1
@@ -375,7 +381,6 @@ func spawn_rooms():
 					add_child(room, true)
 				RoomTypes.ROOM2C:
 					if (room2c_count[zone_counter] >= rooms[zone_counter].corners_single.size()):
-						var counter: float = 0.0
 						var all_spawn_chances: Array[float] = []
 						var spawn_chances: float = 0
 						for j in range(rooms[zone_counter].corners.size()):
@@ -384,10 +389,13 @@ func spawn_rooms():
 						var random_room: float = rng.randf_range(0.0, spawn_chances)
 						for i in range(all_spawn_chances.size()):
 							counter += all_spawn_chances[i]
-							if random_room <= counter || i == all_spawn_chances.size() - 1:
+							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].corners[i].prefab
+								break
+							prev_counter = counter
 						all_spawn_chances.clear()
 						counter = 0
+						prev_counter = 0
 					else:
 						selected_room = rooms[zone_counter].corners_single[room2c_count[zone_counter]].prefab
 					room2c_count[zone_counter] += 1
@@ -397,7 +405,6 @@ func spawn_rooms():
 					add_child(room, true)
 				RoomTypes.ROOM3:
 					if (room3_count[zone_counter] >= rooms[zone_counter].trooms_single.size()):
-						var counter: float = 0.0
 						var all_spawn_chances: Array[float] = []
 						var spawn_chances: float = 0
 						for j in range(rooms[zone_counter].trooms.size()):
@@ -406,10 +413,13 @@ func spawn_rooms():
 						var random_room: float = rng.randf_range(0.0, spawn_chances)
 						for i in range(all_spawn_chances.size()):
 							counter += all_spawn_chances[i]
-							if random_room <= counter || i == all_spawn_chances.size() - 1:
+							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].trooms[i].prefab
+								break
+							prev_counter = counter
 						all_spawn_chances.clear()
 						counter = 0
+						prev_counter = 0
 					else:
 						selected_room = rooms[zone_counter].trooms_single[room3_count[zone_counter]].prefab
 					room3_count[zone_counter] += 1
@@ -419,7 +429,6 @@ func spawn_rooms():
 					add_child(room, true)
 				RoomTypes.ROOM4:
 					if (room4_count[zone_counter] >= rooms[zone_counter].crossrooms_single.size()):
-						var counter: float = 0.0
 						var all_spawn_chances: Array[float] = []
 						var spawn_chances: float = 0
 						for j in range(rooms[zone_counter].crossrooms.size()):
@@ -428,10 +437,13 @@ func spawn_rooms():
 						var random_room: float = rng.randf_range(0.0, spawn_chances)
 						for i in range(all_spawn_chances.size()):
 							counter += all_spawn_chances[i]
-							if random_room <= counter || i == all_spawn_chances.size() - 1:
+							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
 								selected_room = rooms[zone_counter].crossrooms[i].prefab
+								break
+							prev_counter = counter
 						all_spawn_chances.clear()
 						counter = 0
+						prev_counter = 0
 					else:
 						selected_room = rooms[zone_counter].crossrooms_single[room4_count[zone_counter]].prefab
 					room4_count[zone_counter] += 1
