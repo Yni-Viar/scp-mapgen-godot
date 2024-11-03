@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="SCP Map Generator v5"
+config/name="SCP-like Map Generator v5"
+config/version="5.1.0"
 config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 run/main_scene="res://Scenes/Site19.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")

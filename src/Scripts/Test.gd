@@ -13,11 +13,11 @@ func _process(delta):
 
 func _on_seed_text_changed(new_text):
 	if new_text != "":
-		get_parent().get_node("MapGen").rng_seed = int(new_text)
+		get_parent().get_node("FacilityGenerator").rng_seed = int(new_text)
 	else:
-		get_parent().get_node("MapGen").rng_seed = -1
+		get_parent().get_node("FacilityGenerator").rng_seed = -1
 
 
 func _on_generate_pressed():
-	get_parent().get_node("MapGen").clear()
-	get_parent().get_node("MapGen").prepare_generation()
+	get_parent().get_node("FacilityGenerator").clear()
+	get_parent().get_node("FacilityGenerator").prepare_generation()
