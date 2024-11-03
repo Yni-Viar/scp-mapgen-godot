@@ -23,11 +23,14 @@ class_name MapGenZone
 @export var crossrooms: Array[MapGenRoom]
 ## Single rooms with four exits
 @export var crossrooms_single: Array[MapGenRoom] = []
+## Door hallways
+@export var door_frames: Array[PackedScene]
 
 func _init(p_endrooms: Array[MapGenRoom] = [], p_hallways: Array[MapGenRoom] = [], p_corners: Array[MapGenRoom] = [],
-p_trooms: Array[MapGenRoom] = [], p_crossrooms: Array[MapGenRoom] = []):
+p_trooms: Array[MapGenRoom] = [], p_crossrooms: Array[MapGenRoom] = [], p_door_frames: Array[PackedScene] = []):
 	endrooms = p_endrooms
 	hallways = p_hallways
 	corners = p_corners
 	trooms = p_trooms
 	crossrooms = p_crossrooms
+	door_frames = p_door_frames

@@ -3,4 +3,9 @@
 
 # License?
 - Code - [MIT](/LICENSE.MIT)
-- Assets - [CC-BY-SA 3.0](/src/Assets/LICENSE.CCBYSA3) license. More info about SCP licensing at [SCP-Wiki](https://scp-wiki.wikidot.com/licensing-guide).
+- Assets - [CC-BY 4.0](/LICENSE.CCBY4), since we got independent from SCP content.
+
+# Changelog
+## v.5.1.0 (2024.11.03)
+- Add support for custom doors, as seen in *SCP: Secret Lab 14.0*
+- Removed SCP-CB rooms (Research, or Entrance zone)

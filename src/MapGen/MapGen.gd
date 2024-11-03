@@ -1,4 +1,4 @@
-extends Node
+extends Node3D
 class_name FacilityGenerator
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -19,7 +19,7 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 ## Amount of zones
 @export var zones_amount: int = 0
 #@export var large_room_support: bool = false
-@export_range(0.25, 2) var room_amount: float = 1
+@export_range(0.25, 2) var room_amount: float = 0.75
 
 var mapgen: Array[Array] = []
 
@@ -37,11 +37,11 @@ class Room:
 var size_y: int
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
 	pass
 
 ## Prepares room generation
-func prepare_generation():
+func prepare_generation() -> void:
 	size_y = size * (zones_amount + 1)
 	if rng_seed != -1:
 		rng.seed = rng_seed
@@ -61,7 +61,7 @@ func prepare_generation():
 	generate_zone_astar()
 
 ## Main function, that generate the zones
-func generate_zone_astar():
+func generate_zone_astar() -> void:
 	var zone_counter: int = 0
 	while zone_counter <= zones_amount:
 		var number_of_rooms: int = size * room_amount
@@ -150,7 +150,7 @@ func generate_zone_astar():
 	#place_room_positions()
 
 ## Main walker function, using AStarGrid2D
-func walk_astar(from: Vector2, to: Vector2):
+func walk_astar(from: Vector2, to: Vector2) -> void:
 	# Initialization
 	var astar_grid = AStarGrid2D.new()
 	astar_grid.region = Rect2i(0, 0, size, size_y)
@@ -184,7 +184,7 @@ func walk_astar(from: Vector2, to: Vector2):
 					mapgen[map.x][map.y + 1].south = true
 					mapgen[map.x][map.y].north = true
 
-func place_room_positions():
+func place_room_positions() -> void:
 	# Check
 	for j in range(size):
 		for k in range(size_y):
@@ -293,7 +293,7 @@ func place_room_positions():
 	spawn_rooms()
 
 ## Spawns room prefab on the grid
-func spawn_rooms():
+func spawn_rooms() -> void:
 	# Checks the zone
 	var zone_counter: int = 0
 	var selected_room: PackedScene
@@ -451,6 +451,31 @@ func spawn_rooms():
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+		zone_counter = 0
+	spawn_doors()
+## Spawn doors
+func spawn_doors():
+	# Checks the zone
+	var zone_counter: int = 0
+	var startup_node: Node = Node.new()
+	startup_node.name = "DoorFrames"
+	add_child(startup_node)
+	for i in range(size):
+		for j in range(size_y):
+			if j >= size_y / (zones_amount + 1) * (zone_counter + 1):
+				zone_counter += 1
+			if rooms[zone_counter].door_frames.size() > 0:
+				var available_frames: Array[PackedScene] = rooms[zone_counter].door_frames
+				if mapgen[i][j].east:
+					var door: Node3D = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
+					door.position = global_position + Vector3(i * grid_size + grid_size / 2, 0, j * grid_size)
+					door.rotation_degrees = Vector3(0, 90, 0)
+					startup_node.add_child(door, true)
+				if mapgen[i][j].north:
+					var door: Node3D = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
+					door.position = global_position + Vector3(i * grid_size, 0, j * grid_size + grid_size / 2)
+					door.rotation_degrees = Vector3(0, 0, 0)
+					startup_node.add_child(door, true)
 		zone_counter = 0
 ## Clears the map generation
 func clear():
