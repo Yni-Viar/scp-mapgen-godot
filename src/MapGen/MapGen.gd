@@ -18,6 +18,8 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export var large_rooms: bool = false
 ## How much the map will be filled with rooms
 @export_range(0.25, 2) var room_amount: float = 0.75
+## Prints map seed
+@export var debug_print: bool = false
 
 var mapgen: Array[Array] = []
 var disabled_points: Array[Vector2i] = []
@@ -92,7 +94,7 @@ func generate_zone_astar() -> void:
 			for i in range(large_room_amount):
 				while true:
 					random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
-					if check_room_dimensions(random_room.x, random_room.y):
+					if check_room_dimensions(random_room.x, random_room.y, 0):
 						walk_astar(Vector2(temp_x, temp_y), random_room)
 						mapgen[random_room.x][random_room.y].large = true
 						break
@@ -111,162 +113,300 @@ func generate_zone_astar() -> void:
 			zone_center = size_y * (tmp_2 / ((zones_amount + 1) * 2))
 			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, roundi(zone_center)))
 		zone_counter += 1
+	more_large_rooms()
+func more_large_rooms():
+	if large_rooms:
+		var room2l_amount: int = 0
+		var room2cl_amount: int = 0
+		var room3l_amount: int = 0
+		for j in range(size):
+			for k in range(size_y):
+				if check_room_dimensions(j, k, 1) && room2l_amount < size / 6:
+					mapgen[j][k].large = true
+					room2l_amount += 1
+				elif check_room_dimensions(j, k, 2) && room2cl_amount < size / 6:
+					mapgen[j][k].large = true
+					room2cl_amount += 1
+				elif check_room_dimensions(j, k, 3) && room3l_amount < size / 6:
+					mapgen[j][k].large = true
+					room3l_amount += 1
 	place_room_positions()
-# not used
-#func customize_room_connections():
-	#
-	#place_room_positions()
-## checks spawn places for large rooms
-func check_room_dimensions(x: int, y: int) -> bool:
-	if x == 0 && y == 0:
-		if !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x][y + 1].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			return true
-		else:
-			return false
-	elif x == size - 1 && y == size_y - 1:
-		if !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			return true
-		elif !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		else:
-			return false
-	elif x == 0 && y == size_y - 1:
-		if !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		else:
-			return false
-	elif x == size - 1 && y == 0:
-		if !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			return true
-		elif !mapgen[x][y + 1].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			return true
-		else:
-			return false
-	## |[x][x]  |        |[x]
-	## |[o][x]  |[o][x]  |[o]
-	## |        |[x][x]  |[x]
-	elif x == 0:
-		if !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist: 
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x + 1, y + 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x, y - 1))
-			disabled_points.append(Vector2i(x + 1, y - 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		else:
-			return false
-	## [x][x]|        |  [x]|
-	## [x][o]|  [x][o]|  [o]|
-	##       |  [x][x]|  [x]|
-	elif x == size - 1:
-		if !mapgen[x][y + 1].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x - 1, y + 1))
-			disabled_points.append(Vector2i(x - 1, y))
-			return true
-		elif !mapgen[x][y - 1].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x, y - 1))
-			disabled_points.append(Vector2i(x - 1, y - 1))
-			disabled_points.append(Vector2i(x - 1, y))
-			return true
-		elif !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		else:
-			return false
-	## [x][x]   [x][x]   
-	## [o][x]   [x][o]   [x][o][x]
-	## ------   ------   ---------
-	elif y == 0:
-		if !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x + 1, y + 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x - 1, y + 1))
-			disabled_points.append(Vector2i(x, y + 1))
-			return true
-		elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		else:
-			return false
-	## ------   ------   ---------  
-	## [o][x]   [x][o]   [x][o][x]
-	## [x][x]   [x][x]
-	elif y == size_y - 1:
-		if !mapgen[x + 1][y].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x + 1, y))
-			disabled_points.append(Vector2i(x + 1, y - 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x - 1, y - 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			return true
-		elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		else:
-			return false
-	## [x][x]   [x][x]   [x][x][x]
-	## [x][o]   [o][x]   [x][o][x]   [x][o][x]
-	## [x][x]   [x][x]               [x][x][x]
-	else:
-		if !mapgen[x][y + 1].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x - 1][y].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x - 1, y + 1))
-			disabled_points.append(Vector2i(x - 1, y - 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			disabled_points.append(Vector2i(x - 1, y))
-			return true
-		elif !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x + 1, y + 1))
-			disabled_points.append(Vector2i(x + 1, y - 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist  && !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x - 1, y + 1))
-			disabled_points.append(Vector2i(x, y + 1))
-			disabled_points.append(Vector2i(x + 1, y + 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist  && !mapgen[x + 1][y].exist:
-			disabled_points.append(Vector2i(x - 1, y))
-			disabled_points.append(Vector2i(x - 1, y - 1))
-			disabled_points.append(Vector2i(x, y - 1))
-			disabled_points.append(Vector2i(x + 1, y - 1))
-			disabled_points.append(Vector2i(x + 1, y))
-			return true
-		else:
+## Checks spawn places for large rooms in given coordinates
+## type: 0 - room1, 1 - room2, 2 - room2C, 3 - room3
+func check_room_dimensions(x: int, y: int, type: int) -> bool:
+	match type:
+		0: ## ROOM1 - endroom
+			if x == 0 && y == 0:
+				if !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				else:
+					return false
+			elif x == size - 1 && y == size_y - 1:
+				if !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			elif x == 0 && y == size_y - 1:
+				if !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			elif x == size - 1 && y == 0:
+				if !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				else:
+					return false
+			## |[x][x]  |        |[x]
+			## |[o][x]  |[o][x]  |[o]
+			## |        |[x][x]  |[x]
+			elif x == 0:
+				if !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist: 
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x + 1, y + 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			## [x][x]|        |  [x]|
+			## [x][o]|  [x][o]|  [o]|
+			##       |  [x][x]|  [x]|
+			elif x == size - 1:
+				if !mapgen[x][y + 1].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x - 1, y + 1))
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y - 1].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x - 1, y - 1))
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			## [x][x]   [x][x]   
+			## [o][x]   [x][o]   [x][o][x]
+			## ------   ------   ---------
+			elif y == 0:
+				if !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x + 1, y + 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x - 1, y + 1))
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				else:
+					return false
+			## ------   ------   ---------  
+			## [o][x]   [x][o]   [x][o][x]
+			## [x][x]   [x][x]
+			elif y == size_y - 1:
+				if !mapgen[x + 1][y].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x - 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				else:
+					return false
+			## [x][x]   [x][x]   [x][x][x]
+			## [x][o]   [o][x]   [x][o][x]   [x][o][x]
+			## [x][x]   [x][x]               [x][x][x]
+			else:
+				if !mapgen[x][y + 1].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x - 1, y + 1))
+					disabled_points.append(Vector2i(x - 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x + 1, y + 1))
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist  && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x - 1, y + 1))
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x + 1, y + 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist  && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x - 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				else:
+					return false
+		1: ## ROOM2 - hallway
+			## |[o][x]  
+			if x == 0:
+				if !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				else:
+					return false
+			## [x][o]|
+			elif x == size - 1:
+				if !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				else:
+					return false
+			## [x]
+			## [o]
+			## ---
+			elif y == 0 :
+				if !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				else:
+					return false
+			## ---
+			## [o]
+			## [x]
+			elif y == size_y - 1:
+				if !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			##             [x]
+			## [x][o][x]   [o]
+			##             [x]
+			else:
+				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				else:
+					return false
+		2: ## ROOM2C - corner
+			if (x == 0 && y == 0) || (x == size - 1 && y == size_y - 1) || (x == 0 && y == size_y - 1) || (x == size - 1 && y == 0):
+				return true
+			## |[x]  [x]|
+			## |[o]  [o]|
+			## |[x]  [x]|
+			elif x == 0 || x == size - 1:
+				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist: 
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				else:
+					return false
+			## ---------
+			## [x][o][x]   [x][o][x]
+			##             ---------
+			elif y == 0 || y == size_y - 1:
+				if !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				else:
+					return false
+			##                   [x][x]    [x][x]    
+			## [x][o]   [o][x]   [x][o]    [o][x]
+			## [x][x]   [x][x]
+			else:
+				if !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x - 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				elif !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x + 1, y - 1))
+					disabled_points.append(Vector2i(x, y - 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					disabled_points.append(Vector2i(x - 1, y + 1))
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				elif !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					disabled_points.append(Vector2i(x + 1, y + 1))
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				else:
+					return false
+		3: ## ROOM3 - TWay
+			## |[o][x]  
+			if x == 0 || y == 0 || x == size - 1 || y == size_y - 1:
+				return true
+			##                  [x]
+			## [x][o]  [o][x]   [o]  [o]
+			##                       [x]
+			else:
+				if !mapgen[x][y + 1].exist:
+					disabled_points.append(Vector2i(x, y + 1))
+					return true
+				elif !mapgen[x][y - 1].exist:
+					disabled_points.append(Vector2i(x, y - 1))
+					return true
+				elif !mapgen[x + 1][y].exist:
+					disabled_points.append(Vector2i(x + 1, y))
+					return true
+				elif !mapgen[x - 1][y].exist:
+					disabled_points.append(Vector2i(x - 1, y))
+					return true
+				else:
+					return false
+		_: ## ROOM4 and unknown types are not supported
 			return false
 
 ## Main walker function, using AStarGrid2D
@@ -307,11 +447,11 @@ func walk_astar(from: Vector2, to: Vector2) -> void:
 					mapgen[map.x][map.y].north = true
 
 func place_room_positions() -> void:
-	# Check
-	for j in range(size):
-		for k in range(size_y):
-			print(int(mapgen[j][k].exist))
-		print()
+	if debug_print:
+		for j in range(size):
+			for k in range(size_y):
+				print(int(mapgen[j][k].exist))
+			print()
 	
 	# deprecated since 6.0, copied from pre-5.0 map generators
 	#var room1_amount: int = 0
@@ -319,6 +459,7 @@ func place_room_positions() -> void:
 	#var room2c_amount: int = 0
 	#var room3_amount: int = 0
 	#var room4_amount: int = 0
+	
 	
 	for l in range(size):
 		for m in range(size_y):
