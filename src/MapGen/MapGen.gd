@@ -113,24 +113,8 @@ func generate_zone_astar() -> void:
 			zone_center = size_y * (tmp_2 / ((zones_amount + 1) * 2))
 			walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, roundi(zone_center)))
 		zone_counter += 1
-	more_large_rooms()
-func more_large_rooms():
-	if large_rooms:
-		var room2l_amount: int = 0
-		var room2cl_amount: int = 0
-		var room3l_amount: int = 0
-		for j in range(size):
-			for k in range(size_y):
-				if check_room_dimensions(j, k, 1) && room2l_amount < size / 6:
-					mapgen[j][k].large = true
-					room2l_amount += 1
-				elif check_room_dimensions(j, k, 2) && room2cl_amount < size / 6:
-					mapgen[j][k].large = true
-					room2cl_amount += 1
-				elif check_room_dimensions(j, k, 3) && room3l_amount < size / 6:
-					mapgen[j][k].large = true
-					room3l_amount += 1
 	place_room_positions()
+
 ## Checks spawn places for large rooms in given coordinates
 ## type: 0 - room1, 1 - room2, 2 - room2C, 3 - room3
 func check_room_dimensions(x: int, y: int, type: int) -> bool:
@@ -289,14 +273,14 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 		1: ## ROOM2 - hallway
 			## |[o][x]  
 			if x == 0:
-				if !mapgen[x + 1][y].exist:
-					disabled_points.append(Vector2i(x, y + 1))
+				if !mapgen[x + 1][y].exist && !disabled_points.has(Vector2i(x + 1, y)):
+					disabled_points.append(Vector2i(x + 1, y))
 					return true
 				else:
 					return false
 			## [x][o]|
 			elif x == size - 1:
-				if !mapgen[x - 1][y].exist:
+				if !mapgen[x - 1][y].exist && !disabled_points.has(Vector2i(x - 1, y)):
 					disabled_points.append(Vector2i(x - 1, y))
 					return true
 				else:
@@ -304,8 +288,8 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [x]
 			## [o]
 			## ---
-			elif y == 0 :
-				if !mapgen[x][y + 1].exist:
+			elif y == 0:
+				if !mapgen[x][y + 1].exist && !disabled_points.has(Vector2i(x, y + 1)):
 					disabled_points.append(Vector2i(x, y + 1))
 					return true
 				else:
@@ -314,9 +298,7 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [o]
 			## [x]
 			elif y == size_y - 1:
-				if !mapgen[x][y - 1].exist:
-					disabled_points.append(Vector2i(x + 1, y))
-					disabled_points.append(Vector2i(x + 1, y - 1))
+				if !mapgen[x][y - 1].exist && !disabled_points.has(Vector2i(x, y - 1)):
 					disabled_points.append(Vector2i(x, y - 1))
 					return true
 				else:
@@ -325,11 +307,11 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [x][o][x]   [o]
 			##             [x]
 			else:
-				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist:
+				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist && !disabled_points.has(Vector2i(x, y + 1)) && !disabled_points.has(Vector2i(x, y - 1)):
 					disabled_points.append(Vector2i(x, y + 1))
 					disabled_points.append(Vector2i(x, y - 1))
 					return true
-				elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+				elif !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist  && !disabled_points.has(Vector2i(x + 1, y)) && !disabled_points.has(Vector2i(x - 1, y)):
 					disabled_points.append(Vector2i(x + 1, y))
 					disabled_points.append(Vector2i(x - 1, y))
 					return true
@@ -342,7 +324,7 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## |[o]  [o]|
 			## |[x]  [x]|
 			elif x == 0 || x == size - 1:
-				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist: 
+				if !mapgen[x][y + 1].exist && !mapgen[x][y - 1].exist && !disabled_points.has(Vector2i(x, y + 1)) && !disabled_points.has(Vector2i(x, y - 1)): 
 					disabled_points.append(Vector2i(x, y + 1))
 					disabled_points.append(Vector2i(x, y - 1))
 					return true
@@ -352,7 +334,7 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [x][o][x]   [x][o][x]
 			##             ---------
 			elif y == 0 || y == size_y - 1:
-				if !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist:
+				if !mapgen[x + 1][y].exist && !mapgen[x - 1][y].exist && !disabled_points.has(Vector2i(x - 1, y)) && !disabled_points.has(Vector2i(x + 1, y)):
 					disabled_points.append(Vector2i(x - 1, y))
 					disabled_points.append(Vector2i(x + 1, y))
 					return true
@@ -362,22 +344,22 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [x][o]   [o][x]   [x][o]    [o][x]
 			## [x][x]   [x][x]
 			else:
-				if !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist:
+				if !mapgen[x - 1][y].exist && !mapgen[x - 1][y - 1].exist && !mapgen[x][y - 1].exist && !disabled_points.has(Vector2i(x - 1, y - 1)) && !disabled_points.has(Vector2i(x, y - 1)) && !disabled_points.has(Vector2i(x - 1, y)):
 					disabled_points.append(Vector2i(x - 1, y - 1))
 					disabled_points.append(Vector2i(x, y - 1))
 					disabled_points.append(Vector2i(x - 1, y))
 					return true
-				elif !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x + 1][y].exist:
+				elif !mapgen[x][y - 1].exist && !mapgen[x + 1][y - 1].exist && !mapgen[x + 1][y].exist && !disabled_points.has(Vector2i(x + 1, y - 1)) && !disabled_points.has(Vector2i(x, y - 1)) && !disabled_points.has(Vector2i(x + 1, y)):
 					disabled_points.append(Vector2i(x + 1, y - 1))
 					disabled_points.append(Vector2i(x, y - 1))
 					disabled_points.append(Vector2i(x + 1, y))
 					return true
-				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist:
+				elif !mapgen[x - 1][y].exist && !mapgen[x - 1][y + 1].exist && !mapgen[x][y + 1].exist && !disabled_points.has(Vector2i(x - 1, y)) && !disabled_points.has(Vector2i(x - 1, y + 1)) && !disabled_points.has(Vector2i(x, y + 1)):
 					disabled_points.append(Vector2i(x - 1, y))
 					disabled_points.append(Vector2i(x - 1, y + 1))
 					disabled_points.append(Vector2i(x, y + 1))
 					return true
-				elif !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist:
+				elif !mapgen[x][y + 1].exist && !mapgen[x + 1][y + 1].exist && !mapgen[x + 1][y].exist && !disabled_points.has(Vector2i(x, y + 1)) && !disabled_points.has(Vector2i(x + 1, y + 1)) && !disabled_points.has(Vector2i(x + 1, y)):
 					disabled_points.append(Vector2i(x, y + 1))
 					disabled_points.append(Vector2i(x + 1, y + 1))
 					disabled_points.append(Vector2i(x + 1, y))
@@ -392,16 +374,16 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			## [x][o]  [o][x]   [o]  [o]
 			##                       [x]
 			else:
-				if !mapgen[x][y + 1].exist:
+				if !mapgen[x][y + 1].exist && !disabled_points.has(Vector2i(x, y + 1)):
 					disabled_points.append(Vector2i(x, y + 1))
 					return true
-				elif !mapgen[x][y - 1].exist:
+				elif !mapgen[x][y - 1].exist && !disabled_points.has(Vector2i(x, y - 1)):
 					disabled_points.append(Vector2i(x, y - 1))
 					return true
-				elif !mapgen[x + 1][y].exist:
+				elif !mapgen[x + 1][y].exist && !disabled_points.has(Vector2i(x + 1, y)):
 					disabled_points.append(Vector2i(x + 1, y))
 					return true
-				elif !mapgen[x - 1][y].exist:
+				elif !mapgen[x - 1][y].exist && !disabled_points.has(Vector2i(x - 1, y)):
 					disabled_points.append(Vector2i(x - 1, y))
 					return true
 				else:
@@ -459,7 +441,9 @@ func place_room_positions() -> void:
 	#var room2c_amount: int = 0
 	#var room3_amount: int = 0
 	#var room4_amount: int = 0
-	
+	var room2l_amount: int = 0
+	var room2cl_amount: int = 0
+	var room3l_amount: int = 0
 	
 	for l in range(size):
 		for m in range(size_y):
@@ -483,45 +467,85 @@ func place_room_positions() -> void:
 						#room3, pointing east
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 90
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 3) && room3l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room3l_amount += 1
 						#room3_amount += 1
 					elif !east && west:
 						#room3, pointing west
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 270
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 3) && room3l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room3l_amount += 1
 						#room3_amount += 1
 					else:
 						#vertical room2
 						var room_angle: Array[float] = [0, 180]
 						mapgen[l][m].room_type = RoomTypes.ROOM2
 						mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 1) && room2l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2l_amount += 1
 						#room2_amount += 1
 				elif east && west:
 					if north && !south:
 						#room3, pointing north
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 0
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 3) && room3l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room3l_amount += 1
 						#room3_amount += 1
 					elif !north && south:
 					#room3, pointing south
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 180
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 3) && room3l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room3l_amount += 1
 						#room3_amount += 1
 					else:
 					#horizontal room2
 						var room_angle: Array[float] = [90, 270]
 						mapgen[l][m].room_type = RoomTypes.ROOM2
 						mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 1) && room2l_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2l_amount += 1
 						#room2_amount += 1
 				elif north:
 					if east:
 					#room2c, north-east
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 0
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 2) && room2cl_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2cl_amount += 1
 						#room2c_amount += 1
 					elif west:
 					#room2c, north-west
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 270
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 2) && room2cl_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2cl_amount += 1
 						#room2c_amount += 1
 					else:
 					#room1, north
@@ -533,11 +557,21 @@ func place_room_positions() -> void:
 					#room2c, south-east
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 90
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 2) && room2cl_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2cl_amount += 1
 						#room2c_amount += 1
 					elif west:
 					#room2c, south-west
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 180
+						if large_rooms:
+							var zone: int = m / size
+							if check_room_dimensions(l, m, 2) && room2cl_amount < size / 6 * (zones_amount + 1):
+								mapgen[l][m].large = true
+								room2cl_amount += 1
 						#room2c_amount += 1
 					else:
 					#room1, south
@@ -566,7 +600,10 @@ func spawn_rooms() -> void:
 	var room2c_count: Array[int] = [0]
 	var room3_count: Array[int] = [0]
 	var room4_count: Array[int] = [0]
-	var large_room_counter: Array[int] = [0]
+	var room1l_count: Array[int] = [0]
+	var room2l_count: Array[int] = [0]
+	var room2cl_count: Array[int] = [0]
+	var room3l_count: Array[int] = [0]
 	var counter: float = 0.0
 	var prev_counter: float = 0.0
 	if zones_amount > 0:
@@ -576,7 +613,10 @@ func spawn_rooms() -> void:
 			room2c_count.append(0)
 			room3_count.append(0)
 			room4_count.append(0)
-			large_room_counter.append(0)
+			room1l_count.append(0)
+			room2l_count.append(0)
+			room2cl_count.append(0)
+			room3l_count.append(0)
 	#spawn a room
 	for n in range(size):
 		for o in range(size_y):
@@ -585,13 +625,12 @@ func spawn_rooms() -> void:
 			var room: StaticBody3D
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
-					if mapgen[n][o].large && large_rooms && rooms[zone_counter].endrooms_single_large.size() > 0:
-						selected_room = rooms[zone_counter].endrooms_single_large[large_room_counter[zone_counter]].prefab
-						large_room_counter[zone_counter] += 1
+					if mapgen[n][o].large && large_rooms && rooms[zone_counter].endrooms_single_large.size() > 0 && room1l_count[zone_counter] < rooms[zone_counter].endrooms_single_large.size():
+						selected_room = rooms[zone_counter].endrooms_single_large[room1l_count[zone_counter]].prefab
+						room1l_count[zone_counter] += 1
 					else:
-						if rooms[zone_counter].endrooms_single_large.size() > 0 && !large_rooms && large_room_counter[zone_counter] < rooms[zone_counter].endrooms_single_large.size():
-							selected_room = rooms[zone_counter].endrooms_single_large[large_room_counter[zone_counter]].prefab
-							large_room_counter[zone_counter] += 1
+						if rooms[zone_counter].endrooms_single_large.size() > 0 && !large_rooms && room1l_count[zone_counter] < rooms[zone_counter].endrooms_single_large.size():
+							selected_room = rooms[zone_counter].endrooms_single_large[room1l_count[zone_counter]].prefab
 						elif (room1_count[zone_counter] >= rooms[zone_counter].endrooms_single.size()):
 							var all_spawn_chances: Array[float] = []
 							var spawn_chances: float = 0
@@ -617,76 +656,91 @@ func spawn_rooms() -> void:
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM2:
-					#if enable_zones && get_zone(o) != get_zone(o + 1):
-						#selected_room = checkpoints[get_zone(o) - 1]
-					#else:
-					if (room2_count[zone_counter] >= rooms[zone_counter].hallways_single.size()):
-						var all_spawn_chances: Array[float] = []
-						var spawn_chances: float = 0
-						for j in range(rooms[zone_counter].hallways.size()):
-							all_spawn_chances.append(rooms[zone_counter].hallways[j].spawn_chance)
-							spawn_chances += rooms[zone_counter].hallways[j].spawn_chance
-						var random_room: float = rng.randf_range(0.0, spawn_chances)
-						for i in range(all_spawn_chances.size()):
-							counter += all_spawn_chances[i]
-							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
-								selected_room = rooms[zone_counter].hallways[i].prefab
-								break
-							prev_counter = counter
-						all_spawn_chances.clear()
-						counter = 0
-						prev_counter = 0
+					if mapgen[n][o].large && large_rooms && rooms[zone_counter].hallways_single_large.size() > 0 && room2l_count[zone_counter] < rooms[zone_counter].hallways_single_large.size():
+						selected_room = rooms[zone_counter].hallways_single_large[room2l_count[zone_counter]].prefab
+						room2l_count[zone_counter] += 1
 					else:
-						selected_room = rooms[zone_counter].hallways_single[room2_count[zone_counter]].prefab
-					room2_count[zone_counter] += 1
+						if rooms[zone_counter].hallways_single_large.size() > 0 && !large_rooms && room2l_count[zone_counter] < rooms[zone_counter].hallways_single_large.size():
+							selected_room = rooms[zone_counter].hallways_single_large[room2l_count[zone_counter]].prefab
+						elif (room2_count[zone_counter] >= rooms[zone_counter].hallways_single.size()):
+							var all_spawn_chances: Array[float] = []
+							var spawn_chances: float = 0
+							for j in range(rooms[zone_counter].hallways.size()):
+								all_spawn_chances.append(rooms[zone_counter].hallways[j].spawn_chance)
+								spawn_chances += rooms[zone_counter].hallways[j].spawn_chance
+							var random_room: float = rng.randf_range(0.0, spawn_chances)
+							for i in range(all_spawn_chances.size()):
+								counter += all_spawn_chances[i]
+								if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
+									selected_room = rooms[zone_counter].hallways[i].prefab
+									break
+								prev_counter = counter
+							all_spawn_chances.clear()
+							counter = 0
+							prev_counter = 0
+						else:
+							selected_room = rooms[zone_counter].hallways_single[room2_count[zone_counter]].prefab
+							room2_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM2C:
-					if (room2c_count[zone_counter] >= rooms[zone_counter].corners_single.size()):
-						var all_spawn_chances: Array[float] = []
-						var spawn_chances: float = 0
-						for j in range(rooms[zone_counter].corners.size()):
-							all_spawn_chances.append(rooms[zone_counter].corners[j].spawn_chance)
-							spawn_chances += rooms[zone_counter].corners[j].spawn_chance
-						var random_room: float = rng.randf_range(0.0, spawn_chances)
-						for i in range(all_spawn_chances.size()):
-							counter += all_spawn_chances[i]
-							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
-								selected_room = rooms[zone_counter].corners[i].prefab
-								break
-							prev_counter = counter
-						all_spawn_chances.clear()
-						counter = 0
-						prev_counter = 0
+					if mapgen[n][o].large && large_rooms && rooms[zone_counter].corners_single_large.size() > 0 && room2cl_count[zone_counter] < rooms[zone_counter].corners_single_large.size():
+						selected_room = rooms[zone_counter].corners_single_large[room2cl_count[zone_counter]].prefab
+						room2cl_count[zone_counter] += 1
 					else:
-						selected_room = rooms[zone_counter].corners_single[room2c_count[zone_counter]].prefab
-					room2c_count[zone_counter] += 1
+						if rooms[zone_counter].corners_single_large.size() > 0 && !large_rooms && room2cl_count[zone_counter] < rooms[zone_counter].corners_single_large.size():
+							selected_room = rooms[zone_counter].corners_single_large[room2cl_count[zone_counter]].prefab
+						elif (room2c_count[zone_counter] >= rooms[zone_counter].corners_single.size()):
+							var all_spawn_chances: Array[float] = []
+							var spawn_chances: float = 0
+							for j in range(rooms[zone_counter].corners.size()):
+								all_spawn_chances.append(rooms[zone_counter].corners[j].spawn_chance)
+								spawn_chances += rooms[zone_counter].corners[j].spawn_chance
+							var random_room: float = rng.randf_range(0.0, spawn_chances)
+							for i in range(all_spawn_chances.size()):
+								counter += all_spawn_chances[i]
+								if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
+									selected_room = rooms[zone_counter].corners[i].prefab
+									break
+								prev_counter = counter
+							all_spawn_chances.clear()
+							counter = 0
+							prev_counter = 0
+						else:
+							selected_room = rooms[zone_counter].corners_single[room2c_count[zone_counter]].prefab
+							room2c_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 				RoomTypes.ROOM3:
-					if (room3_count[zone_counter] >= rooms[zone_counter].trooms_single.size()):
-						var all_spawn_chances: Array[float] = []
-						var spawn_chances: float = 0
-						for j in range(rooms[zone_counter].trooms.size()):
-							all_spawn_chances.append(rooms[zone_counter].trooms[j].spawn_chance)
-							spawn_chances += rooms[zone_counter].trooms[j].spawn_chance
-						var random_room: float = rng.randf_range(0.0, spawn_chances)
-						for i in range(all_spawn_chances.size()):
-							counter += all_spawn_chances[i]
-							if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
-								selected_room = rooms[zone_counter].trooms[i].prefab
-								break
-							prev_counter = counter
-						all_spawn_chances.clear()
-						counter = 0
-						prev_counter = 0
+					if mapgen[n][o].large && large_rooms && rooms[zone_counter].trooms_single_large.size() > 0 && room3l_count[zone_counter] < rooms[zone_counter].trooms_single_large.size():
+						selected_room = rooms[zone_counter].trooms_single_large[room3l_count[zone_counter]].prefab
+						room3l_count[zone_counter] += 1
 					else:
-						selected_room = rooms[zone_counter].trooms_single[room3_count[zone_counter]].prefab
-					room3_count[zone_counter] += 1
+						if rooms[zone_counter].trooms_single_large.size() > 0 && !large_rooms && room3l_count[zone_counter] < rooms[zone_counter].trooms_single_large.size():
+							selected_room = rooms[zone_counter].trooms_single_large[room3l_count[zone_counter]].prefab
+						elif (room3_count[zone_counter] >= rooms[zone_counter].trooms_single.size()):
+							var all_spawn_chances: Array[float] = []
+							var spawn_chances: float = 0
+							for j in range(rooms[zone_counter].trooms.size()):
+								all_spawn_chances.append(rooms[zone_counter].trooms[j].spawn_chance)
+								spawn_chances += rooms[zone_counter].trooms[j].spawn_chance
+							var random_room: float = rng.randf_range(0.0, spawn_chances)
+							for i in range(all_spawn_chances.size()):
+								counter += all_spawn_chances[i]
+								if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
+									selected_room = rooms[zone_counter].trooms[i].prefab
+									break
+								prev_counter = counter
+							all_spawn_chances.clear()
+							counter = 0
+							prev_counter = 0
+						else:
+							selected_room = rooms[zone_counter].trooms_single[room3_count[zone_counter]].prefab
+							room3_count[zone_counter] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)

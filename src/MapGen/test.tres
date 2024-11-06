@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="MapGenZone" load_steps=9 format=3 uid="uid://dikkljwi8jg4b"]
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=10 format=3 uid="uid://dikkljwi8jg4b"]
 
 [ext_resource type="Resource" uid="uid://dfc74o3qe5bcj" path="res://MapGen/Resources/Test/room2c.tres" id="1_3mq2m"]
 [ext_resource type="Script" path="res://MapGen/MapGenRoom.gd" id="1_g1tab"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" uid="uid://dvu0kpigb8jqw" path="res://MapGen/Resources/Test/room2.tres" id="4_sx5qc"]
 [ext_resource type="Resource" uid="uid://6uhui1ghkiv3" path="res://MapGen/Resources/Test/room1large.tres" id="5_mtpui"]
 [ext_resource type="Resource" uid="uid://cpxhs04yvtqce" path="res://MapGen/Resources/Test/room3.tres" id="6_dm20b"]
+[ext_resource type="Resource" uid="uid://d0mqd2kvktdkj" path="res://MapGen/Resources/Test/room2large.tres" id="7_22b74"]
 
 [resource]
 script = ExtResource("1_rwx03")
@@ -16,10 +17,13 @@ endrooms_single = Array[ExtResource("1_g1tab")]([])
 endrooms_single_large = Array[ExtResource("1_g1tab")]([ExtResource("5_mtpui")])
 hallways = Array[ExtResource("1_g1tab")]([ExtResource("4_sx5qc")])
 hallways_single = Array[ExtResource("1_g1tab")]([])
+hallways_single_large = Array[ExtResource("1_g1tab")]([ExtResource("7_22b74")])
 corners = Array[ExtResource("1_g1tab")]([ExtResource("1_3mq2m")])
 corners_single = Array[ExtResource("1_g1tab")]([])
+corners_single_large = Array[ExtResource("1_g1tab")]([])
 trooms = Array[ExtResource("1_g1tab")]([ExtResource("6_dm20b")])
 trooms_single = Array[ExtResource("1_g1tab")]([])
+trooms_single_large = Array[ExtResource("1_g1tab")]([])
 crossrooms = Array[ExtResource("1_g1tab")]([ExtResource("2_1h7vi")])
 crossrooms_single = Array[ExtResource("1_g1tab")]([])
 door_frames = Array[PackedScene]([])
