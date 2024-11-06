@@ -397,6 +397,8 @@ func walk_astar(from: Vector2, to: Vector2) -> void:
 	var astar_grid = AStarGrid2D.new()
 	astar_grid.region = Rect2i(0, 0, size, size_y)
 	astar_grid.cell_size = Vector2(1, 1)
+	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
+	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar_grid.update()
 	for obstacle in disabled_points:
