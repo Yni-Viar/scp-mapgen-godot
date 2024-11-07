@@ -1,6 +1,8 @@
 extends Node3D
 class_name FacilityGenerator
 
+signal generated
+
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
@@ -14,10 +16,12 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export var grid_size: float = 20.48
 ## Amount of zones
 @export var zones_amount: int = 0
-## @experimental Large rooms support
+## Large rooms support
 @export var large_rooms: bool = false
 ## How much the map will be filled with rooms
 @export_range(0.25, 2) var room_amount: float = 0.75
+## Sets the door generation. Not recommended, if your map uses SCP:SL 14.0-like door frames!
+@export var enable_door_generation: bool = true
 ## Prints map seed
 @export var debug_print: bool = false
 
@@ -772,7 +776,9 @@ func spawn_rooms() -> void:
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
 		zone_counter = 0
-	spawn_doors()
+	if enable_door_generation:
+		spawn_doors()
+	generated.emit()
 ## Spawn doors
 func spawn_doors():
 	# Checks the zone
