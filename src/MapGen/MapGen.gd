@@ -14,13 +14,13 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export_range(8, 256, 2) var size: int = 8
 ## Room in grid size
 @export var grid_size: float = 20.48
-## Amount of zones
+## Amount of zones (1 zones - 0, 2 zones - 1, e.t.c.)
 @export var zones_amount: int = 0
 ## Large rooms support
 @export var large_rooms: bool = false
 ## How much the map will be filled with rooms
 @export_range(0.25, 2) var room_amount: float = 0.75
-## Sets the door generation. Not recommended, if your map uses SCP:SL 14.0-like door frames!
+## Sets the door generation. Not recommended to disable, if your map uses SCP:SL 14.0-like door frames!
 @export var enable_door_generation: bool = true
 ## Prints map seed
 @export var debug_print: bool = false
