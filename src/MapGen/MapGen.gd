@@ -7,6 +7,9 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
+## Works only if there are large endrooms, to prevent endless loop if cannot spawn
+const NUMBER_OF_TRIES_TO_SPAWN: int = 4
+
 @export var rng_seed: int = -1
 ## Rooms that will be used
 @export var rooms: Array[MapGenZone]
@@ -95,9 +98,9 @@ func generate_zone_astar() -> void:
 		var random_room: Vector2
 		## Reworked large rooms module
 		if large_rooms && rooms[zone_counter].endrooms_single_large.size() > 0:
-			var large_room_amount = size / 6
+			var large_room_amount: int = size / 6
 			for i in range(large_room_amount):
-				while true:
+				for j in range(NUMBER_OF_TRIES_TO_SPAWN):
 					random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
 					if check_room_dimensions(random_room.x, random_room.y, 0):
 						walk_astar(Vector2(temp_x, temp_y), random_room)
@@ -399,7 +402,7 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 ## Main walker function, using AStarGrid2D
 func walk_astar(from: Vector2, to: Vector2) -> void:
 	# Initialization
-	var astar_grid = AStarGrid2D.new()
+	var astar_grid: AStarGrid2D = AStarGrid2D.new()
 	astar_grid.region = Rect2i(0, 0, size, size_y)
 	astar_grid.cell_size = Vector2(1, 1)
 	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
