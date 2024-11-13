@@ -77,11 +77,12 @@ func generate_zone_astar() -> void:
 		else: # add one to be an odd number
 			tmp_1 = (zone_counter + 1 + 2 * zone_counter)
 		var zone_center: float = size_y * (tmp_1 / ((zones_amount + 1) * 2))
-		# The center of the zone always exist
-		mapgen[size / 2][roundi(zone_center)].exist = true
 		# Center's coordinates
 		var temp_x: int = size / 2
 		var temp_y: int = roundi(zone_center)
+		# The center of the zone always exist
+		mapgen[temp_x][temp_y].exist = true
+		
 		if number_of_rooms > (size - 2) * 4:
 			printerr("Too many rooms, map won't spawn")
 			return
