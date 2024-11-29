@@ -20,9 +20,9 @@ sky = SubResource("Sky_nttp5")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_8h4s1")
-rooms = Array[ExtResource("2_im4p5")]([ExtResource("3_0ehlh"), ExtResource("4_ckden")])
-zones_amount = 1
+rooms = Array[ExtResource("2_im4p5")]([ExtResource("3_0ehlh"), ExtResource("3_0ehlh"), ExtResource("4_ckden"), ExtResource("4_ckden")])
 large_rooms = true
+debug_print = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
 script = ExtResource("3_b0slv")

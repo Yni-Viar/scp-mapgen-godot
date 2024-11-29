@@ -7,6 +7,9 @@
 - Assets - [CC-BY 4.0](/LICENSE.ASSETS), since we got independent from SCP content.
 
 # Changelog
+## v.7.0.0 (2024.11.29)
+- Zones can be horizontal, not just vertical.
+- Added support for room resources in map gen (e.g. for map gen HUD)
 ## v.6.2.0 (2024.11.06)
 - More straight corridors! - changed the heuristic, how map is generated.
 ## v.6.1.0 (2024.11.06)
