@@ -46,6 +46,7 @@ class Room:
 	var angle: float
 	var large: bool
 	var resource: MapGenRoom
+	var room_name: String
 
 var size_x: int
 var size_y: int
@@ -786,6 +787,7 @@ func spawn_rooms() -> void:
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM2:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].hallways_single_large.size() > 0 && room2l_count[zone_index] < rooms[zone_index].hallways_single_large.size():
 						selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]].prefab
@@ -821,6 +823,7 @@ func spawn_rooms() -> void:
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM2C:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].corners_single_large.size() > 0 && room2cl_count[zone_index] < rooms[zone_index].corners_single_large.size():
 						selected_room = rooms[zone_index].corners_single_large[room2cl_count[zone_index]].prefab
@@ -856,6 +859,7 @@ func spawn_rooms() -> void:
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM3:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].trooms_single_large.size() > 0 && room3l_count[zone_index] < rooms[zone_index].trooms_single_large.size():
 						selected_room = rooms[zone_index].trooms_single_large[room3l_count[zone_index]].prefab
@@ -891,6 +895,7 @@ func spawn_rooms() -> void:
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM4:
 					if (room4_count[zone_index] >= rooms[zone_index].crossrooms_single.size()):
 						var all_spawn_chances: Array[float] = []
@@ -917,6 +922,7 @@ func spawn_rooms() -> void:
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
 					add_child(room, true)
+					mapgen[n][o].room_name = room.name
 		zone_counter.y = 0
 		zone_index = zone_index_default
 	if enable_door_generation:
