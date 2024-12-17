@@ -785,7 +785,7 @@ func spawn_rooms() -> void:
 					
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
+					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM2:
@@ -821,7 +821,7 @@ func spawn_rooms() -> void:
 							room2_count[zone_index] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
+					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM2C:
@@ -857,7 +857,7 @@ func spawn_rooms() -> void:
 							room2c_count[zone_index] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
+					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM3:
@@ -893,7 +893,7 @@ func spawn_rooms() -> void:
 							room3_count[zone_index] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
+					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM4:
@@ -920,7 +920,7 @@ func spawn_rooms() -> void:
 						room4_count[zone_index] += 1
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(0, mapgen[n][o].angle, 0)
+					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 		zone_counter.y = 0
