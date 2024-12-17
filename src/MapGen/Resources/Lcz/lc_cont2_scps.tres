@@ -9,8 +9,8 @@
 script = ExtResource("2_imxr3")
 name = "lc_cont2_scps"
 prefab = ExtResource("1_1t0sv")
-icon_0_degrees = ExtResource("1_ltrma")
-icon_90_degrees = ExtResource("2_ged0h")
-icon_180_degrees = ExtResource("1_ltrma")
-icon_270_degrees = ExtResource("2_ged0h")
+icon_0_degrees = ExtResource("2_ged0h")
+icon_90_degrees = ExtResource("1_ltrma")
+icon_180_degrees = ExtResource("2_ged0h")
+icon_270_degrees = ExtResource("1_ltrma")
 spawn_chance = 20.0
