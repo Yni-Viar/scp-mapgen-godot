@@ -26,13 +26,18 @@ const MAX_ROOMS_SPAWN: int = 256
 ## Large rooms support
 @export var large_rooms: bool = false
 ## How much the map will be filled with rooms
-@export_range(0.25, 2) var room_amount: float = 0.75
+@export_range(0.25, 1) var room_amount: float = 0.75
 ## Sets the door generation. Not recommended to disable, if your map uses SCP:SL 14.0-like door frames!
 @export var enable_door_generation: bool = true
+## Better zone generation.
+## Sometimes, the generation will return "dull" path(e.g where there are only 3 ways to go)
+## This fixes these generations, at a little cost of generation time
+@export var better_zone_generation: bool = true
 ## Prints map seed
 @export var debug_print: bool = false
 
 var mapgen: Array[Array] = []
+## Cells, where a room will never spawn due to large room overriden
 var disabled_points: Array[Vector2i] = []
 
 class Room:
@@ -78,14 +83,21 @@ func prepare_generation() -> void:
 
 ## Main function, that generate the zones. Rewritten in 7.0
 func generate_zone_astar() -> void:
+	# Zone counter. Used for determining a center of the map.
 	var zone_counter: Vector2i = Vector2i.ZERO
+	# Zone index. Used for iterating zone resources.
 	var zone_index: int = 0
+	# Zone index for Y coordinate.
 	var zone_index_default: int = 0
+	# Determines, if the generation is too large to stop it.
+	# You can change the limit in MAX_ROOM_SPAWN const.
 	var all_rooms_count: int = 0
 	for i in range(map_size_x + 1):
 		zone_counter.x = i
 		var connected_zones_x: bool = false
 		for j in range(map_size_y + 1):
+			# Large room amount
+			var large_room_amount: int = zone_size / 6
 			zone_counter.y = j
 			zone_index += j
 			var number_of_rooms: int = zone_size * room_amount
@@ -108,7 +120,7 @@ func generate_zone_astar() -> void:
 				tmp_y = (zone_counter.y + 1 + 2 * zone_counter.y)
 			var zone_center: Vector2 = Vector2(float(size_x) * (float(tmp_x) / float((map_size_x + 1) * 2)), float(size_y) * (float(tmp_y) / float((map_size_y + 1) * 2)))
 			mapgen[roundi(zone_center.x)][roundi(zone_center.y)].exist = true
-			if number_of_rooms > (zone_size - 2) * 4:
+			if number_of_rooms > (zone_size - 1) * 4 - 4 - large_room_amount * 6:
 				printerr("Too many rooms, map won't spawn")
 				return
 			elif number_of_rooms < 1:
@@ -120,7 +132,6 @@ func generate_zone_astar() -> void:
 			var random_room: Vector2
 			## Reworked large rooms module
 			if large_rooms && rooms[zone_index].endrooms_single_large.size() > 0:
-				var large_room_amount: int = zone_size / 6
 				for k in range(large_room_amount):
 					for l in range(NUMBER_OF_TRIES_TO_SPAWN):
 						random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
@@ -131,8 +142,11 @@ func generate_zone_astar() -> void:
 			## Walk before need-to-spawn rooms runs out
 			while number_of_rooms > 0:
 				random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
+				if better_zone_generation && mapgen[random_room.x][random_room.y].exist:
+					continue
 				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), random_room)
 				number_of_rooms -= 1
+				
 			## Connect two zones
 			if zone_counter.x < map_size_x && !connected_zones_x:
 				connected_zones_x = true
@@ -153,57 +167,6 @@ func generate_zone_astar() -> void:
 				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), Vector2(roundi(zone_center.y), zone_center_y))
 		zone_index_default += map_size_y
 		zone_counter.y = 0
-	#while zone_counter <= zones_amount:
-		#
-		#
-		#var tmp_1: float
-		#if (zone_counter % 2 == 1):
-			#tmp_1 = (zone_counter + 2 * zone_counter)
-		#else: # add one to be an odd number
-			#tmp_1 = (zone_counter + 1 + 2 * zone_counter)
-		#var zone_center_x: float = size_x * (tmp_1 / ((zones_amount + 1) * 2))
-		#var zone_center_y: float = size_y * (tmp_1 / ((zones_amount + 1) * 2))
-		## Center's coordinates
-		#var temp_x: int = size / 2
-		#var temp_y: int = roundi(zone_center)
-		## The center of the zone always exist
-		#mapgen[temp_x][temp_y].exist = true
-		#
-		#if number_of_rooms > (size - 2) * 4:
-			#printerr("Too many rooms, map won't spawn")
-			#return
-		#elif number_of_rooms < 1:
-			#printerr("Too few rooms, map won't spawn")
-			#return
-		## Available room position (for AStar walk)
-		#var available_room_position: Array[Vector2] = [Vector2(0, size - 1),Vector2(size_y / (zones_amount + 1) * zone_counter, size_y / (zones_amount + 1) * (zone_counter + 1) - 1)]
-		## Random room position. If large rooms enabled, also used for large room coordinates
-		#var random_room: Vector2
-		### Reworked large rooms module
-		#if large_rooms && rooms[zone_counter].endrooms_single_large.size() > 0:
-			#var large_room_amount: int = size / 6
-			#for i in range(large_room_amount):
-				#for j in range(NUMBER_OF_TRIES_TO_SPAWN):
-					#random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
-					#if check_room_dimensions(random_room.x, random_room.y, 0):
-						#walk_astar(Vector2(temp_x, temp_y), random_room)
-						#mapgen[random_room.x][random_room.y].large = true
-						#break
-		### Walk before need-to-spawn rooms runs out
-		#while number_of_rooms > 0:
-			#random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
-			#walk_astar(Vector2(temp_x, temp_y), random_room)
-			#number_of_rooms -= 1
-		### Connect two zones
-		#if zone_counter < zones_amount:
-			#var tmp_2: float
-			#if (zone_counter % 2 == 1):
-				#tmp_2 = (zone_counter + 2 + 2 * zone_counter)
-			#else: # add one to be an odd number
-				#tmp_2 = (zone_counter + 3 + 2 * zone_counter)
-			#zone_center = size_y * (tmp_2 / ((zones_amount + 1) * 2))
-			#walk_astar(Vector2(temp_x, temp_y), Vector2(temp_x, roundi(zone_center)))
-		#zone_counter += 1
 	place_room_positions()
 
 ## Checks spawn places for large rooms in given coordinates
