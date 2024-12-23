@@ -33,6 +33,9 @@ const MAX_ROOMS_SPAWN: int = 256
 ## Sometimes, the generation will return "dull" path(e.g where there are only 3 ways to go)
 ## This fixes these generations, at a little cost of generation time
 @export var better_zone_generation: bool = true
+## How much the better map generator should wait, until it finds optimal path.
+## Lower value can lead to fewer amount of rooms, while higher can hang the whole game.
+@export var better_zone_generation_waiter: int = 1
 ## Prints map seed
 @export var debug_print: bool = false
 
@@ -62,6 +65,8 @@ func _ready() -> void:
 
 ## Prepares room generation
 func prepare_generation() -> void:
+	if debug_print:
+		print("Preparing generation...")
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
 	if rng_seed != -1:
@@ -83,6 +88,8 @@ func prepare_generation() -> void:
 
 ## Main function, that generate the zones. Rewritten in 7.0
 func generate_zone_astar() -> void:
+	if debug_print:
+		print("Generating the map...")
 	# Zone counter. Used for determining a center of the map.
 	var zone_counter: Vector2i = Vector2i.ZERO
 	# Zone index. Used for iterating zone resources.
@@ -139,12 +146,16 @@ func generate_zone_astar() -> void:
 							walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), random_room)
 							mapgen[random_room.x][random_room.y].large = true
 							break
+			## This "waiter" is for not stalling the map gen
+			var waiter: int = 0
 			## Walk before need-to-spawn rooms runs out
 			while number_of_rooms > 0:
 				random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
-				if better_zone_generation && mapgen[random_room.x][random_room.y].exist:
+				if better_zone_generation && mapgen[random_room.x][random_room.y].exist && waiter < better_zone_generation_waiter:
+					waiter += 1
 					continue
 				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), random_room)
+				waiter = 0
 				number_of_rooms -= 1
 				
 			## Connect two zones
@@ -486,12 +497,13 @@ func walk_astar(from: Vector2, to: Vector2) -> void:
 
 func place_room_positions() -> void:
 	if debug_print:
+		print("Map generated:")
 		for j in range(size_x):
 			var debug_string: String = ""
 			for k in range(size_y):
 				debug_string += str(int(mapgen[j][k].exist))
 			print(debug_string)
-	
+		print("Connecting rooms...")
 	var room2l_amount: Array[int] = []
 	var room2cl_amount: Array[int] = []
 	var room3l_amount: Array[int] = []
@@ -653,6 +665,8 @@ func place_room_positions() -> void:
 
 ## Spawns room prefab on the grid
 func spawn_rooms() -> void:
+	if debug_print:
+		print("Spawning rooms...")
 	# Checks the zone
 	var zone_counter: Vector2i = Vector2i.ZERO
 	var selected_room: PackedScene
@@ -893,6 +907,8 @@ func spawn_rooms() -> void:
 	generated.emit()
 ## Spawn doors
 func spawn_doors():
+	if debug_print:
+		print("Spawning doors...")
 	# Checks the zone
 	var zone_counter: Vector2i = Vector2i.ZERO
 	var zone_index: int = 0
@@ -924,6 +940,7 @@ func spawn_doors():
 		zone_counter.y = 0
 ## Clears the map generation
 func clear():
+	print("Clearing the map...")
 	disabled_points.clear()
 	mapgen.clear()
 	for node in get_children():
