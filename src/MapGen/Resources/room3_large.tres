@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c7f1w6s1nadh0" path="res://Assets/HUD/room3_180.png" id="3_g024h"]
 [ext_resource type="Texture2D" uid="uid://bm6gv6l8hf827" path="res://Assets/HUD/room3.png" id="4_8moy4"]
 [ext_resource type="PackedScene" uid="uid://bf2tu4fbnqu6x" path="res://Assets/Rooms/room3/room3_large.tscn" id="5_kkfbl"]
-[ext_resource type="Script" path="res://MapGen/MapGenRoom.gd" id="6_uul3u"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="6_uul3u"]
 
 [resource]
 script = ExtResource("6_uul3u")
