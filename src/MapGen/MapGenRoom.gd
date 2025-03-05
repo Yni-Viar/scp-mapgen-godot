@@ -1,3 +1,4 @@
+@icon("res://MapGen/icons/MapGenRoom.svg")
 extends Resource
 class_name MapGenRoom
 

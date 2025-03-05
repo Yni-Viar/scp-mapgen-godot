@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MapGenZone" load_steps=15 format=3 uid="uid://7prvjngodfs1"]
 
-[ext_resource type="Script" path="res://MapGen/MapGenZone.gd" id="1_mti3u"]
-[ext_resource type="Script" path="res://MapGen/MapGenRoom.gd" id="1_obfoh"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="1_mti3u"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="1_obfoh"]
 [ext_resource type="Resource" uid="uid://dkax2pgmsnpbr" path="res://MapGen/Resources/room2C.tres" id="2_uprox"]
 [ext_resource type="Resource" uid="uid://b37rwv0xm0dm7" path="res://MapGen/Resources/room2c_special.tres" id="3_v0fno"]
 [ext_resource type="Resource" uid="uid://defw3e0yk60rh" path="res://MapGen/Resources/room4.tres" id="4_7ex6p"]

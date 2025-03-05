@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cqh6tjpsub0jn" path="res://Assets/Rooms/room2/room2.tscn" id="1_jf12g"]
 [ext_resource type="Texture2D" uid="uid://8etimuikkbyb" path="res://Assets/HUD/room2.png" id="1_o71um"]
-[ext_resource type="Script" path="res://MapGen/MapGenRoom.gd" id="2_ejil1"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="2_ejil1"]
 [ext_resource type="Texture2D" uid="uid://bdohqm7yw00if" path="res://Assets/HUD/room2_90.png" id="2_o8bha"]
 
 [resource]

@@ -1,3 +1,4 @@
+@icon("res://MapGen/icons/MapGenNode.svg")
 extends Node3D
 class_name FacilityGenerator
 

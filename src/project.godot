@@ -15,7 +15,7 @@ config/description="A procedural map generator, inspired from SCP-Containment Br
 config/version="7.1.0"
 config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 run/main_scene="res://Scenes/Main.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon_64.png"
 
 [dotnet]
