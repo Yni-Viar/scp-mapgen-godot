@@ -10,6 +10,10 @@
 - Assets - [CC-BY 4.0](/LICENSE.ASSETS), since we got independent from SCP content.
 
 ## Changelog
+### v.7.2.0 (2024.03.31)
+- Add 2D version
+- Add editor icons
+- Fix bug, where MapGen could not connect on X axis more than once (which lead to disconnected generation)
 ### v.7.1.0 (2024.12.18)
 - Fixed too straigh map generation by created toggleable *Better map generation* parameter. Now the map generation looks like a SCP: Containment Breach one
 - Added documentation
