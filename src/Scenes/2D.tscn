@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbwjpyu43obh4"]
+
+[ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="1_6xtbi"]
+[ext_resource type="Script" uid="uid://cevxktg4dpdoh" path="res://MapGen/MapGen2D.gd" id="2_jwdce"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="3_jwdce"]
+[ext_resource type="Resource" uid="uid://rmb17swhaae3" path="res://MapGen/test2D.tres" id="3_tsc7u"]
+
+[node name="Game" type="Node2D"]
+
+[node name="FacilityGenerator" type="Node2D" parent="."]
+position = Vector2(272, 120)
+script = ExtResource("2_jwdce")
+rooms = Array[ExtResource("3_jwdce")]([ExtResource("3_tsc7u")])
+metadata/_custom_type_script = "uid://cevxktg4dpdoh"
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1152.0
+offset_bottom = 648.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6xtbi")
+
+[node name="Generate" type="Button" parent="UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -82.5
+offset_top = -33.0
+offset_right = 82.5
+grow_horizontal = 2
+grow_vertical = 0
+text = "Generate map"
+
+[node name="Seed" type="LineEdit" parent="UI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -72.0
+offset_right = 80.0
+offset_bottom = -41.0
+grow_horizontal = 2
+grow_vertical = 0
+placeholder_text = "Seed"
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -364.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Map generation by Yni."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="UI/Generate" to="UI" method="_on_generate_pressed"]
+[connection signal="text_changed" from="UI/Seed" to="UI" method="_on_seed_text_changed"]
