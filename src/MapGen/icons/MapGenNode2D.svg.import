@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3ctbwoh0udln"
-path="res://.godot/imported/MapGenNode.svg-df4b799694d5561636f8d15ce5785bea.ctex"
+uid="uid://sxrdwx0ni7qj"
+path="res://.godot/imported/MapGenNode2D.svg-750003ae5d6e6feb094722e78a6764a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MapGen/icons/MapGenNode.svg"
-dest_files=["res://.godot/imported/MapGenNode.svg-df4b799694d5561636f8d15ce5785bea.ctex"]
+source_file="res://MapGen/icons/MapGenNode2D.svg"
+dest_files=["res://.godot/imported/MapGenNode2D.svg-750003ae5d6e6feb094722e78a6764a5.ctex"]
 
 [params]
 

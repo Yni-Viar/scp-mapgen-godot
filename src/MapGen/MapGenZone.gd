@@ -1,4 +1,4 @@
-@icon("res://MapGen/icons/MapGenZone.svg")
+@icon("res://MapGen/icons/MapGenResource.svg")
 extends Resource
 class_name MapGenZone
 
