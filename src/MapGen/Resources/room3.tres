@@ -9,7 +9,7 @@
 
 [resource]
 script = ExtResource("2_cbmg1")
-name = "lc_room3"
+name = "room3"
 prefab = ExtResource("1_1yar5")
 icon_0_degrees = ExtResource("4_3pnqa")
 icon_90_degrees = ExtResource("1_7llba")

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://by5c7g15ljuta"]
+
+[ext_resource type="Script" uid="uid://coqykxns1k055" path="res://Scripts/StaticPlayer.gd" id="1_cfg1l"]
+
+[node name="StaticPlayer" type="Node3D"]
+script = ExtResource("1_cfg1l")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.820679, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 128)

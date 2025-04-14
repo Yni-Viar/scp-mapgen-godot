@@ -3,6 +3,8 @@
  SCP-CB-like facility map generator
  [How to use?](/docs/how_to_use.md)
 
+[Advanced SCP demo](https://github.com/Yni-Viar/scp-mapgen-demo)
+
 
 ## License?
 - Code - [BSD-2 license with patent exception](/LICENSE.CODE).

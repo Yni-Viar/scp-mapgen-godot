@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://6l8r5fy0ymqt"]
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
+[ext_resource type="Script" path="res://Scripts/GameCore.gd" id="1_v1gob"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="2_5d2s6"]
 [ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/test3D.tres" id="3_1gstm"]
-[ext_resource type="Script" uid="uid://dfak122kt57lq" path="res://addons/free_look_camera.gd" id="4_fe8dk"]
 [ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="5_8xs74"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbml1"]
@@ -16,17 +16,12 @@ background_mode = 2
 sky = SubResource("Sky_nttp5")
 
 [node name="Game" type="Node3D"]
+script = ExtResource("1_v1gob")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
-rooms = Array[ExtResource("2_5d2s6")]([ExtResource("3_1gstm"), ExtResource("3_1gstm"), ExtResource("3_1gstm"), ExtResource("3_1gstm")])
-map_size_x = 1
-map_size_y = 1
-large_rooms = true
-debug_print = true
-
-[node name="Camera3D" type="Camera3D" parent="."]
-script = ExtResource("4_fe8dk")
+rooms = Array[ExtResource("2_5d2s6")]([ExtResource("3_1gstm")])
+enable_door_generation = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")
@@ -81,9 +76,10 @@ offset_top = -75.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Map generation by Yni.
-Camera script by MarcPhi (MIT License)."
+Camera Gimbal by kidscancode (MIT License)."
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[connection signal="generated" from="FacilityGenerator" to="." method="_on_facility_generator_generated"]
 [connection signal="pressed" from="UI/Generate" to="UI" method="_on_generate_pressed"]
 [connection signal="text_changed" from="UI/Seed" to="UI" method="_on_seed_text_changed"]
