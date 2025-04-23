@@ -10,7 +10,9 @@
 [node name="FacilityGenerator" type="Node2D" parent="."]
 position = Vector2(272, 120)
 script = ExtResource("2_jwdce")
-rooms = Array[ExtResource("3_jwdce")]([ExtResource("3_tsc7u")])
+rooms = Array[ExtResource("3_jwdce")]([ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u")])
+map_size_x = 3
+map_size_y = 3
 metadata/_custom_type_script = "uid://cevxktg4dpdoh"
 
 [node name="UI" type="Control" parent="."]

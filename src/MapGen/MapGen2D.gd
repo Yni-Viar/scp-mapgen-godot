@@ -104,6 +104,8 @@ func generate_zone_astar() -> void:
 	# Determines, if the generation is too large to stop it.
 	# You can change the limit in MAX_ROOM_SPAWN const.
 	var all_rooms_count: int = 0
+	# Zone center for the first quadrant.
+	var zone_center: float = zone_size / 2
 	for i in range(map_size_x + 1):
 		zone_counter.x = i
 		for j in range(map_size_y + 1):
@@ -121,16 +123,17 @@ func generate_zone_astar() -> void:
 			# add value to be not null
 			var tmp_x: int = 0
 			var tmp_y: int = 0
-			if (zone_counter.x % 2 == 1):
-				tmp_x = (zone_counter.x + 2 * zone_counter.x)
-			else: # add one to be an odd number
-				tmp_x = (zone_counter.x + 1 + 2 * zone_counter.x)
-			if (zone_counter.y % 2 == 1):
-				tmp_y = (zone_counter.y + 2 * zone_counter.y)
-			else: # add one to be an odd number
-				tmp_y = (zone_counter.y + 1 + 2 * zone_counter.y)
-			var zone_center: Vector2 = Vector2(float(size_x) * (float(tmp_x) / float((map_size_x + 1) * 2)), float(size_y) * (float(tmp_y) / float((map_size_y + 1) * 2)))
-			mapgen[roundi(zone_center.x)][roundi(zone_center.y)].exist = true
+			#if (zone_counter.x % 2 == 1):
+				#tmp_x = (zone_counter.x + 2 * zone_counter.x)
+			#else: # add one to be an odd number
+				#tmp_x = (zone_counter.x + 1 + 2 * zone_counter.x)
+			#if (zone_counter.y % 2 == 1):
+				#tmp_y = (zone_counter.y + 2 * zone_counter.y)
+			#else: # add one to be an odd number
+				#tmp_y = (zone_counter.y + 1 + 2 * zone_counter.y)
+			#var zone_center: Vector2 = Vector2(float(size_x) * (float(tmp_x) / float((map_size_x + 1) * 2)), float(size_y) * (float(tmp_y) / float((map_size_y + 1) * 2)))
+			var current_zone_center: Vector2 = Vector2(zone_center + (zone_size * zone_counter.x), zone_center + (zone_size * zone_counter.y))
+			mapgen[roundi(current_zone_center.x)][roundi(current_zone_center.y)].exist = true
 			if number_of_rooms > (zone_size - 1) * 4 - 4 - large_room_amount * 6:
 				printerr("Too many rooms, map won't spawn")
 				return
@@ -147,7 +150,7 @@ func generate_zone_astar() -> void:
 					for l in range(NUMBER_OF_TRIES_TO_SPAWN):
 						random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
 						if check_room_dimensions(random_room.x, random_room.y, 0):
-							walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), random_room)
+							walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
 							mapgen[random_room.x][random_room.y].large = true
 							break
 			## This "waiter" is for not stalling the map gen
@@ -158,27 +161,29 @@ func generate_zone_astar() -> void:
 				#if better_zone_generation && mapgen[random_room.x][random_room.y].exist && waiter < better_zone_generation_waiter:
 					#waiter += 1
 					#continue
-				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), random_room)
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
 				waiter = 0
 				number_of_rooms -= 1
 				
 			## Connect two zones
 			if zone_counter.x < map_size_x:
-				var tmp_x2: int
-				if (zone_counter.x % 2 == 1):
-					tmp_x2 = (zone_counter.x + 2 + 2 * zone_counter.x)
-				else: # add one to be an odd number
-					tmp_x2 = (zone_counter.x + 3 + 2 * zone_counter.x)
-				var zone_center_x: int = float(size_x) * (float(tmp_x2) / float((map_size_x + 1) * 2))
-				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), Vector2(zone_center_x, roundi(zone_center.y)))
+				#var tmp_x2: int
+				#if (zone_counter.x % 2 == 1):
+					#tmp_x2 = (zone_counter.x + 2 + 2 * zone_counter.x)
+				#else: # add one to be an odd number
+					#tmp_x2 = (zone_counter.x + 3 + 2 * zone_counter.x)
+				#var zone_center_x: int = float(size_x) * (float(tmp_x2) / float((map_size_x + 1) * 2))
+				var zone_center_x: int = roundi(zone_center + (zone_size * (zone_counter.x + 1)))
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(zone_center_x, roundi(current_zone_center.y)))
 			if zone_counter.y < map_size_y:
-				var tmp_y2: int
-				if (zone_counter.x % 2 == 1):
-					tmp_y2 = (zone_counter.y + 2 + 2 * zone_counter.y)
-				else: # add one to be an odd number
-					tmp_y2 = (zone_counter.y + 3 + 2 * zone_counter.y)
-				var zone_center_y: int = float(size_y) * (float(tmp_y2) / float((map_size_y + 1) * 2))
-				walk_astar(Vector2(roundi(zone_center.x), roundi(zone_center.y)), Vector2(roundi(zone_center.x), zone_center_y))
+				#var tmp_y2: int
+				#if (zone_counter.x % 2 == 1):
+					#tmp_y2 = (zone_counter.y + 2 + 2 * zone_counter.y)
+				#else: # add one to be an odd number
+					#tmp_y2 = (zone_counter.y + 3 + 2 * zone_counter.y)
+				#var zone_center_y: int = float(size_y) * (float(tmp_y2) / float((map_size_y + 1) * 2))
+				var zone_center_y: int = roundi(zone_center + (zone_size * (zone_counter.y + 1)))
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(roundi(current_zone_center.x), zone_center_y))
 		zone_index_default += map_size_y
 		zone_counter.y = 0
 	place_room_positions()

@@ -3,15 +3,17 @@
  SCP-CB-like facility map generator
  [How to use?](/docs/how_to_use.md)
 
-[Advanced SCP demo](https://github.com/Yni-Viar/scp-mapgen-demo)
+[SCP: Unstable Dimension, an example of this map generator usage](https://github.com/Yni-Viar/scp-unstable-dimension)
 
 
 ## License?
-- Code - [BSD-2 license with patent exception](/LICENSE.CODE).
+- Code - [MIT License](/LICENSE.MIT)
   - If your project is licensed under CC-BY-SA 3.0, CC-BY-SA 4.0 or GPL 3 (e.g. *SCP - Containment Breach* remake), the Author grants You permission to relicense the code under mentioned licenses.
 - Assets - [CC-BY 4.0](/LICENSE.ASSETS), since we got independent from SCP content.
 
 ## Changelog
+### v.7.3.0 (2024.04.23)
+- Fixed a generation error when generating many-zone facility (especially, when zone amount was >= 4).
 ### v.7.2.0 (2024.03.31)
 - Add 2D version
 - Add editor icons

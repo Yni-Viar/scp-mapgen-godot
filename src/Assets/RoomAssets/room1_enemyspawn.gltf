@@ -26,6 +26,34 @@
 	"materials":[
 		{
 			"doubleSided":true,
+			"name":"Walls",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.800000011920929,
+					0.800000011920929,
+					0.800000011920929,
+					1
+				],
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
+		},
+		{
+			"doubleSided":true,
+			"name":"Exitlabel",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.1031346544623375,
+					0,
+					0,
+					1
+				],
+				"metallicFactor":0,
+				"roughnessFactor":0.5
+			}
+		},
+		{
+			"doubleSided":true,
 			"name":"Floor",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
@@ -41,20 +69,6 @@
 		{
 			"doubleSided":true,
 			"name":"Ceiling",
-			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.800000011920929,
-					0.800000011920929,
-					0.800000011920929,
-					1
-				],
-				"metallicFactor":0,
-				"roughnessFactor":0.5
-			}
-		},
-		{
-			"doubleSided":true,
-			"name":"Walls",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
 					0.800000011920929,
@@ -97,6 +111,15 @@
 					},
 					"indices":11,
 					"material":2
+				},
+				{
+					"attributes":{
+						"POSITION":12,
+						"NORMAL":13,
+						"TEXCOORD_0":14
+					},
+					"indices":15,
+					"material":3
 				}
 			]
 		}
@@ -105,184 +128,242 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":8,
+			"count":32,
 			"max":[
-				7.09975004196167,
-				-2.115445613861084,
+				7.397216796875,
+				5.130503177642822,
 				10.235640525817871
 			],
 			"min":[
-				-7.021059989929199,
+				-7.415799140930176,
 				-2.1302287578582764,
-				-10.25859260559082
+				-4.074419975280762
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":8,
+			"count":32,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":8,
+			"count":32,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":18,
+			"count":48,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":8,
+			"count":4,
 			"max":[
-				7.101049900054932,
-				2.1302287578582764,
-				10.235640525817871
+				3.9906513690948486,
+				5.130088806152344,
+				-4.0691375732421875
 			],
 			"min":[
-				-7.021059036254883,
-				2.115445137023926,
-				-10.25859260559082
+				-4.021060466766357,
+				-2.1287524700164795,
+				-4.074419975280762
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":8,
+			"count":4,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":8,
+			"count":4,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":18,
+			"count":6,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":28,
+			"count":12,
 			"max":[
-				7.101049900054932,
-				2.1302287578582764,
+				7.397216796875,
+				-2.115445613861084,
 				10.235640525817871
 			],
 			"min":[
-				-7.021059989929199,
+				-7.415799140930176,
 				-2.1302287578582764,
-				-10.25859260559082
+				-4.074419975280762
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":9,
 			"componentType":5126,
-			"count":28,
+			"count":12,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":10,
 			"componentType":5126,
-			"count":28,
+			"count":12,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":11,
 			"componentType":5123,
-			"count":42,
+			"count":24,
+			"type":"SCALAR"
+		},
+		{
+			"bufferView":12,
+			"componentType":5126,
+			"count":12,
+			"max":[
+				7.397216796875,
+				5.130503177642822,
+				10.235640525817871
+			],
+			"min":[
+				-7.415798187255859,
+				5.115445613861084,
+				-4.074419975280762
+			],
+			"type":"VEC3"
+		},
+		{
+			"bufferView":13,
+			"componentType":5126,
+			"count":12,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":14,
+			"componentType":5126,
+			"count":12,
+			"type":"VEC2"
+		},
+		{
+			"bufferView":15,
+			"componentType":5123,
+			"count":24,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":96,
+			"byteLength":384,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
+			"byteLength":384,
+			"byteOffset":384,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":256,
+			"byteOffset":768,
+			"target":34962
+		},
+		{
+			"buffer":0,
 			"byteLength":96,
-			"byteOffset":96,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":64,
-			"byteOffset":192,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":36,
-			"byteOffset":256,
+			"byteOffset":1024,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":96,
-			"byteOffset":292,
+			"byteLength":48,
+			"byteOffset":1120,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":96,
-			"byteOffset":388,
+			"byteLength":48,
+			"byteOffset":1168,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":64,
-			"byteOffset":484,
+			"byteLength":32,
+			"byteOffset":1216,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":36,
-			"byteOffset":548,
+			"byteLength":12,
+			"byteOffset":1248,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":336,
-			"byteOffset":584,
+			"byteLength":144,
+			"byteOffset":1260,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":336,
-			"byteOffset":920,
+			"byteLength":144,
+			"byteOffset":1404,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":224,
-			"byteOffset":1256,
+			"byteLength":96,
+			"byteOffset":1548,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":84,
-			"byteOffset":1480,
+			"byteLength":48,
+			"byteOffset":1644,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":144,
+			"byteOffset":1692,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":144,
+			"byteOffset":1836,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":96,
+			"byteOffset":1980,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":48,
+			"byteOffset":2076,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":1564,
-			"uri":"room1_a.bin"
+			"byteLength":2124,
+			"uri":"room1_enemyspawn.bin"
 		}
 	]
 }

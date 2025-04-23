@@ -8,15 +8,11 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				0,
-				1
+				0
 			]
 		}
 	],
 	"nodes":[
-		{
-			"name":"default"
-		},
 		{
 			"mesh":0,
 			"name":"Cube",
@@ -109,184 +105,184 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":44,
+			"count":24,
 			"max":[
-				10.240440368652344,
-				2.1305031776428223,
+				7.101049900054932,
+				5.1302289962768555,
 				10.235640525817871
 			],
 			"min":[
-				-10.239425659179688,
+				-7.021059989929199,
 				-2.1302287578582764,
-				-7.995645523071289
+				-10.25859260559082
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":44,
+			"count":24,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":44,
+			"count":24,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-			"count":66,
+			"count":36,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"max":[
-				10.240440368652344,
-				2.1305031776428223,
+				7.101049900054932,
+				5.1302289962768555,
 				10.235640525817871
 			],
 			"min":[
-				-10.239424705505371,
-				2.115445613861084,
-				-7.995645523071289
+				-7.021059036254883,
+				5.115445137023926,
+				-10.25859260559082
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":36,
+			"count":18,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"max":[
-				10.240440368652344,
+				7.09975004196167,
 				-2.115445613861084,
 				10.235640525817871
 			],
 			"min":[
-				-10.239425659179688,
+				-7.021059989929199,
 				-2.1302287578582764,
-				-7.995645523071289
+				-10.25859260559082
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":9,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":10,
 			"componentType":5126,
-			"count":20,
+			"count":8,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":11,
 			"componentType":5123,
-			"count":36,
+			"count":18,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":528,
+			"byteLength":288,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":528,
-			"byteOffset":528,
+			"byteLength":288,
+			"byteOffset":288,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":352,
-			"byteOffset":1056,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":132,
-			"byteOffset":1408,
-			"target":34963
-		},
-		{
-			"buffer":0,
-			"byteLength":240,
-			"byteOffset":1540,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":240,
-			"byteOffset":1780,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":160,
-			"byteOffset":2020,
+			"byteLength":192,
+			"byteOffset":576,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":72,
-			"byteOffset":2180,
+			"byteOffset":768,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":240,
-			"byteOffset":2252,
+			"byteLength":96,
+			"byteOffset":840,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":240,
-			"byteOffset":2492,
+			"byteLength":96,
+			"byteOffset":936,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":160,
-			"byteOffset":2732,
+			"byteLength":64,
+			"byteOffset":1032,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":72,
-			"byteOffset":2892,
+			"byteLength":36,
+			"byteOffset":1096,
+			"target":34963
+		},
+		{
+			"buffer":0,
+			"byteLength":96,
+			"byteOffset":1132,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":96,
+			"byteOffset":1228,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":64,
+			"byteOffset":1324,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":36,
+			"byteOffset":1388,
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-			"byteLength":2964,
-			"uri":"room3_special.bin"
+			"byteLength":1424,
+			"uri":"room2_a.bin"
 		}
 	]
 }

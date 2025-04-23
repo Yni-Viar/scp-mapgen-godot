@@ -1,16 +1,16 @@
 [gd_resource type="Resource" script_class="MapGenRoom" load_steps=7 format=3 uid="uid://dto18wf3e4ol4"]
 
-[ext_resource type="PackedScene" uid="uid://b61wqoib0cvdy" path="res://Assets/Rooms/room1/room1.tscn" id="1_dasa7"]
 [ext_resource type="Texture2D" uid="uid://bmbn1pgwlfdri" path="res://Assets/HUD/room1.png" id="1_y64ru"]
 [ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="2_b6to5"]
 [ext_resource type="Texture2D" uid="uid://b7pofqfywnjd4" path="res://Assets/HUD/room1_180.png" id="2_ks7j4"]
 [ext_resource type="Texture2D" uid="uid://b8nf0gvd62sem" path="res://Assets/HUD/room1_270.png" id="3_64dkd"]
 [ext_resource type="Texture2D" uid="uid://js7y3logs2g8" path="res://Assets/HUD/room1_90.png" id="4_um80h"]
+[ext_resource type="PackedScene" uid="uid://dmnkcdm0dyviq" path="res://Assets/Rooms/room1/room1_b.tscn" id="5_rrp00"]
 
 [resource]
 script = ExtResource("2_b6to5")
 name = "room1"
-prefab = ExtResource("1_dasa7")
+prefab = ExtResource("5_rrp00")
 icon_0_degrees = ExtResource("4_um80h")
 icon_90_degrees = ExtResource("1_y64ru")
 icon_180_degrees = ExtResource("3_64dkd")
