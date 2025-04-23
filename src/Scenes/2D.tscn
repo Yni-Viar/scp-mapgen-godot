@@ -13,6 +13,7 @@ script = ExtResource("2_jwdce")
 rooms = Array[ExtResource("3_jwdce")]([ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u"), ExtResource("3_tsc7u")])
 map_size_x = 3
 map_size_y = 3
+checkpoints_enabled = true
 metadata/_custom_type_script = "uid://cevxktg4dpdoh"
 
 [node name="UI" type="Control" parent="."]

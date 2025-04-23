@@ -20,4 +20,4 @@ func _on_seed_text_changed(new_text):
 
 func _on_generate_pressed():
 	get_parent().get_node("FacilityGenerator").clear()
-	get_parent().get_node("FacilityGenerator").prepare_generation()
+	get_parent().get_node("FacilityGenerator").generate_rooms()

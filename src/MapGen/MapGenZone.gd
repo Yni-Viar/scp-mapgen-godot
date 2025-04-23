@@ -12,6 +12,8 @@ class_name MapGenZone
 @export var hallways: Array[MapGenRoom]
 ## Single rooms with two exits, straight
 @export var hallways_single: Array[MapGenRoom] = []
+## Checkpoint rooms (MapGen v8 new feature)
+@export var checkpoint_hallway: Array[MapGenRoom] = []
 ## Single large rooms with two exits, straight
 @export var hallways_single_large: Array[MapGenRoom] = []
 ## Rooms with two exits, corner
