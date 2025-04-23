@@ -34,4 +34,4 @@ All parameters in this resource (called `MapGenZone`) (except `Door frames`) are
 
 ## Prepare a room for map generation.
 In Godot editor, make sure, that the exits of rooms faces the axis, seen in this picture:
-![Axis for map generation](/imgs/room_rotations.png)
+![Axis for map generation](imgs/room_rotations.png)
