@@ -8,11 +8,6 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
-## Works only if there are large endrooms, to prevent endless loop if cannot spawn
-const NUMBER_OF_TRIES_TO_SPAWN: int = 4
-## For performance reasons. Correct the code to increase the limit
-const MAX_ROOMS_SPAWN: int = 256
-
 @export var rng_seed: int = -1
 ## Rooms that will be used
 @export var rooms: Array[MapGenZone]
@@ -34,13 +29,9 @@ const MAX_ROOMS_SPAWN: int = 256
 ## Sometimes, the generation will return "dull" path(e.g where there are only 3 ways to go)
 ## This fixes these generations, at a little cost of generation time
 @export var better_zone_generation: bool = true
-# Deprecated since mapgen v8
-# How much the better map generator should wait, until it finds optimal path.
-# Lower value can lead to fewer amount of rooms, while higher can hang the whole game.
-#@export var better_zone_generation_waiter: int = 1
-## How many endrooms should spawn map generator
+## How many additional rooms should spawn map generator
 ## /!\ WARNING! Higher value may hang the game.
-@export var better_zone_generation_min_amount: int = 5
+@export_range(0, 5) var better_zone_generation_min_amount: int = 4
 ## Enable checkpoint rooms.
 ## /!\ WARNING! The checkpoint room behaves differently, than SCP - Cont. Breach checkpoints,
 ## they behave like SCP: Secret Lab. HCZ-EZ checkpoints, with two rooms.
@@ -143,7 +134,7 @@ func spawn_rooms() -> void:
 				room2cl_count.append(0)
 				room3l_count.append(0)
 				zone_index += 1
-			var room: Sprite2D = Sprite2D.new()
+			var room: Sprite2D
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].endrooms_single_large.size() > 0 && room1l_count[zone_index] < rooms[zone_index].endrooms_single_large.size():
@@ -319,30 +310,32 @@ func spawn_rooms() -> void:
 					#room.rotation_degrees = mapgen[n][o].angle
 					#add_child(room, true)
 					#mapgen[n][o].room_name = room.name
-			match mapgen[n][o].angle:
-				0.0: # this weird sort is due to Control UI type, which behaves differently.
-					if mapgen[n][o].room_type == RoomTypes.ROOM2C:
-						room.texture = mapgen[n][o].resource.icon_0_degrees
-					else:
-						room.texture = mapgen[n][o].resource.icon_90_degrees
-				90.0:
-					if mapgen[n][o].room_type == RoomTypes.ROOM2C:
-						room.texture = mapgen[n][o].resource.icon_270_degrees
-					else:
-						room.texture = mapgen[n][o].resource.icon_0_degrees
-				180.0:
-					if mapgen[n][o].room_type == RoomTypes.ROOM2C:
-						room.texture = mapgen[n][o].resource.icon_180_degrees
-					else:
-						room.texture = mapgen[n][o].resource.icon_270_degrees
-				270.0:
-					if mapgen[n][o].room_type == RoomTypes.ROOM2C:
-						room.texture = mapgen[n][o].resource.icon_90_degrees
-					else:
-						room.texture = mapgen[n][o].resource.icon_180_degrees
-			room.position = Vector2(n * grid_size, o * grid_size)
-			add_child(room, true)
-			mapgen[n][o].room_name = room.name
+			if mapgen[n][o].exist:
+				room = Sprite2D.new()
+				match mapgen[n][o].angle:
+					0.0: # this weird sort is due to Control UI type, which behaves differently.
+						if mapgen[n][o].room_type == RoomTypes.ROOM2C:
+							room.texture = mapgen[n][o].resource.icon_0_degrees
+						else:
+							room.texture = mapgen[n][o].resource.icon_90_degrees
+					90.0:
+						if mapgen[n][o].room_type == RoomTypes.ROOM2C:
+							room.texture = mapgen[n][o].resource.icon_270_degrees
+						else:
+							room.texture = mapgen[n][o].resource.icon_0_degrees
+					180.0:
+						if mapgen[n][o].room_type == RoomTypes.ROOM2C:
+							room.texture = mapgen[n][o].resource.icon_180_degrees
+						else:
+							room.texture = mapgen[n][o].resource.icon_270_degrees
+					270.0:
+						if mapgen[n][o].room_type == RoomTypes.ROOM2C:
+							room.texture = mapgen[n][o].resource.icon_90_degrees
+						else:
+							room.texture = mapgen[n][o].resource.icon_180_degrees
+				room.position = Vector2(n * grid_size, o * grid_size)
+				add_child(room, true)
+				mapgen[n][o].room_name = room.name
 		zone_counter.y = 0
 		zone_index = zone_index_default
 	#if enable_door_generation:

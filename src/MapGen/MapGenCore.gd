@@ -1,14 +1,15 @@
+@icon("res://MapGen/icons/MapGenNode.svg")
 extends Node
 class_name MapGenCore
 
-var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var rng: RandomNumberGenerator
 
 enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
 ## Works only if there are large endrooms, to prevent endless loop if cannot spawn
 const NUMBER_OF_TRIES_TO_SPAWN: int = 4
 ## For performance reasons. Correct the code to increase the limit
-const MAX_ROOMS_SPAWN: int = 256
+const MAX_ROOMS_SPAWN: int = 512
 
 @export var rng_seed: int = -1
 ## Rooms that will be used
@@ -31,16 +32,12 @@ const MAX_ROOMS_SPAWN: int = 256
 ## Sometimes, the generation will return "dull" path(e.g where there are only 3 ways to go)
 ## This fixes these generations, at a little cost of generation time
 @export var better_zone_generation: bool = true
-# Deprecated since mapgen v8
-# How much the better map generator should wait, until it finds optimal path.
-# Lower value can lead to fewer amount of rooms, while higher can hang the whole game.
-#@export var better_zone_generation_waiter: int = 1
-## How many endrooms should spawn map generator
+## How many additional rooms should spawn map generator
 ## /!\ WARNING! Higher value may hang the game.
-@export var better_zone_generation_min_amount: int = 5
+@export_range(0, 5) var better_zone_generation_min_amount: int = 4
 ## Enable checkpoint rooms.
 ## /!\ WARNING! The checkpoint room behaves differently, than SCP-CB checkpoints,
-## they behave like SCP: Secret Lab HCZ-EZ checkpoints, with two rooms.
+## the "checkpoint" have 2 rooms, not one (as in SCP-CB).
 @export var checkpoints_enabled: bool = false
 ## Prints map seed
 @export var debug_print: bool = false
@@ -66,9 +63,11 @@ class Room:
 var size_x: int
 var size_y: int
 
+var endroom_amount: int = 0
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	rng = get_parent().rng
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -78,8 +77,15 @@ func _process(delta: float) -> void:
 func start_generation() -> Array[Array]:
 	clear()
 	prepare_generation()
-	generate_zone_astar()
-	place_room_positions()
+	# Determines, if the generation is too large to stop it.
+	# You can change the limit in MAX_ROOM_SPAWN const.
+	var all_rooms_count: int = size_x * size_y * room_amount
+	if all_rooms_count > MAX_ROOMS_SPAWN:
+		printerr("The limit of " + str(MAX_ROOMS_SPAWN) + " rooms for all zones reached. Stopping the program...")
+		printerr("If you want to increase the limit, set MAX_ROOM_SPAWN constant to higher value, althrough it is not recommended.")
+	else:
+		generate_zone_astar()
+		place_room_positions()
 	return mapgen
 
 ## Prepares room generation
@@ -115,24 +121,17 @@ func generate_zone_astar() -> void:
 	var zone_index: int = 0
 	# Zone index for Y coordinate.
 	var zone_index_default: int = 0
-	# Determines, if the generation is too large to stop it.
-	# You can change the limit in MAX_ROOM_SPAWN const.
-	var all_rooms_count: int = 0
+	
 	# Zone center for the first quadrant.
 	var zone_center: float = zone_size / 2
 	for i in range(map_size_x + 1):
 		zone_counter.x = i
 		for j in range(map_size_y + 1):
-			# Large room amount
-			var large_room_amount: int = zone_size / 6
+			# Large room amount (when checkpoints enabled, there are fewer rooms)
+			var large_room_amount: int = zone_size / 6 if !checkpoints_enabled else (zone_size - 2) / 6
 			zone_counter.y = j
 			zone_index += j
 			var number_of_rooms: int = zone_size * room_amount
-			all_rooms_count += number_of_rooms
-			if all_rooms_count > MAX_ROOMS_SPAWN:
-				printerr("The limit of " + str(MAX_ROOMS_SPAWN) + """ rooms for all zones reached. Stopping the program... 
-					If you want to increase the limit, set MAX_ROOM_SPAWN constant to higher value, althrough it is not recommended.""")
-				return
 			# to deal with zero-sized zone_counter, there is a simple formula - if is not odd - 
 			# add value to be not null
 			var tmp_x: int = 0
@@ -159,18 +158,16 @@ func generate_zone_astar() -> void:
 							walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
 							mapgen[random_room.x][random_room.y].large = true
 							break
-			## This "waiter" is for not stalling the map gen
-			var waiter: int = 0
 			## Walk before need-to-spawn rooms runs out
 			while number_of_rooms > 0:
 				if checkpoints_enabled:
 					## If checkpoints enabled, disable non-checkpoint rooms in generic hallway generation
 					random_room = Vector2(rng.randi_range(available_room_position[0].x + 1, available_room_position[0].y - 1), rng.randi_range(available_room_position[1].x + 1, available_room_position[1].y - 1))
-				else:
-					## Do as it was in 7.x
+				else: ## Do as it was in 7.x, except reverted old better zone generation
 					random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
+				if better_zone_generation && mapgen[random_room.x][random_room.y].exist && endroom_amount < better_zone_generation_min_amount:
+					continue
 				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
-				waiter = 0
 				number_of_rooms -= 1
 				
 			## Connect two zones
@@ -497,6 +494,7 @@ func walk_astar(from: Vector2, to: Vector2) -> void:
 				if mapgen[map.x][map.y + 1].exist:
 					mapgen[map.x][map.y + 1].south = true
 					mapgen[map.x][map.y].north = true
+	endroom_amount += 1
 ## Places information about rooms
 func place_room_positions() -> void:
 	if debug_print:
@@ -718,16 +716,18 @@ func place_room_positions() -> void:
 					room1_amount[room_index] += 1
 		zone_counter.y = 0
 		room_index = room_index_default
-	if better_zone_generation:
-		for j in range(room_index + 1):
-			if room1_amount[j] < better_zone_generation_min_amount:
-				rng_seed = -1
-				rng.randomize()
-				start_generation()
-				return
+	#if better_zone_generation:
+		#for j in range(room_index + 1):
+			## Stop better zone geneartion if there is 2x2 zone and higher
+			#if room1_amount[j] < better_zone_generation_min_amount && (map_size_x + 1) * (map_size_y + 1) < 4:
+				#rng_seed = -1
+				#rng.randomize()
+				#start_generation()
+				#return
 
 ## Clears the map generation
 func clear():
-	print("Clearing the map...")
+	if debug_print:
+		print("Clearing the map...")
 	disabled_points.clear()
 	mapgen.clear()

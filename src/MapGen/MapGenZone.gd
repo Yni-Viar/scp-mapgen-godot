@@ -34,6 +34,8 @@ class_name MapGenZone
 @export var crossrooms_single: Array[MapGenRoom] = []
 ## Door hallways
 @export var door_frames: Array[PackedScene]
+## Checkpoint doors (MapGen v8 new feature)
+@export var checkpoint_door_frames: Array[PackedScene]
 
 func _init(p_endrooms: Array[MapGenRoom] = [], p_hallways: Array[MapGenRoom] = [], p_corners: Array[MapGenRoom] = [],
 p_trooms: Array[MapGenRoom] = [], p_crossrooms: Array[MapGenRoom] = [], p_door_frames: Array[PackedScene] = []):

@@ -1,17 +1,31 @@
-# scp-mapgen
+# SCP Facility-like map generator
 ## About
- SCP-CB-like facility map generator
- [How to use?](/docs/how_to_use.md)
+
+SCP-CB-like facility map generator
+[How to use?](/docs/how_to_use.md)
 
 [SCP: Unstable Dimension, an example of this map generator usage](https://github.com/Yni-Viar/scp-unstable-dimension)
-
 
 ## License?
 - Code - [MIT License](/LICENSE.MIT)
   - If your project is licensed under CC-BY-SA 3.0, CC-BY-SA 4.0 or GPL 3 (e.g. *SCP - Containment Breach* remake), the Author grants You permission to relicense the code under mentioned licenses.
 - Assets - [CC-BY 4.0](/LICENSE.ASSETS), since we got independent from SCP content.
 
+## What works:
+- [x] Random generation (NOT Layout based)
+- [x] Door support (currently only in 3D version)
+- [x] 2D and 3D generators.
+- [x] Randomized door + assign specific door to a room
+- [x] Checkpoint support (NEW!) *Note, that these checkpoints work differently from Containment Breach ones*
+- [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
+
+
 ## Changelog
+### v.8.0.0 (2024.04.24)
+- Finally added checkpoints!
+- Room can have a specific door set (as seen in *SCP: Secret Lab 14.0 and newer*)
+- Reworked better zone generator again (it was reverted to brevious behavior, but without hanging (tried multiple seeds))
+- Separated MapGeneration core from 2D and 3D version, making it more portable. Now 2D and 3D frontend are representing only room spawn, while core backend does all.
 ### v.7.3.0 (2024.04.23)
 - Fixed a generation error when generating many-zone facility (especially, when zone amount was >= 4).
 ### v.7.2.0 (2024.03.31)

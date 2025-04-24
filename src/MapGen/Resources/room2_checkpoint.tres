@@ -1,17 +1,20 @@
-[gd_resource type="Resource" script_class="MapGenRoom" load_steps=6 format=3 uid="uid://dfren1lrntr0b"]
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=7 format=3 uid="uid://dfren1lrntr0b"]
 
 [ext_resource type="Texture2D" uid="uid://chunfvjq5bgps" path="res://Assets/HUD/room2checkpoint.png" id="1_a7w10"]
 [ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="1_nosbg"]
 [ext_resource type="Texture2D" uid="uid://cc2yeri537lew" path="res://Assets/HUD/room2checkpoint_180.png" id="2_ohv3l"]
 [ext_resource type="Texture2D" uid="uid://bpoeuk58yrkda" path="res://Assets/HUD/room2checkpoint_270.png" id="3_r8np4"]
 [ext_resource type="Texture2D" uid="uid://b1mfgoyugk5pg" path="res://Assets/HUD/room2checkpoint_90.png" id="4_734t2"]
+[ext_resource type="PackedScene" uid="uid://ccagreasro2w4" path="res://Assets/Rooms/room2/room2_checkpoint.tscn" id="5_yu4pf"]
 
 [resource]
 script = ExtResource("1_nosbg")
 name = "Checkpoint room"
+prefab = ExtResource("5_yu4pf")
 icon_0_degrees = ExtResource("4_734t2")
 icon_90_degrees = ExtResource("1_a7w10")
 icon_180_degrees = ExtResource("3_r8np4")
 icon_270_degrees = ExtResource("2_ohv3l")
 spawn_chance = 20.0
+door_type = -1
 metadata/_custom_type_script = "uid://b15b7mhits7ot"
