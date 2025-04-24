@@ -42,8 +42,8 @@ const MAX_ROOMS_SPAWN: int = 256
 ## /!\ WARNING! Higher value may hang the game.
 @export var better_zone_generation_min_amount: int = 5
 ## Enable checkpoint rooms.
-## /!\ WARNING! The checkpoint room behaves differently, than SCP-CB checkpoints,
-## they behave like SCP: Secret Lab HCZ-EZ checkpoints, with two rooms.
+## /!\ WARNING! The checkpoint room behaves differently, than SCP - Cont. Breach checkpoints,
+## they behave like SCP: Secret Lab. HCZ-EZ checkpoints, with two rooms.
 @export var checkpoints_enabled: bool = false
 ## Prints map seed
 @export var debug_print: bool = false
@@ -58,6 +58,7 @@ func _ready() -> void:
 	pass
 
 func generate_rooms():
+	clear()
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
 	var mapgen_core: MapGenCore = MapGenCore.new()
@@ -188,7 +189,7 @@ func spawn_rooms() -> void:
 						room2l_count[zone_index] += 1
 					if mapgen[n][o].checkpoint && checkpoints_enabled:
 						mapgen[n][o].resource = rooms[zone_index].checkpoint_hallway[rng.randi_range(0, rooms[zone_index].checkpoint_hallway.size() - 1)]
-						room2l_count[zone_index] += 1
+						room2_count[zone_index] += 1
 					else:
 						if rooms[zone_index].hallways_single_large.size() > 0 && !large_rooms && room2l_count[zone_index] < rooms[zone_index].hallways_single_large.size():
 							#selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]]

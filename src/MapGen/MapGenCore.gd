@@ -76,6 +76,7 @@ func _process(delta: float) -> void:
 	pass
 
 func start_generation() -> Array[Array]:
+	clear()
 	prepare_generation()
 	generate_zone_astar()
 	place_room_positions()
@@ -592,16 +593,16 @@ func place_room_positions() -> void:
 								mapgen[l][m].large = true
 								room3l_amount[room_index] += 1
 						room3_amount[room_index] += 1
-					else:
-						if l < size_x - 1 && l > 0:
+					else: #room2
+						if m < size_y - 1 && m > 0:
 							#upper checkpoint room2
-							if l == size_x / (map_size_x + 1) * (zone_counter.x + 1) && mapgen[l-1][m].exist:
-								mapgen[l][m].checkpoint = true
-								mapgen[l][m].angle = 0
-							#lower checkpoint room2
-							elif l == size_x / (map_size_x + 1) * (zone_counter.x + 1) - 1 && mapgen[l+1][m].exist:
+							if m == size_y / (map_size_y + 1) * zone_counter.y && mapgen[l][m-1].exist && checkpoints_enabled:
 								mapgen[l][m].checkpoint = true
 								mapgen[l][m].angle = 180
+							#lower checkpoint room2
+							elif m == size_y / (map_size_y + 1) * (zone_counter.y + 1) - 1 && mapgen[l][m+1].exist && checkpoints_enabled:
+								mapgen[l][m].checkpoint = true
+								mapgen[l][m].angle = 0
 							else: #generic vertical room2
 								var room_angle: Array[float] = [0, 180]
 								mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
@@ -633,14 +634,14 @@ func place_room_positions() -> void:
 								mapgen[l][m].large = true
 								room3l_amount[room_index] += 1
 						room3_amount[room_index] += 1
-					else:
-						if m < size_y - 1 && m > 0:
+					else:#room2
+						if l < size_x - 1 && l > 0:
 							#right checkpoint room2
-							if m == size_y / (map_size_y + 1) * (zone_counter.y + 1) && mapgen[l][m-1].exist && checkpoints_enabled:
+							if l == size_x / (map_size_x + 1) * zone_counter.x && mapgen[l-1][m].exist:
 								mapgen[l][m].checkpoint = true
 								mapgen[l][m].angle = 270
 							#left checkpoint room2
-							elif m == size_y / (map_size_y + 1) * (zone_counter.y + 1) - 1 && mapgen[l][m+1].exist && checkpoints_enabled:
+							elif l == size_x / (map_size_x + 1) * (zone_counter.x + 1) - 1 && mapgen[l+1][m].exist:
 								mapgen[l][m].checkpoint = true
 								mapgen[l][m].angle = 90
 							else: #generic horizontal room2
@@ -720,10 +721,9 @@ func place_room_positions() -> void:
 	if better_zone_generation:
 		for j in range(room_index + 1):
 			if room1_amount[j] < better_zone_generation_min_amount:
-				clear()
 				rng_seed = -1
 				rng.randomize()
-				prepare_generation()
+				start_generation()
 				return
 
 ## Clears the map generation

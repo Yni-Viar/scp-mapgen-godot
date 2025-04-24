@@ -9,9 +9,9 @@
 [resource]
 script = ExtResource("1_nosbg")
 name = "Checkpoint room"
-icon_0_degrees = ExtResource("1_a7w10")
-icon_90_degrees = ExtResource("4_734t2")
-icon_180_degrees = ExtResource("2_ohv3l")
-icon_270_degrees = ExtResource("3_r8np4")
+icon_0_degrees = ExtResource("4_734t2")
+icon_90_degrees = ExtResource("1_a7w10")
+icon_180_degrees = ExtResource("3_r8np4")
+icon_270_degrees = ExtResource("2_ohv3l")
 spawn_chance = 20.0
 metadata/_custom_type_script = "uid://b15b7mhits7ot"
