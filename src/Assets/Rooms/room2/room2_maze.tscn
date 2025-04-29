@@ -1,9 +1,10 @@
 [gd_scene load_steps=9 format=4 uid="uid://cgda87glt3sbb"]
 
-[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/Walls.tres" id="1_gyo6m"]
-[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/Ceiling.tres" id="2_dn654"]
-[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/Floor.tres" id="3_ijyxj"]
+[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/EvacuationShelter/Walls.tres" id="1_gyo6m"]
+[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/EvacuationShelter/Ceiling.tres" id="2_dn654"]
+[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/EvacuationShelter/Floor.tres" id="3_ijyxj"]
 [ext_resource type="PackedScene" uid="uid://d2lho474tfbe4" path="res://Assets/OriginalModels/table.tscn" id="4_d5ufi"]
+
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_shvc4"]
 vertices = PackedVector3Array(-1.2905, -0.769568, -3.5086, -3.0405, -0.769568, -3.2586, -2.7905, -0.769568, -2.0086, 2.7095, -0.769568, -0.7586, 2.9595, -0.769568, -3.2586, 0.9595, -0.769568, -3.5086, 1.2095, -0.769568, -7.5086, 9.4595, -0.769568, -9.5086, -9.2905, -0.769568, -9.5086, -1.5405, -0.769568, -7.5086, -9.2905, -0.769568, -7.5086, 9.4595, -0.769568, -7.5086, -9.2905, 1.23043, -6.5086, -9.2905, 1.23043, -4.2586, -2.2905, 1.23043, -4.2586, -2.2905, 1.23043, -6.5086, 1.9595, 1.23043, -6.5086, 1.9595, 1.23043, -4.2586, 9.2095, 1.23043, -4.2586, 9.2095, 1.23043, -6.5086, -3.7905, -0.769568, -2.0086, -4.2905, -0.769568, -1.2586, -9.2905, -0.769568, -3.2586, -4.0405, -0.769568, 4.7414, -4.0405, -0.769568, 2.2414, -4.7905, -0.769568, 1.7414, -9.2905, -0.769568, 4.7414, 4.4595, -0.769568, 3.4914, 3.2095, -0.769568, 3.9914, 2.9595, -0.769568, 4.9914, 9.4595, -0.769568, 4.9914, 4.9595, -0.769568, -0.00860023, 9.4595, -0.769568, -3.2586, -2.5405, 1.23043, -1.0086, -3.2905, 1.23043, -0.7586, -3.5405, 1.23043, 0.2414, 3.4595, 1.23043, 2.7414, 3.9595, 1.23043, 0.9914, 3.7095, 1.23043, 0.4914, -3.5405, 1.23043, 1.2414, 2.4595, 1.23043, 2.7414, 0.9595, -0.769568, 5.2414, -1.2905, -0.769568, 4.9914, -1.5405, -0.769568, 8.9914, -9.2905, -0.769568, 8.9914, -9.2905, -0.769568, 9.4914, 1.2095, -0.769568, 9.2414, 9.4595, -0.769568, 9.4914, -9.2905, 1.23043, 5.7414, -9.2905, 1.23043, 7.9914, -2.2905, 1.23043, 7.9914, -2.2905, 1.23043, 5.7414, 1.9595, 1.23043, 5.9914, 1.9595, 1.23043, 8.2414, 9.2095, 1.23043, 8.2414, 9.2095, 1.23043, 5.9914)

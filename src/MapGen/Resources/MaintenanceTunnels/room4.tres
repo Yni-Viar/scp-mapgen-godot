@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=4 format=3 uid="uid://d0so8w0byu3rf"]
+
+[ext_resource type="Texture2D" uid="uid://xim1lq7oov63" path="res://Assets/HUD/room4.png" id="1_vjgje"]
+[ext_resource type="PackedScene" uid="uid://4i51o046e2no" path="res://Assets/Rooms/room4/mt_room_4.tscn" id="2_vjgje"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="3_cmv58"]
+
+[resource]
+script = ExtResource("3_cmv58")
+name = "room4"
+prefab = ExtResource("2_vjgje")
+icon_0_degrees = ExtResource("1_vjgje")
+icon_90_degrees = ExtResource("1_vjgje")
+icon_180_degrees = ExtResource("1_vjgje")
+icon_270_degrees = ExtResource("1_vjgje")
+spawn_chance = 100.0
+door_type = -1

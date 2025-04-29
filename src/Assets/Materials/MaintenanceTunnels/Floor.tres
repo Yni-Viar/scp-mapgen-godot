@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://b686gnhaieath"]
+
+[ext_resource type="Texture2D" uid="uid://c7uxeawvv8mhp" path="res://Assets/Materials/MaintenanceTunnels/DiamondPlate008A_2K-PNG_Color.png" id="1_qm7wl"]
+[ext_resource type="Texture2D" uid="uid://bc8fnpne5ebea" path="res://Assets/Materials/MaintenanceTunnels/DiamondPlate008A_2K-PNG_Metalness.png" id="2_2j5fn"]
+[ext_resource type="Texture2D" uid="uid://b8db53t3ghmin" path="res://Assets/Materials/MaintenanceTunnels/DiamondPlate008A_2K-PNG_NormalGL.png" id="3_twm3v"]
+[ext_resource type="Texture2D" uid="uid://pvhsn7t0oe1a" path="res://Assets/Materials/MaintenanceTunnels/DiamondPlate008A_2K-PNG_Roughness.png" id="4_cpk0x"]
+
+[resource]
+resource_name = "Ceiling"
+albedo_texture = ExtResource("1_qm7wl")
+metallic = 1.0
+metallic_texture = ExtResource("2_2j5fn")
+roughness_texture = ExtResource("4_cpk0x")
+normal_enabled = true
+normal_texture = ExtResource("3_twm3v")

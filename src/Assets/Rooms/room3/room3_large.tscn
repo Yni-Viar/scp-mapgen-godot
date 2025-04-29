@@ -1,8 +1,9 @@
 [gd_scene load_steps=8 format=4 uid="uid://bf2tu4fbnqu6x"]
 
-[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/Walls.tres" id="1_xyiq4"]
-[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/Ceiling.tres" id="2_16qd0"]
-[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/Floor.tres" id="3_uasv5"]
+[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/EvacuationShelter/Walls.tres" id="1_xyiq4"]
+[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/EvacuationShelter/Ceiling.tres" id="2_16qd0"]
+[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/EvacuationShelter/Floor.tres" id="3_uasv5"]
+
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_yy1ri"]
 vertices = PackedVector3Array(-9.7394, -0.769568, -3.44173, -9.7394, -0.769568, 3.30827, -6.9894, -0.769568, 3.30827, -6.7394, -0.769568, -3.44173, -3.4894, -0.769568, 6.80827, 3.2606, -0.769568, 7.05827, 7.0106, -0.769568, 3.30827, 3.7606, -0.769568, -7.19173, -3.7394, -0.769568, -7.19173, -3.4894, -0.769568, 9.80827, 3.2606, -0.769568, 9.80827, 6.7606, -0.769568, -3.44173, 9.7606, -0.769568, 3.30827, 9.7606, -0.769568, -3.44173)

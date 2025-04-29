@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://bx6svntie8yke"]
+
+[ext_resource type="Texture2D" uid="uid://da1q1uq0smvc1" path="res://Assets/Materials/Concrete042A_2K-PNG_Color.png" id="1_vmvpo"]
+[ext_resource type="Texture2D" uid="uid://4a4kb00qiddi" path="res://Assets/Materials/Concrete042A_2K-PNG_NormalGL.png" id="2_4dper"]
+[ext_resource type="Texture2D" uid="uid://d5y2pf3cyntp" path="res://Assets/Materials/Concrete042A_2K-PNG_Roughness.png" id="3_o6iif"]
+
+[resource]
+resource_name = "Walls"
+albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
+albedo_texture = ExtResource("1_vmvpo")
+roughness_texture = ExtResource("3_o6iif")
+normal_enabled = true
+normal_texture = ExtResource("2_4dper")

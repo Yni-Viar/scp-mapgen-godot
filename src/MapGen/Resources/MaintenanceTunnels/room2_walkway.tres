@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=5 format=3 uid="uid://ch0bxsompxx5d"]
+
+[ext_resource type="Texture2D" uid="uid://bdohqm7yw00if" path="res://Assets/HUD/room2_90.png" id="1_6rqy2"]
+[ext_resource type="Texture2D" uid="uid://8etimuikkbyb" path="res://Assets/HUD/room2.png" id="2_nchbx"]
+[ext_resource type="PackedScene" uid="uid://cd5dsyts0jeeo" path="res://Assets/Rooms/room2/mt_room2.tscn" id="3_6rqy2"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="4_8n17g"]
+
+[resource]
+script = ExtResource("4_8n17g")
+name = "room2_walkway"
+prefab = ExtResource("3_6rqy2")
+icon_0_degrees = ExtResource("1_6rqy2")
+icon_90_degrees = ExtResource("2_nchbx")
+icon_180_degrees = ExtResource("1_6rqy2")
+icon_270_degrees = ExtResource("2_nchbx")
+spawn_chance = 50.0
+door_type = -1

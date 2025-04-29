@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=18 format=3 uid="uid://7prvjngodfs1"]
+
+[ext_resource type="PackedScene" uid="uid://105i1oyu3cya" path="res://Assets/Doors/doorcheckpoint.tscn" id="1_b0doq"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="1_mti3u"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="1_obfoh"]
+[ext_resource type="Resource" uid="uid://dfren1lrntr0b" path="res://MapGen/Resources/EvacuationShelter/room2_checkpoint.tres" id="2_1woyu"]
+[ext_resource type="Resource" uid="uid://dkax2pgmsnpbr" path="res://MapGen/Resources/EvacuationShelter/room2C.tres" id="2_uprox"]
+[ext_resource type="Resource" uid="uid://defw3e0yk60rh" path="res://MapGen/Resources/EvacuationShelter/room4.tres" id="4_7ex6p"]
+[ext_resource type="PackedScene" uid="uid://dn0xabdbgcdnh" path="res://Assets/Doors/door.tscn" id="4_fekca"]
+[ext_resource type="PackedScene" uid="uid://ydlptdlabm0e" path="res://Assets/Doors/door_alt.tscn" id="5_1woyu"]
+[ext_resource type="Resource" uid="uid://dto18wf3e4ol4" path="res://MapGen/Resources/EvacuationShelter/room1.tres" id="5_nfbtj"]
+[ext_resource type="Resource" uid="uid://cwn3flxx1e8ho" path="res://MapGen/Resources/EvacuationShelter/room1_playerspawn.tres" id="6_nknuh"]
+[ext_resource type="Resource" uid="uid://cjkhvveue1tae" path="res://MapGen/Resources/EvacuationShelter/room2.tres" id="7_mgmv3"]
+[ext_resource type="Resource" uid="uid://qv4mn2ogktdw" path="res://MapGen/Resources/EvacuationShelter/room1_enemyspawn.tres" id="7_yhich"]
+[ext_resource type="Resource" uid="uid://cs2tk6fwt6jl1" path="res://MapGen/Resources/EvacuationShelter/room2_walkway.tres" id="8_33xam"]
+[ext_resource type="Resource" uid="uid://cmnw7ld0hsqqd" path="res://MapGen/Resources/EvacuationShelter/room1_special.tres" id="9_fekca"]
+[ext_resource type="Resource" uid="uid://bx5nj144uqlqs" path="res://MapGen/Resources/EvacuationShelter/room3.tres" id="11_bo67y"]
+[ext_resource type="Resource" uid="uid://dyq6octeegrb5" path="res://MapGen/Resources/EvacuationShelter/room2_maze.tres" id="11_fekca"]
+[ext_resource type="Resource" uid="uid://kwt5scl0pxqj" path="res://MapGen/Resources/EvacuationShelter/room3_large.tres" id="12_klbj0"]
+
+[resource]
+script = ExtResource("1_mti3u")
+endrooms = Array[ExtResource("1_obfoh")]([ExtResource("5_nfbtj")])
+endrooms_single = Array[ExtResource("1_obfoh")]([ExtResource("6_nknuh"), ExtResource("9_fekca"), ExtResource("7_yhich")])
+endrooms_single_large = Array[ExtResource("1_obfoh")]([])
+hallways = Array[ExtResource("1_obfoh")]([ExtResource("7_mgmv3"), ExtResource("8_33xam")])
+hallways_single = Array[ExtResource("1_obfoh")]([ExtResource("11_fekca")])
+checkpoint_hallway = Array[ExtResource("1_obfoh")]([ExtResource("2_1woyu")])
+hallways_single_large = Array[ExtResource("1_obfoh")]([])
+corners = Array[ExtResource("1_obfoh")]([ExtResource("2_uprox")])
+corners_single = Array[ExtResource("1_obfoh")]([])
+corners_single_large = Array[ExtResource("1_obfoh")]([])
+trooms = Array[ExtResource("1_obfoh")]([ExtResource("11_bo67y")])
+trooms_single = Array[ExtResource("1_obfoh")]([ExtResource("12_klbj0")])
+trooms_single_large = Array[ExtResource("1_obfoh")]([])
+crossrooms = Array[ExtResource("1_obfoh")]([ExtResource("4_7ex6p")])
+crossrooms_single = Array[ExtResource("1_obfoh")]([])
+door_frames = Array[PackedScene]([ExtResource("4_fekca"), ExtResource("5_1woyu")])
+checkpoint_door_frames = Array[PackedScene]([ExtResource("1_b0doq")])
