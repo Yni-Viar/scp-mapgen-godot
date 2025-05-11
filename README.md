@@ -18,9 +18,12 @@ SCP-CB-like facility map generator
 - [x] Randomized door + assign specific door to a room
 - [x] Checkpoint support (NEW!) *Note, that these checkpoints work differently from Containment Breach ones*
 - [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
-
+- [x] Variable room spawn, based on room chance / guaranteed spawn.  (NEW!)
 
 ## Changelog
+### v.8.1.0 (2024.05.11)
+- Single rooms (but not large) are also affected by room chance. *(3D version only!!!)*
+- Improved MapGen 3D frontend code.
 ### v.8.0.0 (2024.04.24)
 - Finally added checkpoints!
 - Room can have a specific door set (as seen in *SCP: Secret Lab 14.0 and newer*)

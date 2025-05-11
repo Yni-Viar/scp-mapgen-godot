@@ -16,12 +16,12 @@
 [ext_resource type="Resource" uid="uid://cmnw7ld0hsqqd" path="res://MapGen/Resources/EvacuationShelter/room1_special.tres" id="9_fekca"]
 [ext_resource type="Resource" uid="uid://bx5nj144uqlqs" path="res://MapGen/Resources/EvacuationShelter/room3.tres" id="11_bo67y"]
 [ext_resource type="Resource" uid="uid://dyq6octeegrb5" path="res://MapGen/Resources/EvacuationShelter/room2_maze.tres" id="11_fekca"]
-[ext_resource type="Resource" uid="uid://kwt5scl0pxqj" path="res://MapGen/Resources/EvacuationShelter/room3_large.tres" id="12_klbj0"]
+[ext_resource type="Resource" uid="uid://ipleyr50tc6l" path="res://MapGen/Resources/EvacuationShelter/room1_testroom.tres" id="12_67l4x"]
 
 [resource]
 script = ExtResource("1_mti3u")
 endrooms = Array[ExtResource("1_obfoh")]([ExtResource("5_nfbtj")])
-endrooms_single = Array[ExtResource("1_obfoh")]([ExtResource("6_nknuh"), ExtResource("9_fekca"), ExtResource("7_yhich")])
+endrooms_single = Array[ExtResource("1_obfoh")]([ExtResource("6_nknuh"), ExtResource("9_fekca"), ExtResource("12_67l4x"), ExtResource("7_yhich")])
 endrooms_single_large = Array[ExtResource("1_obfoh")]([])
 hallways = Array[ExtResource("1_obfoh")]([ExtResource("7_mgmv3"), ExtResource("8_33xam")])
 hallways_single = Array[ExtResource("1_obfoh")]([ExtResource("11_fekca")])
@@ -31,7 +31,7 @@ corners = Array[ExtResource("1_obfoh")]([ExtResource("2_uprox")])
 corners_single = Array[ExtResource("1_obfoh")]([])
 corners_single_large = Array[ExtResource("1_obfoh")]([])
 trooms = Array[ExtResource("1_obfoh")]([ExtResource("11_bo67y")])
-trooms_single = Array[ExtResource("1_obfoh")]([ExtResource("12_klbj0")])
+trooms_single = Array[ExtResource("1_obfoh")]([])
 trooms_single_large = Array[ExtResource("1_obfoh")]([])
 crossrooms = Array[ExtResource("1_obfoh")]([ExtResource("4_7ex6p")])
 crossrooms_single = Array[ExtResource("1_obfoh")]([])

@@ -13,3 +13,6 @@ class_name MapGenRoom
 ## that any door frame (see MapGenZone door_frames) can be used.
 ## Otherwise, only specific door frame can be used with this room.
 @export var door_type: int = -1
+## Ignore spawn chance
+## /!\ WARNING!!! If the map is too small, guaranteed rooms may not spawn.
+@export var guaranteed_spawn: bool = false

@@ -34,8 +34,10 @@ All parameters in this resource (called `MapGenZone`) (except `Door frames`) are
 - `Prefab` (you need to put room scene there),
 - `Icon 0, 90, 180, 270 degrees` - see example resources to see the right align of the room. (available since 7.0)
 - `Spawn chance` - set the spawn chance of the room.
-  - ⚠ The spawn chance is *ignored* by `Single` and `Large` room types, also the large endroom **always** spawns if the `Large room` is enabled and `Large` rooms count in `MapGenZone` > 1.
-- `Door type` - The default value, -1 means, that any door frame (see MapGenZone doorframes) can be used. Otherwise, only specific door frame can be used with this room (similar mechanic used in SCP: Secret Lab. since 14.0). Added in MapGen v.8.0
+  - ⚠ The spawn chance is *ignored* by `Large` room types, also the large endroom **always** spawns if the `Large room` is enabled and `Large` rooms count in `MapGenZone` > 1.
+- `Door type` - The default value, -1 means, that any door frame (see MapGenZone doorframes) can be used. Otherwise, only specific door frame can be used with this room (similar mechanic used in SCP: Secret Lab. since 14.0). Added in MapGen v.8.0\
+- `Guaranteed spawn` - ignore Spawn chance property (works only for `Single` room types). Added in v8.1
+  - ⚠ If the map size is too small, guaranteed rooms may not spawn.
 
 ## Prepare a room for map generation.
 In Godot editor, make sure, that the exits of rooms faces the axis, seen in this picture:
