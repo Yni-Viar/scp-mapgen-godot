@@ -1,10 +1,17 @@
 # SCP Facility-like map generator
 ## About
 
-SCP-CB-like facility map generator
+SCP-like facility map generator
 [How to use?](/docs/how_to_use.md)
 
 [SCP: Unstable Dimension, an example of this map generator usage](https://github.com/Yni-Viar/scp-unstable-dimension)
+
+## Other editions
+
+[CLI version](https://github.com/Yni-Viar/scp-mapgen-cli)
+
+
+
 
 ## License?
 - Code - [MIT License](/LICENSE.MIT)
