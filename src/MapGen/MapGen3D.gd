@@ -44,8 +44,6 @@ var mapgen: Array[Array] = []
 var size_x: int
 var size_y: int
 
-var applied_single_rooms: Array[String]
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -138,35 +136,29 @@ func spawn_rooms() -> void:
 			var room: StaticBody3D
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
-					if mapgen[n][o].large && large_rooms && ready_to_spawn_rooms[zone_index].endrooms_single_large.size() > 0 && room1l_count[zone_index] < rooms[zone_index].endrooms_single_large.size():
+					if mapgen[n][o].large && large_rooms && rooms[zone_index].endrooms_single_large.size() > 0 && room1l_count[zone_index] < rooms[zone_index].endrooms_single_large.size():
 						# Large rooms spawn, when large_rooms enabled
 						selected_room = rooms[zone_index].endrooms_single_large[room1l_count[zone_index]].prefab
 						mapgen[n][o].resource = rooms[zone_index].endrooms_single_large[room1l_count[zone_index]]
 						room1l_count[zone_index] += 1
 					else:
-						if rooms[zone_index].endrooms_single_large.size() > 0 && !large_rooms && room1l_count[zone_index] < rooms[zone_index].endrooms_single_large.size():
-							# Large rooms spawn, when large_rooms are not enabled
-							selected_room = rooms[zone_index].endrooms_single_large[room1l_count[zone_index]].prefab
-							mapgen[n][o].resource = rooms[zone_index].endrooms_single_large[room1l_count[zone_index]]
-							room1l_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room1_count[zone_index] < rooms[zone_index].endrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room1_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
+						var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms_single, true)
+						var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms)
+						if single_room_data != null:
+							var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+							if (room1_count[zone_index] < rooms[zone_index].endrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+								# Single rooms spawn
+								mapgen[n][o].resource = single_room_data
+								selected_room = single_room_data.prefab
+								room1_count[zone_index] += 1
 							else:
 								# Generic room spawn
 								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								selected_room = room_data.prefab
+						else:
+							# Generic room spawn
+							mapgen[n][o].resource = room_data
+							selected_room = room_data.prefab
 					
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
@@ -174,40 +166,34 @@ func spawn_rooms() -> void:
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM2:
-					if mapgen[n][o].large && large_rooms && rooms[zone_index].hallways_single_large.size() > 0 && room2l_count[zone_index] < rooms[zone_index].hallways_single_large.size():
-						# Large rooms spawn, when large_rooms enabled
-						selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]].prefab
-						mapgen[n][o].resource = rooms[zone_index].hallways_single_large[room2l_count[zone_index]]
-						room2l_count[zone_index] += 1
 					if mapgen[n][o].checkpoint && checkpoints_enabled:
 						# Checkpoint room spawn
 						mapgen[n][o].resource = rooms[zone_index].checkpoint_hallway[rng.randi_range(0, rooms[zone_index].checkpoint_hallway.size() - 1)]
 						selected_room = rooms[zone_index].checkpoint_hallway[rng.randi_range(0, rooms[zone_index].checkpoint_hallway.size() - 1)].prefab
 						room2_count[zone_index] += 1
+					elif mapgen[n][o].large && large_rooms && rooms[zone_index].hallways_single_large.size() > 0 && room2l_count[zone_index] < rooms[zone_index].hallways_single_large.size():
+						# Large rooms spawn, when large_rooms enabled
+						selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]].prefab
+						mapgen[n][o].resource = rooms[zone_index].hallways_single_large[room2l_count[zone_index]]
+						room2l_count[zone_index] += 1
 					else:
-						if rooms[zone_index].hallways_single_large.size() > 0 && !large_rooms && room2l_count[zone_index] < rooms[zone_index].hallways_single_large.size():
-							# Large rooms spawn, when large_rooms are not enabled
-							selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]].prefab
-							mapgen[n][o].resource = rooms[zone_index].hallways_single_large[room2l_count[zone_index]]
-							room2l_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room2_count[zone_index] < rooms[zone_index].hallways_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room2_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
+						var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways_single, true)
+						var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways)
+						if single_room_data != null:
+							var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+							if (room2_count[zone_index] < rooms[zone_index].hallways_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+								# Single rooms spawn
+								mapgen[n][o].resource = single_room_data
+								selected_room = single_room_data.prefab
+								room2_count[zone_index] += 1
 							else:
 								# Generic room spawn
 								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								selected_room = room_data.prefab
+						else:
+							# Generic room spawn
+							mapgen[n][o].resource = room_data
+							selected_room = mapgen[n][o].resource.prefab
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
@@ -220,29 +206,23 @@ func spawn_rooms() -> void:
 						mapgen[n][o].resource = rooms[zone_index].corners_single_large[room2cl_count[zone_index]]
 						room2cl_count[zone_index] += 1
 					else:
-						if rooms[zone_index].corners_single_large.size() > 0 && !large_rooms && room2cl_count[zone_index] < rooms[zone_index].corners_single_large.size():
-							# Large rooms spawn, when large_rooms are not enabled
-							selected_room = rooms[zone_index].corners_single_large[room2cl_count[zone_index]].prefab
-							mapgen[n][o].resource = rooms[zone_index].corners_single_large[room2cl_count[zone_index]]
-							room2cl_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room2c_count[zone_index] < rooms[zone_index].corners_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room2c_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
+						var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners_single, true)
+						var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners)
+						if single_room_data != null:
+							var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+							if (room2c_count[zone_index] < rooms[zone_index].corners_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+								# Single rooms spawn
+								mapgen[n][o].resource = single_room_data
+								selected_room = single_room_data.prefab
+								room2c_count[zone_index] += 1
 							else:
 								# Generic room spawn
 								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								selected_room = room_data.prefab
+						else:
+							# Generic room spawn
+							mapgen[n][o].resource = room_data
+							selected_room = mapgen[n][o].resource.prefab
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
@@ -255,33 +235,23 @@ func spawn_rooms() -> void:
 						mapgen[n][o].resource = rooms[zone_index].trooms_single_large[room3l_count[zone_index]]
 						room3l_count[zone_index] += 1
 					else:
-						if rooms[zone_index].trooms_single_large.size() > 0 && !large_rooms && room3l_count[zone_index] < rooms[zone_index].trooms_single_large.size():
-							# Large rooms spawn, when large_rooms are not enabled
-							selected_room = rooms[zone_index].trooms_single_large[room3l_count[zone_index]].prefab
-							mapgen[n][o].resource = rooms[zone_index].trooms_single_large[room3l_count[zone_index]]
-							room3l_count[zone_index] += 1
-						elif (room3_count[zone_index] >= rooms[zone_index].trooms_single.size()):
-							# Generic rooms spawn
-							mapgen[n][o].resource = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms)
-							selected_room = mapgen[n][o].resource.prefab
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room3_count[zone_index] < rooms[zone_index].trooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room3_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
+						var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms_single, true)
+						var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms)
+						if single_room_data != null:
+							var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+							if (room3_count[zone_index] < rooms[zone_index].trooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+								# Single rooms spawn
+								mapgen[n][o].resource = single_room_data
+								selected_room = single_room_data.prefab
+								room3_count[zone_index] += 1
 							else:
 								# Generic room spawn
 								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								selected_room = room_data.prefab
+						else:
+							# Generic room spawn
+							mapgen[n][o].resource = room_data
+							selected_room = mapgen[n][o].resource.prefab
 					room = selected_room.instantiate()
 					room.position = Vector3(n * grid_size, 0, o * grid_size)
 					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
@@ -327,30 +297,24 @@ func random_room_with_chance(rooms_pack: Array[MapGenRoom], single: bool = false
 	for j in range(rooms_pack.size()):
 		if j >= rooms_pack.size():
 			break
-		if single:
-			if applied_single_rooms.has(rooms_pack[j].resource_path):
-				rooms_pack.remove_at(j)
-				continue
-			elif rooms_pack[j].guaranteed_spawn:
-				applied_single_rooms.append(rooms_pack[j].resource_path)
-				return rooms_pack[j]
+		if single && rooms_pack[j].guaranteed_spawn:
+			room = rooms_pack[j]
+			break
 		all_spawn_chances.append(rooms_pack[j].spawn_chance)
 		spawn_chances += rooms_pack[j].spawn_chance
 	var random_room: float = rng.randf_range(0.0, spawn_chances)
-	for i in range(all_spawn_chances.size()):
-		counter += all_spawn_chances[i]
-		if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
-			room = rooms_pack[i]
-			break
-		prev_counter = counter
-	all_spawn_chances.clear()
+	if room == null:
+		for i in range(all_spawn_chances.size()):
+			counter += all_spawn_chances[i]
+			if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
+				room = rooms_pack[i]
+				break
+			prev_counter = counter
+		all_spawn_chances.clear()
 	counter = 0
 	prev_counter = 0
 	if single:
-		if room != null:
-			applied_single_rooms.append(room.resource_path)
-		else:
-			return null
+		rooms_pack.erase(room)
 	return room
 
 ## Spawn doors
@@ -420,7 +384,6 @@ func spawn_doors() -> void:
 ## Clears the map generation
 func clear():
 	mapgen.clear()
-	applied_single_rooms.clear()
 	size_x = 0
 	size_y = 0
 	for node in get_children():
