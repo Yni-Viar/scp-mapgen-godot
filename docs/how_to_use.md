@@ -1,4 +1,10 @@
 # How to Use?
+
+## Difference to Unreal Engine version
+
+- Instead of Structs, Godot uses `Resources`.
+- `Prefab` parameter of `MapGenRoom` struct is PackedScene, not string! **You need to drag your room scene into Prefab parameter!!!**
+
 ## Parameters
 There are some parameters:
 
