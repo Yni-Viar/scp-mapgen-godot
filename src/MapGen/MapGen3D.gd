@@ -119,7 +119,7 @@ func spawn_rooms() -> void:
 			# 0|2
 			# -=-
 			# 1|3
-			zone_index_default += map_size_y + 1
+			zone_index += 1
 		for o in range(size_y):
 			if o >= size_y / (map_size_y + 1) * (zone_counter.y + 1):
 				zone_counter.y += 1
@@ -282,7 +282,6 @@ func spawn_rooms() -> void:
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
 		zone_counter.y = 0
-		zone_index = zone_index_default
 	if enable_door_generation:
 		spawn_doors()
 	generated.emit()

@@ -130,7 +130,6 @@ func generate_zone_astar() -> void:
 			# Large room amount (when checkpoints enabled, there are fewer rooms)
 			var large_room_amount: int = zone_size / 6 if !checkpoints_enabled else (zone_size - 2) / 6
 			zone_counter.y = j
-			zone_index += j
 			var number_of_rooms: int = zone_size * room_amount
 			# to deal with zero-sized zone_counter, there is a simple formula - if is not odd - 
 			# add value to be not null
@@ -153,7 +152,12 @@ func generate_zone_astar() -> void:
 			if large_rooms && rooms[zone_index].endrooms_single_large.size() > 0:
 				for k in range(large_room_amount):
 					for l in range(NUMBER_OF_TRIES_TO_SPAWN):
-						random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
+						if checkpoints_enabled:
+							## If checkpoints enabled, let's clean path for checkpoints
+							## As a workaround, large rooms will be always near center of map.
+							random_room = Vector2(rng.randi_range(available_room_position[0].x + 3, available_room_position[0].y - 3), rng.randi_range(available_room_position[1].x + 3, available_room_position[1].y - 3))
+						else:
+							random_room = Vector2(rng.randi_range(available_room_position[0].x, available_room_position[0].y), rng.randi_range(available_room_position[1].x, available_room_position[1].y))
 						if check_room_dimensions(random_room.x, random_room.y, 0):
 							walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
 							mapgen[random_room.x][random_room.y].large = true
@@ -177,6 +181,7 @@ func generate_zone_astar() -> void:
 			if zone_counter.y < map_size_y:
 				var zone_center_y: int = roundi(zone_center + (zone_size * (zone_counter.y + 1)))
 				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(roundi(current_zone_center.x), zone_center_y))
+			zone_index += 1
 		zone_index_default += map_size_y
 		zone_counter.y = 0
 

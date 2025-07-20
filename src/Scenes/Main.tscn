@@ -24,6 +24,7 @@ script = ExtResource("1_l22lh")
 rooms = Array[ExtResource("2_5d2s6")]([ExtResource("4_v1gob"), ExtResource("5_jw32o")])
 map_size_x = 1
 large_rooms = true
+checkpoints_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")
