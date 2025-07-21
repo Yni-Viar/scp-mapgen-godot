@@ -119,7 +119,8 @@ func spawn_rooms() -> void:
 			# 0|2
 			# -=-
 			# 1|3
-			zone_index += 1
+			zone_index_default += size_y / (zone_size * (map_size_y + 1))
+			zone_index = zone_index_default
 		for o in range(size_y):
 			if o >= size_y / (map_size_y + 1) * (zone_counter.y + 1):
 				zone_counter.y += 1
@@ -281,6 +282,7 @@ func spawn_rooms() -> void:
 					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 					add_child(room, true)
 					mapgen[n][o].room_name = room.name
+		zone_index = zone_index_default
 		zone_counter.y = 0
 	if enable_door_generation:
 		spawn_doors()
