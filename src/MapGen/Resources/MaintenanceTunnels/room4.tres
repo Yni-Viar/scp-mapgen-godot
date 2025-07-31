@@ -15,3 +15,4 @@ icon_270_degrees = ExtResource("1_vjgje")
 spawn_chance = 100.0
 door_type = -1
 guaranteed_spawn = false
+double_room_ids = Array[int]([])

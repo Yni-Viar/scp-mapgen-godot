@@ -25,6 +25,7 @@ rooms = Array[ExtResource("2_5d2s6")]([ExtResource("4_v1gob"), ExtResource("5_jw
 map_size_y = 1
 large_rooms = true
 checkpoints_enabled = true
+double_room_support = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")

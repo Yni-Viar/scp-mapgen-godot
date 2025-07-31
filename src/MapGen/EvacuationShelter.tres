@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="MapGenZone" load_steps=18 format=3 uid="uid://7prvjngodfs1"]
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=19 format=3 uid="uid://7prvjngodfs1"]
 
 [ext_resource type="PackedScene" uid="uid://105i1oyu3cya" path="res://Assets/Doors/doorcheckpoint.tscn" id="1_b0doq"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="1_mti3u"]
@@ -17,6 +17,7 @@
 [ext_resource type="Resource" uid="uid://bx5nj144uqlqs" path="res://MapGen/Resources/EvacuationShelter/room3.tres" id="11_bo67y"]
 [ext_resource type="Resource" uid="uid://dyq6octeegrb5" path="res://MapGen/Resources/EvacuationShelter/room2_maze.tres" id="11_fekca"]
 [ext_resource type="Resource" uid="uid://ipleyr50tc6l" path="res://MapGen/Resources/EvacuationShelter/room1_testroom.tres" id="12_67l4x"]
+[ext_resource type="Resource" uid="uid://cb1xwajyfp8vf" path="res://MapGen/Resources/EvacuationShelter/room2d_test.tres" id="15_u2on3"]
 
 [resource]
 script = ExtResource("1_mti3u")
@@ -37,3 +38,5 @@ crossrooms = Array[ExtResource("1_obfoh")]([ExtResource("4_7ex6p")])
 crossrooms_single = Array[ExtResource("1_obfoh")]([])
 door_frames = Array[PackedScene]([ExtResource("4_fekca"), ExtResource("5_1woyu")])
 checkpoint_door_frames = Array[PackedScene]([ExtResource("1_b0doq")])
+hallways_double_single = Array[ExtResource("1_obfoh")]([ExtResource("15_u2on3")])
+crossrooms_double_single = Array[ExtResource("1_obfoh")]([])

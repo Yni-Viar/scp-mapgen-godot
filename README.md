@@ -12,7 +12,7 @@ SCP-like facility map generator
 
 [Unreal Engine Version](https://github.com/Yni-Viar/grid-mapgen-ue)
 
-[Unity](https://github.com/Yni-Viar/Yni-Viar/blob/main/scp-mapgen-on-unity.md)
+Unity (Coming soon...)
 
 
 ## License?
@@ -23,24 +23,28 @@ SCP-like facility map generator
 ## What works:
 - [x] Random generation (NOT Layout based)
 - [x] Door support (currently only in 3D version)
-- [x] 2D and 3D generators.
+- [x] Modular.
 - [x] Randomized door + assign specific door to a room
-- [x] Checkpoint support (NEW!) *Note, that these checkpoints work differently from Containment Breach ones*
+- [x] Checkpoint support *Note, that these checkpoints work differently from Containment Breach ones*
 - [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
-- [x] Variable room spawn, based on room chance / guaranteed spawn.  (NEW!)
+- [x] Variable room spawn, based on room chance / guaranteed spawn.
+- [x] Seamless double rooms (NEW!) *(Only hallways and X-shaped rooms are supported)*
 
 ## Changelog
-### v.8.1.0 (2024.05.11)
+### v.9.0.0 (2025.07.31)
+- Added support for double rooms (currently only for hallways and X-shaped crossrooms, and only as single rooms)
+- Remove outdated 2D frontend (you can create your own 2D frontend, based on 8.x code)
+### v.8.1.0 (2025.05.11)
 - Single rooms (but not large) are also affected by room chance. *(3D version only!!!)*
 - Improved MapGen 3D frontend code.
-### v.8.0.0 (2024.04.24)
+### v.8.0.0 (2025.04.24)
 - Finally added checkpoints!
 - Room can have a specific door set (as seen in *SCP: Secret Lab 14.0 and newer*)
 - Reworked better zone generator again (it was reverted to brevious behavior, but without hanging (tried multiple seeds))
 - Separated MapGeneration core from 2D and 3D version, making it more portable. Now 2D and 3D frontend are representing only room spawn, while core backend does all.
-### v.7.3.0 (2024.04.23)
+### v.7.3.0 (2025.04.23)
 - Fixed a generation error when generating many-zone facility (especially, when zone amount was >= 4).
-### v.7.2.0 (2024.03.31)
+### v.7.2.0 (2025.03.31)
 - Add 2D version
 - Add editor icons
 - Fix bug, where MapGen could not connect on X axis more than once (which lead to disconnected generation)

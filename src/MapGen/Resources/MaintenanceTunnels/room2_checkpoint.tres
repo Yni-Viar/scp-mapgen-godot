@@ -18,4 +18,5 @@ icon_270_degrees = ExtResource("3_hy4ii")
 spawn_chance = 20.0
 door_type = -1
 guaranteed_spawn = false
+double_room_ids = Array[int]([])
 metadata/_custom_type_script = "uid://b15b7mhits7ot"

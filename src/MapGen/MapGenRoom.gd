@@ -16,3 +16,7 @@ class_name MapGenRoom
 ## Ignore spawn chance
 ## /!\ WARNING!!! If the map is too small, guaranteed rooms may not spawn.
 @export var guaranteed_spawn: bool = false
+## Added in mapgen v9. Requires "Double room support" to be enabled.
+@export_group("Double rooms")
+## Which room can be connected with this room.
+@export var double_room_ids: Array[int] = []

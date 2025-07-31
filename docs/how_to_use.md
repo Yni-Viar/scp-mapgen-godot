@@ -21,6 +21,10 @@ There are some parameters:
 - `Checkpoints enabled`: Adds checkpoints to each zone (and **decrease** available room spawn). Added in v.8.0
   - ⚠ The checkpoint room behaves differently, than SCP-CB checkpoints, the "checkpoint" in this mapgen have 2 rooms (like HCZ-EZ checkpoint in SCP: Secret Lab.), not one (as in SCP-CB). .
 - `Better zone generation`: Enable endroom checking (there are situations, where the last room to generate is in a existing hallway). May have a little generation time cost. Available since v. 7.1
+  - `Better zone generation min amount`: Minimal amount of rooms for `Better zone generation`.
+- `Debug print` - debug option, prints map layout.
+- `Double Room Support`: Enables double rooms (seamless). Available since 9.0.
+  - ⚠ Works only for hallways and X-shaped intersections.
 
 ## Rooms
 `Rooms` parameter is the specific `Resource` type, where contains the room of the zones:
@@ -34,6 +38,8 @@ There are some parameters:
 - `Large` mean large room (see Parameters chapter)
 - `Door frames` is a `PackedScene` array, containing all variations of doors.
 - `Checkpoint door frames` is like door frames, but only for checkpoint (if checkpoints are enabled). Added in v.8.0
+- `Double single` - applies only for hallways and X-shaped intersections. Rooms for
+
 
 All parameters in this resource (called `MapGenZone`) (except `Door frames`) are also `Resources` - `MapGenRoom` which also have some parameters:
 - `Name`,
@@ -44,6 +50,7 @@ All parameters in this resource (called `MapGenZone`) (except `Door frames`) are
 - `Door type` - The default value, -1 means, that any door frame (see MapGenZone doorframes) can be used. Otherwise, only specific door frame can be used with this room (similar mechanic used in SCP: Secret Lab. since 14.0). Added in MapGen v.8.0\
 - `Guaranteed spawn` - ignore Spawn chance property (works only for `Single` room types). Added in v8.1
   - ⚠ If the map size is too small, guaranteed rooms may not spawn.
+- `Double Room Ids` are IDs for double rooms. It searches in map generator `Rooms.<type> Double Single` array where `<type>` is `hallway` or `intersection` to connect first room to room under this index.
 
 ## Prepare a room for map generation.
 In Godot editor, make sure, that the exits of rooms faces the axis, seen in this picture:
