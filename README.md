@@ -30,6 +30,8 @@ Unity (Coming soon...)
 - [x] Variable room spawn, based on room chance / guaranteed spawn.
 - [x] Seamless double rooms (NEW!) *(Only hallways and X-shaped rooms are supported)*
 
+*[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
+
 ## Changelog
 ### v.9.0.0 (2025.07.31)
 - Added support for double rooms (currently only for hallways and X-shaped crossrooms, and only as single rooms)
