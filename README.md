@@ -4,7 +4,7 @@
 SCP-like facility map generator
 [How to use?](/docs/how_to_use.md)
 
-[SCP: Unstable Dimension, an example of this map generator usage](https://github.com/Yni-Viar/scp-unstable-dimension)
+[SCP: Containment Procedures uses this map generator](https://github.com/Yni-Viar/scp-containmentprocedures)
 
 ## Other editions
 
