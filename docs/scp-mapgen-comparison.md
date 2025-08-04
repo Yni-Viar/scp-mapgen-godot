@@ -1,6 +1,6 @@
 | Features | This map generator | Gasimo's map generator (used in SCP: Classified Site) | SCP-Containment Breach map generator | SCP: Secret Laboratory map generator |
 |----------|--------------------|-------------------------------------------------------|---------------------------------------|--------------------------------------|
-| License | MIT License, GPLv3 or CC-BY-SA 3.0 for your choose | MIT License | CC-BY-SA 3.0 | Proprietary |
+| License | MIT License, GPLv3 or CC-BY-SA 3.0 for your choice | MIT License | CC-BY-SA 3.0 | Proprietary |
 | Random generation (NOT Layout based) | ✅ | ✅ | ✅ | ❌ |
 | Containment Breach-like generation | ❌ | ✅ | ✅ | ❌ |
 | Basic door support | ✅ | ✅ | ✅ | ✅ |
