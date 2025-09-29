@@ -33,6 +33,9 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.9.1.0 (2025.09.29)
+- Fixed some rooms could not spawn due to unduplicated resources.
+- Fixed double rooms spawn.
 ### v.9.0.0 (2025.07.31)
 - Added support for double rooms (currently only for hallways and X-shaped crossrooms, and only as single rooms)
 - Remove outdated 2D frontend (you can create your own 2D frontend, based on 8.x code)
