@@ -568,8 +568,7 @@ func place_room_positions() -> void:
 		room3dc_amount.append(0)
 		room3drc_amount.append(0)
 		room4d_amount.append(0)
-		
-	room2d_amount
+	
 	for l in range(size_x):
 		#append zone horizontal
 		if l >= size_x / (map_size_x + 1) * (zone_counter.x + 1):
