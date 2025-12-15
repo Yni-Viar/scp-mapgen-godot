@@ -192,7 +192,7 @@ func spawn_rooms() -> void:
 									selected_room = mapgen[n+1][o].resource.prefab
 									room = selected_room.instantiate()
 									room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
 									add_child(room, true)
 									mapgen[n+1][o].room_name = room.name
 									if mapgen[n+1][o].resource != mapgen[n][o].resource:
@@ -204,7 +204,7 @@ func spawn_rooms() -> void:
 									selected_room = mapgen[n][o+1].resource.prefab
 									room = selected_room.instantiate()
 									room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
 									add_child(room, true)
 									mapgen[n][o+1].room_name = room.name
 									if mapgen[n][o+1].resource != mapgen[n][o].resource:
@@ -422,7 +422,6 @@ func spawn_doors() -> void:
 						startup_node.add_child(door, true)
 			zone_counter.x += 1
 			zone_index_default += map_size_y + 1
-			continue
 		for j in range(size_y):
 			if j >= size_y / (map_size_y + 1) * (zone_counter.y + 1) - 1:
 				if checkpoints_enabled && rooms[zone_index].door_frames.size() > 0:
@@ -433,7 +432,6 @@ func spawn_doors() -> void:
 						startup_node.add_child(door, true)
 				zone_counter.y += 1
 				zone_index += 1
-				continue
 			elif rooms[zone_index].door_frames.size() > 0:
 				var available_frames: Array[PackedScene] = rooms[zone_index].door_frames
 				if mapgen[i][j].east:
@@ -444,9 +442,8 @@ func spawn_doors() -> void:
 						door = available_frames[mapgen[i+1][j].resource.door_type].instantiate()
 					elif mapgen[i][j].resource.door_type >= 0:
 						door = available_frames[mapgen[i][j].resource.door_type].instantiate()
-					else: # Spawn or not spawn random door frame
-						if rng.randi_range(0, 1) == 1:
-							door = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
+					else: # Spawn random door frame
+						door = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
 					if door != null:
 						door.position = global_position + Vector3(i * grid_size + grid_size / 2, 0, j * grid_size)
 						door.rotation_degrees = Vector3(0, 90, 0)
@@ -459,9 +456,8 @@ func spawn_doors() -> void:
 						door = available_frames[mapgen[i][j+1].resource.door_type].instantiate()
 					elif mapgen[i][j].resource.door_type >= 0:
 						door = available_frames[mapgen[i][j].resource.door_type].instantiate()
-					else: # Spawn or not spawn random door frame
-						if rng.randi_range(0, 1) == 1:
-							door = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
+					else: # Spawn random door frame
+						door = available_frames[rng.randi_range(0, available_frames.size() - 1)].instantiate()
 					if door != null:
 						door.position = global_position + Vector3(i * grid_size, 0, j * grid_size + grid_size / 2)
 						door.rotation_degrees = Vector3(0, 0, 0)
