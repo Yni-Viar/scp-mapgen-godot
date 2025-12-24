@@ -828,7 +828,9 @@ func detect_double_room(first: Vector2i, second: Vector2i, zone: int) -> void:
 						mapgen[second.x][second.y].angle = 90.0
 				mapgen[second.x][second.y].double_room = DoubleRoomTypes.ROOM4D
 		elif mapgen[first.x][first.y].room_type == shape[0].double_room_shape && \
-		  mapgen[second.x][second.y].room_type == shape[1].double_room_shape:
+		  mapgen[second.x][second.y].room_type == shape[1].double_room_shape && \
+		  ((shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.LEFT && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.RIGHT) || \
+		  (shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.UP && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.DOWN)):
 			mapgen[first.x][first.y].double_room = shape[0].double_room_shape
 			mapgen[second.x][second.y].double_room = shape[1].double_room_shape
 	
