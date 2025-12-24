@@ -46,6 +46,27 @@ var mapgen: Array[Array] = []
 var size_x: int
 var size_y: int
 
+## First array is actually a container, second is zone, third is type container.
+## Structure is like: [[[DoubleRoomTypes, DoubleRoomTypes]]] (since enum is actually named int)
+var double_room_shapes: Array[Array]
+
+# regular rooms
+var room1_count: Array[int] = [0]
+var room2_count: Array[int] = [0]
+var room2c_count: Array[int] = [0]
+var room3_count: Array[int] = [0]
+var room4_count: Array[int] = [0]
+# large rooms
+var room1l_count: Array[int] = [0]
+var room2l_count: Array[int] = [0]
+var room2cl_count: Array[int] = [0]
+var room3l_count: Array[int] = [0]
+# double rooms
+var room2d_count: Array[int] = [0]
+var room4d_count: Array[int] = [0]
+var room2cd_count: Array[int] = [0]
+var room3d_count: Array[int] = [0]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -54,6 +75,13 @@ func generate_rooms():
 	clear()
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
+	# Initialize, what double room shapes are being used
+	if double_room_support:
+		for i in range(rooms.size()):
+			double_room_shapes.append([])
+			for double_rooms in rooms[i].double_rooms:
+				if double_rooms[0] is MapGenRoom && double_rooms[1] is MapGenRoom:
+					double_room_shapes[i].append([double_rooms[0], double_rooms[1]])
 	var mapgen_core: MapGenCore = MapGenCore.new()
 	mapgen_core.rng_seed = rng_seed
 	mapgen_core.rooms = rooms
@@ -67,6 +95,7 @@ func generate_rooms():
 	mapgen_core.checkpoints_enabled = checkpoints_enabled
 	mapgen_core.debug_print = debug_print
 	mapgen_core.double_room_support = double_room_support
+	mapgen_core.double_room_shapes = double_room_shapes
 	mapgen_core.mapgen = mapgen
 	add_child(mapgen_core)
 	mapgen = mapgen_core.start_generation()
@@ -82,19 +111,7 @@ func spawn_rooms() -> void:
 	# Checks the zone
 	var zone_counter: Vector2i = Vector2i.ZERO
 	var selected_room: PackedScene
-	var room1_count: Array[int] = [0]
-	var room2_count: Array[int] = [0]
-	var room2c_count: Array[int] = [0]
-	var room3_count: Array[int] = [0]
-	var room4_count: Array[int] = [0]
-	# large rooms
-	var room1l_count: Array[int] = [0]
-	var room2l_count: Array[int] = [0]
-	var room2cl_count: Array[int] = [0]
-	var room3l_count: Array[int] = [0]
-	# double rooms
-	var room2d_count: Array[int] = [0]
-	var room4d_count: Array[int] = [0]
+
 	
 	var zone_index_default: int = 0
 	var zone_index: int = 0
@@ -113,6 +130,8 @@ func spawn_rooms() -> void:
 			room3l_count.append(0)
 			room2d_count.append(0)
 			room4d_count.append(0)
+			room2cd_count.append(0)
+			room3d_count.append(0)
 			# we need to add map_size by Y, because the Y grid will be full in previous X:
 			# e.g.:
 			# 0|2
@@ -134,6 +153,8 @@ func spawn_rooms() -> void:
 				room3l_count.append(0)
 				room2d_count.append(0)
 				room4d_count.append(0)
+				room2cd_count.append(0)
+				room3d_count.append(0)
 				zone_index += 1
 			var room: StaticBody3D
 			if mapgen[n][o].resource == null:
@@ -145,24 +166,7 @@ func spawn_rooms() -> void:
 							mapgen[n][o].resource = rooms[zone_index].endrooms_single_large[room1l_count[zone_index]]
 							room1l_count[zone_index] += 1
 						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room1_count[zone_index] < rooms[zone_index].endrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room1_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
-									ready_to_spawn_rooms[zone_index].endrooms_single.append(single_room_data)
-							else:
-								# Generic room spawn
-								mapgen[n][o].resource = room_data
-								selected_room = room_data.prefab
+							selected_room = room_select(RoomTypes.ROOM1, ready_to_spawn_rooms, zone_index, n, o)
 						
 						room = selected_room.instantiate()
 						room.position = Vector3(n * grid_size, 0, o * grid_size)
@@ -180,62 +184,69 @@ func spawn_rooms() -> void:
 							selected_room = rooms[zone_index].hallways_single_large[room2l_count[zone_index]].prefab
 							mapgen[n][o].resource = rooms[zone_index].hallways_single_large[room2l_count[zone_index]]
 							room2l_count[zone_index] += 1
-						elif mapgen[n][o].double_room == 1 && double_room_support && rooms[zone_index].hallways_double_single.size() > 0 && room2d_count[zone_index] < rooms[zone_index].hallways_double_single.size():
+						elif mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D && double_room_support:
+							var coincidence: bool = false
 							# Double room.
 							# At first, we spawn mirror room, next we spawn original room.
-							mapgen[n][o].resource = ready_to_spawn_rooms[zone_index].hallways_double_single[room2d_count[zone_index]]
-							var opposite_angle: float = 0.0
-							if n < size_x - 1:
-								if mapgen[n+1][o].double_room == 1:
-									opposite_angle = mapgen[n+1][o].angle
-									mapgen[n+1][o].resource = ready_to_spawn_rooms[zone_index].hallways_double_single[mapgen[n][o].resource.double_room_ids[rng.randi_range(0, mapgen[n][o].resource.double_room_ids.size() - 1)]]
-									selected_room = mapgen[n+1][o].resource.prefab
+							for shape in double_room_shapes[zone_index]:
+								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM2D:
+									mapgen[n][o].resource = shape[0].duplicate()
+									var double_2d: bool = false
+									var opposite_angle: float = 0.0
+									if n < size_x - 1:
+										if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
+											double_2d = true
+											opposite_angle = mapgen[n+1][o].angle
+											mapgen[n+1][o].resource = shape[1].duplicate()
+											selected_room = mapgen[n+1][o].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n+1][o].room_name = room.name
+										elif n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+											mapgen[n+1][o].resource = shape[1].duplicate()
+											selected_room = mapgen[n+1][o].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n+1][o].room_name = room.name
+									if o < size_y - 1:
+										if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
+											double_2d = true
+											opposite_angle = mapgen[n][o+1].angle
+											mapgen[n][o+1].resource = shape[1].duplicate()
+											selected_room = mapgen[n][o+1].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n][o+1].room_name = room.name
+										elif o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+											mapgen[n][o+1].resource = shape[1].duplicate()
+											selected_room = mapgen[n][o+1].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n][o+1].room_name = room.name
+									selected_room = mapgen[n][o].resource.prefab
 									room = selected_room.instantiate()
-									room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+									room.position = Vector3(n * grid_size, 0, o * grid_size)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180 if double_2d else mapgen[n][o].angle, room.rotation_degrees.z)
 									add_child(room, true)
-									mapgen[n+1][o].room_name = room.name
-									if mapgen[n+1][o].resource != mapgen[n][o].resource:
-										ready_to_spawn_rooms[zone_index].hallways_double_single.erase(mapgen[n+1][o].resource)
-							if o < size_y - 1:
-								if mapgen[n][o+1].double_room == 1:
-									opposite_angle = mapgen[n][o+1].angle
-									mapgen[n][o+1].resource = ready_to_spawn_rooms[zone_index].hallways_double_single[mapgen[n][o].resource.double_room_ids[rng.randi_range(0, mapgen[n][o].resource.double_room_ids.size() - 1)]]
-									selected_room = mapgen[n][o+1].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o+1].room_name = room.name
-									if mapgen[n][o+1].resource != mapgen[n][o].resource:
-										ready_to_spawn_rooms[zone_index].hallways_double_single.erase(mapgen[n][o+1].resource)
-							selected_room = mapgen[n][o].resource.prefab
-							room = selected_room.instantiate()
-							room.position = Vector3(n * grid_size, 0, o * grid_size)
-							room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180, room.rotation_degrees.z)
-							add_child(room, true)
-							mapgen[n][o].room_name = room.name
-							ready_to_spawn_rooms[zone_index].hallways_double_single.erase(mapgen[n][o].resource)
-							room2d_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room2_count[zone_index] < rooms[zone_index].hallways_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room2_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
-									ready_to_spawn_rooms[zone_index].hallways_single.append(single_room_data)
+									mapgen[n][o].room_name = room.name
+									room2d_count[zone_index] += 1
+									double_room_shapes.erase(shape)
+									coincidence = true
+									break
+							if !coincidence:
+								selected_room = room_select(RoomTypes.ROOM2, ready_to_spawn_rooms, zone_index, n, o)
 							else:
-								# Generic room spawn
-								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								continue
+						else:
+							selected_room = room_select(RoomTypes.ROOM2, ready_to_spawn_rooms, zone_index, n, o)
 						room = selected_room.instantiate()
 						room.position = Vector3(n * grid_size, 0, o * grid_size)
 						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
@@ -247,25 +258,45 @@ func spawn_rooms() -> void:
 							selected_room = rooms[zone_index].corners_single_large[room2cl_count[zone_index]].prefab
 							mapgen[n][o].resource = rooms[zone_index].corners_single_large[room2cl_count[zone_index]]
 							room2cl_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room2c_count[zone_index] < rooms[zone_index].corners_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room2c_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
-									ready_to_spawn_rooms[zone_index].corners_single.append(single_room_data)
+						elif mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2CD && double_room_support:
+							var coincidence: bool = false
+							# Double room.
+							# At first, we spawn mirror room, next we spawn original room.
+							for shape in double_room_shapes[zone_index]:
+								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM2CD:
+									mapgen[n][o].resource = shape[0].duplicate()
+									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+										mapgen[n+1][o].resource = shape[1].duplicate()
+										selected_room = mapgen[n+1][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n+1][o].room_name = room.name
+									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										mapgen[n][o+1].resource = shape[1].duplicate()
+										selected_room = mapgen[n][o+1].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o+1].room_name = room.name
+									selected_room = mapgen[n][o].resource.prefab
+									room = selected_room.instantiate()
+									room.position = Vector3(n * grid_size, 0, o * grid_size)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
+									add_child(room, true)
+									mapgen[n][o].room_name = room.name
+									room2d_count[zone_index] += 1
+									double_room_shapes.erase(shape)
+									coincidence = false
+									break
+							if !coincidence:
+								selected_room = room_select(RoomTypes.ROOM2C, ready_to_spawn_rooms, zone_index, n, o)
 							else:
-								# Generic room spawn
-								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								continue
+						else:
+							selected_room = room_select(RoomTypes.ROOM2C, ready_to_spawn_rooms, zone_index, n, o)
 						room = selected_room.instantiate()
 						room.position = Vector3(n * grid_size, 0, o * grid_size)
 						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
@@ -277,99 +308,226 @@ func spawn_rooms() -> void:
 							selected_room = rooms[zone_index].trooms_single_large[room3l_count[zone_index]].prefab
 							mapgen[n][o].resource = rooms[zone_index].trooms_single_large[room3l_count[zone_index]]
 							room3l_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room3_count[zone_index] < rooms[zone_index].trooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room3_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
-									ready_to_spawn_rooms[zone_index].trooms_single.append(single_room_data)
+						elif mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM3D && double_room_support:
+							var coincidence: bool = false
+							# Double room.
+							# At first, we spawn mirror room, next we spawn original room.
+							for shape in double_room_shapes[zone_index]:
+								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM3D:
+									mapgen[n][o].resource = shape[0].duplicate()
+									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+										mapgen[n+1][o].resource = shape[1].duplicate()
+										selected_room = mapgen[n+1][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n+1][o].room_name = room.name
+									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										mapgen[n][o+1].resource = shape[1].duplicate()
+										selected_room = mapgen[n][o+1].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o+1].room_name = room.name
+									selected_room = mapgen[n][o].resource.prefab
+									room = selected_room.instantiate()
+									room.position = Vector3(n * grid_size, 0, o * grid_size)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
+									add_child(room, true)
+									mapgen[n][o].room_name = room.name
+									room2d_count[zone_index] += 1
+									double_room_shapes.erase(shape)
+									coincidence = true
+									break
+							if !coincidence:
+								selected_room = room_select(RoomTypes.ROOM3, ready_to_spawn_rooms, zone_index, n, o)
 							else:
-								# Generic room spawn
-								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+								continue
+						else:
+							selected_room = room_select(RoomTypes.ROOM3, ready_to_spawn_rooms, zone_index, n, o)
 						room = selected_room.instantiate()
 						room.position = Vector3(n * grid_size, 0, o * grid_size)
 						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
 						add_child(room, true)
 						mapgen[n][o].room_name = room.name
 					RoomTypes.ROOM4:
-						if mapgen[n][o].double_room == 1 && double_room_support && rooms[zone_index].crossrooms_double_single.size() > 0 && room2d_count[zone_index] < rooms[zone_index].crossrooms_double_single.size():
+						if mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM4D && double_room_support:
+							var coincidence: bool = false
 							# Double room.
 							# At first, we spawn mirror room, next we spawn original room.
-							mapgen[n][o].resource = ready_to_spawn_rooms[zone_index].crossrooms_double_single[room2d_count[zone_index]]
-							var opposite_angle: float = 0.0
-							if n < size_x - 1:
-								if mapgen[n+1][o].double_room == 1:
-									opposite_angle = mapgen[n+1][o].angle
-									mapgen[n+1][o].resource = ready_to_spawn_rooms[zone_index].crossrooms_double_single[mapgen[n][o].resource.double_room_ids[rng.randi_range(0, mapgen[n][o].resource.double_room_ids.size() - 1)]]
-									selected_room = mapgen[n+1][o].resource.prefab
+							for shape in double_room_shapes[zone_index]:
+								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM4D:
+									mapgen[n][o].resource = shape[0].duplicate()
+									var double_4d: bool = false
+									var opposite_angle: float = 0.0
+									if n < size_x - 1:
+										if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
+											double_4d = true
+											opposite_angle = mapgen[n+1][o].angle
+											mapgen[n+1][o].resource = shape[1].duplicate()
+											selected_room = mapgen[n+1][o].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n+1][o].room_name = room.name
+										elif n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+											mapgen[n+1][o].resource = shape[1].duplicate()
+											selected_room = mapgen[n+1][o].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n+1][o].room_name = room.name
+									if o < size_y - 1:
+										if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
+											double_4d = true
+											opposite_angle = mapgen[n][o+1].angle
+											mapgen[n][o+1].resource = shape[1].duplicate()
+											selected_room = mapgen[n][o+1].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n][o+1].room_name = room.name
+										elif o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+											mapgen[n][o+1].resource = shape[1].duplicate()
+											selected_room = mapgen[n][o+1].resource.prefab
+											room = selected_room.instantiate()
+											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
+											add_child(room, true)
+											mapgen[n][o+1].room_name = room.name
+									selected_room = mapgen[n][o].resource.prefab
 									room = selected_room.instantiate()
-									room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
+									room.position = Vector3(n * grid_size, 0, o * grid_size)
+									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180 if double_4d else mapgen[n][o].angle, room.rotation_degrees.z)
 									add_child(room, true)
-									mapgen[n+1][o].room_name = room.name
-									if mapgen[n+1][o].resource != mapgen[n][o].resource:
-										ready_to_spawn_rooms[zone_index].crossrooms_double_single.erase(mapgen[n+1][o].resource)
-							if o < size_y - 1:
-								if mapgen[n][o+1].double_room == 1:
-									opposite_angle = mapgen[n][o+1].angle
-									mapgen[n][o+1].resource = ready_to_spawn_rooms[zone_index].crossrooms_double_single[mapgen[n][o].resource.double_room_ids[rng.randi_range(0, mapgen[n][o].resource.double_room_ids.size() - 1)]]
-									selected_room = mapgen[n][o+1].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o+1].room_name = room.name
-									if mapgen[n][o+1].resource != mapgen[n][o].resource:
-										ready_to_spawn_rooms[zone_index].crossrooms_double_single.erase(mapgen[n][o+1].resource)
-							selected_room = mapgen[n][o].resource.prefab
-							room = selected_room.instantiate()
-							room.position = Vector3(n * grid_size, 0, o * grid_size)
-							room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180, room.rotation_degrees.z)
-							add_child(room, true)
-							mapgen[n][o].room_name = room.name
-							ready_to_spawn_rooms[zone_index].crossrooms_double_single.erase(mapgen[n][o].resource)
-							room4d_count[zone_index] += 1
-						else:
-							var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].crossrooms_single, true)
-							var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].crossrooms)
-							if single_room_data != null:
-								var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
-								if (room4_count[zone_index] < rooms[zone_index].crossrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
-									# Single rooms spawn
-									mapgen[n][o].resource = single_room_data
-									selected_room = single_room_data.prefab
-									room4_count[zone_index] += 1
-								else:
-									# Generic room spawn
-									mapgen[n][o].resource = room_data
-									selected_room = room_data.prefab
-									ready_to_spawn_rooms[zone_index].crossrooms_single.append(single_room_data)
-							else:
-								# Generic room spawn
-								mapgen[n][o].resource = room_data
-								selected_room = mapgen[n][o].resource.prefab
+									mapgen[n][o].room_name = room.name
+									room2d_count[zone_index] += 1
+									double_room_shapes.erase(shape)
+									coincidence = true
+									break
 							
-							room = selected_room.instantiate()
-							room.position = Vector3(n * grid_size, 0, o * grid_size)
-							room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-							add_child(room, true)
-							mapgen[n][o].room_name = room.name
+							if !coincidence:
+								selected_room = room_select(RoomTypes.ROOM4, ready_to_spawn_rooms, zone_index, n, o)
+							else:
+								continue
+						else:
+							selected_room = room_select(RoomTypes.ROOM4, ready_to_spawn_rooms, zone_index, n, o)
+						room = selected_room.instantiate()
+						room.position = Vector3(n * grid_size, 0, o * grid_size)
+						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
+						add_child(room, true)
+						mapgen[n][o].room_name = room.name
 		zone_index = zone_index_default
 		zone_counter.y = 0
 	if enable_door_generation:
 		spawn_doors()
 	generated.emit()
-	
+
+func room_select(type: RoomTypes, ready_to_spawn_rooms: Array[MapGenZone], zone_index: int, n: int, o: int) -> PackedScene:
+	var selected_room: PackedScene
+	match type:
+		RoomTypes.ROOM1:
+			var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms_single, true)
+			var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].endrooms)
+			if single_room_data != null:
+				var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+				if (room1_count[zone_index] < rooms[zone_index].endrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+					# Single rooms spawn
+					mapgen[n][o].resource = single_room_data
+					selected_room = single_room_data.prefab
+					room1_count[zone_index] += 1
+				else:
+					# Generic room spawn
+					mapgen[n][o].resource = room_data
+					selected_room = room_data.prefab
+					ready_to_spawn_rooms[zone_index].endrooms_single.append(single_room_data)
+			else:
+				# Generic room spawn
+				mapgen[n][o].resource = room_data
+				selected_room = room_data.prefab
+		RoomTypes.ROOM2:
+			var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways_single, true)
+			var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].hallways)
+			if single_room_data != null:
+				var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+				if (room2_count[zone_index] < rooms[zone_index].hallways_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+					# Single rooms spawn
+					mapgen[n][o].resource = single_room_data
+					selected_room = single_room_data.prefab
+					room2_count[zone_index] += 1
+				else:
+					# Generic room spawn
+					mapgen[n][o].resource = room_data
+					selected_room = room_data.prefab
+					ready_to_spawn_rooms[zone_index].hallways_single.append(single_room_data)
+			else:
+				# Generic room spawn
+				mapgen[n][o].resource = room_data
+				selected_room = mapgen[n][o].resource.prefab
+		RoomTypes.ROOM2C:
+			var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners_single, true)
+			var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].corners)
+			if single_room_data != null:
+				var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+				if (room2c_count[zone_index] < rooms[zone_index].corners_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+					# Single rooms spawn
+					mapgen[n][o].resource = single_room_data
+					selected_room = single_room_data.prefab
+					room2c_count[zone_index] += 1
+				else:
+					# Generic room spawn
+					mapgen[n][o].resource = room_data
+					selected_room = room_data.prefab
+					ready_to_spawn_rooms[zone_index].corners_single.append(single_room_data)
+			else:
+				# Generic room spawn
+				mapgen[n][o].resource = room_data
+				selected_room = mapgen[n][o].resource.prefab
+		RoomTypes.ROOM3:
+			var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms_single, true)
+			var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].trooms)
+			if single_room_data != null:
+				var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+				if (room3_count[zone_index] < rooms[zone_index].trooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+					# Single rooms spawn
+					mapgen[n][o].resource = single_room_data
+					selected_room = single_room_data.prefab
+					room3_count[zone_index] += 1
+				else:
+					# Generic room spawn
+					mapgen[n][o].resource = room_data
+					selected_room = room_data.prefab
+					ready_to_spawn_rooms[zone_index].trooms_single.append(single_room_data)
+			else:
+				# Generic room spawn
+				mapgen[n][o].resource = room_data
+				selected_room = mapgen[n][o].resource.prefab
+		RoomTypes.ROOM4:
+			var single_room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].crossrooms_single, true)
+			var room_data: MapGenRoom = random_room_with_chance(ready_to_spawn_rooms[zone_index].crossrooms)
+			if single_room_data != null:
+				var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
+				if (room4_count[zone_index] < rooms[zone_index].crossrooms_single.size() && spawn_chance < single_room_data.spawn_chance) || single_room_data.guaranteed_spawn:
+					# Single rooms spawn
+					mapgen[n][o].resource = single_room_data
+					selected_room = single_room_data.prefab
+					room4_count[zone_index] += 1
+				else:
+					# Generic room spawn
+					mapgen[n][o].resource = room_data
+					selected_room = room_data.prefab
+					ready_to_spawn_rooms[zone_index].crossrooms_single.append(single_room_data)
+			else:
+				# Generic room spawn
+				mapgen[n][o].resource = room_data
+				selected_room = mapgen[n][o].resource.prefab
+	return selected_room
+
 ## Returns random room, depending on chance
 func random_room_with_chance(rooms_pack: Array[MapGenRoom], single: bool = false) -> MapGenRoom:
 	var counter: float = 0.0
@@ -464,6 +622,7 @@ func spawn_doors() -> void:
 						startup_node.add_child(door, true)
 		zone_index = zone_index_default
 		zone_counter.y = 0
+
 ## Clears the map generation
 func clear():
 	mapgen.clear()

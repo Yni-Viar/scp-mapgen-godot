@@ -2,6 +2,8 @@
 extends Resource
 class_name MapGenRoom
 
+enum DoubleRoomTypes {NONE, ROOM2D = 2, ROOM2CD = 3, ROOM3D = 4, ROOM4D = 5}
+
 @export var name: String
 @export var prefab: PackedScene
 @export var icon_0_degrees: Texture2D
@@ -18,5 +20,5 @@ class_name MapGenRoom
 @export var guaranteed_spawn: bool = false
 ## Added in mapgen v9. Requires "Double room support" to be enabled.
 @export_group("Double rooms")
-## Which room can be connected with this room.
-@export var double_room_ids: Array[int] = []
+## Room shape for double room generation
+@export var double_room_shape: DoubleRoomTypes = DoubleRoomTypes.NONE

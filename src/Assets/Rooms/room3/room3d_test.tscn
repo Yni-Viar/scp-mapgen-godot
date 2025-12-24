@@ -1,8 +1,8 @@
-[gd_scene load_steps=8 format=4 uid="uid://bea033opur3st"]
+[gd_scene load_steps=8 format=4 uid="uid://dm1hxrwh8le5d"]
 
-[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/EvacuationShelter/Walls.tres" id="1_75h7k"]
-[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/EvacuationShelter/Ceiling.tres" id="2_mshtv"]
-[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/EvacuationShelter/Floor.tres" id="3_itdno"]
+[ext_resource type="Material" uid="uid://bx6svntie8yke" path="res://Assets/Materials/EvacuationShelter/Walls.tres" id="1_8ucss"]
+[ext_resource type="Material" uid="uid://drdixxgiv4gv4" path="res://Assets/Materials/EvacuationShelter/Ceiling.tres" id="2_svasp"]
+[ext_resource type="Material" uid="uid://cghjsdm6328ko" path="res://Assets/Materials/EvacuationShelter/Floor.tres" id="3_bg4ri"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_08alc"]
 vertices = PackedVector3Array(-9.7394, -0.769568, -3.24565, -9.7394, -0.769568, 3.25435, -6.9894, -0.769568, 3.25435, -3.4894, -0.769568, 9.75435, 3.2606, -0.769568, 9.75435, 3.2606, -0.769568, 7.00435, -3.4894, -0.769568, 6.75435, 6.7606, -0.769568, 3.50435, 9.7606, -0.769568, -3.24565, 9.7606, -0.769568, 3.50435)
@@ -50,7 +50,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 66,
 "index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAHAAdAB4AHAAfAB0AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkA"),
-"material": ExtResource("1_75h7k"),
+"material": ExtResource("1_8ucss"),
 "name": "Walls",
 "primitive": 3,
 "uv_scale": Vector4(3.80095, 1.99275, 0, 0),
@@ -62,7 +62,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 36,
 "index_data": PackedByteArray("AAABAAIAAwABAAAAAwAEAAEAAQAEAAUABAADAAYABAAGAAcACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
-"material": ExtResource("2_mshtv"),
+"material": ExtResource("2_svasp"),
 "name": "Ceiling",
 "primitive": 3,
 "uv_scale": Vector4(3.0007, 2.45749, 0, 0),
@@ -74,7 +74,7 @@ _surfaces = [{
 "format": 34896613399,
 "index_count": 36,
 "index_data": PackedByteArray("AAABAAIAAwABAAAAAQADAAQAAQAEAAUAAQAFAAYAAQAGAAcACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
-"material": ExtResource("3_itdno"),
+"material": ExtResource("3_bg4ri"),
 "name": "Floor",
 "primitive": 3,
 "uv_scale": Vector4(3.0007, 2.45749, 0, 0),
@@ -115,3 +115,8 @@ end_position = Vector3(1, 0, 0)
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.860662, 0)
 shape = SubResource("ConcavePolygonShape3D_mshtv")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 1.4466685, 0)
+text = "D"
+font_size = 1024

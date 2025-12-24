@@ -10,12 +10,12 @@ config_version=5
 
 [application]
 
-config/name="SCP-like Map Generator v9"
+config/name="SCP-like Map Generator v10"
 config/description="A procedural map generator, inspired from SCP-Containment Breach one."
-config/version="9.0.0"
+config/version="10.0.0"
 config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 run/main_scene="res://Scenes/Main.tscn"
-config/features=PackedStringArray("4.4", "Forward Plus")
+config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon_64.png"
 
 [dotnet]

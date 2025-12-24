@@ -41,7 +41,9 @@ class_name MapGenZone
 @export var checkpoint_door_frames: Array[PackedScene] = []
 ## Added in mapgen v9. Requires "Double room support" to be enabled.
 @export_group("Double rooms")
+## Double rooms. Their structure: [[MapGenRoom, MapGenRoom], [MapGenRoom, MapGenRoom], ...]
+@export var double_rooms: Array[Array] = []
 ## Single version of double hallway
-@export var hallways_double_single: Array[MapGenRoom] = []
+#@export var hallways_double_single: Array[MapGenRoom] = []
 ## Single version of double crossrooms
-@export var crossrooms_double_single: Array[MapGenRoom] = []
+#@export var crossrooms_double_single: Array[MapGenRoom] = []
