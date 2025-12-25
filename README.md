@@ -2,7 +2,7 @@
 ## About
 
 SCP-like facility map generator
-[How to use?](/docs/how_to_use.md)
+[How to use?](./docs/how_to_use.md)
 
 [SCP: Containment Procedures uses this map generator](https://github.com/Yni-Viar/scp-containmentprocedures)
 
@@ -28,11 +28,13 @@ Unity (Coming soon...)
 - [x] Checkpoint support *Note, that these checkpoints work differently from Containment Breach ones*
 - [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
 - [x] Variable room spawn, based on room chance / guaranteed spawn.
-- [x] Seamless double rooms (NEW!) *(Only hallways and X-shaped rooms are supported)*
+- [x] Seamless double rooms *(All non-endroom types supported since v10)*
 
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.10.0.0 (2025.12.25)
+- Double room overhaul - Double room creation became easier + supported also Room2C and Room3
 ### v.9.1.0 (2025.09.29)
 - Fixed some rooms could not spawn due to unduplicated resources.
 - Fixed double rooms spawn.

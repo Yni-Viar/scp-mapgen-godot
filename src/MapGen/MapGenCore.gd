@@ -804,35 +804,41 @@ func detect_double_room(first: Vector2i, second: Vector2i, zone: int) -> void:
 				match mapgen[first.x][first.y].angle:
 					0.0:
 						mapgen[first.x][first.y].angle = 180.0
-						mapgen[second.x][second.y].angle = 0.0
+						mapgen[second.x][second.y].angle = 180.0
 					90.0:
 						mapgen[first.x][first.y].angle = 270.0
-						mapgen[second.x][second.y].angle = 90.0
+						mapgen[second.x][second.y].angle = 270.0
 					180.0:
-						mapgen[second.x][second.y].angle = 0.0
-					270.0:
-						mapgen[second.x][second.y].angle = 90.0
-				mapgen[second.x][second.y].double_room = DoubleRoomTypes.ROOM2D
-			elif mapgen[first.x][first.y].room_type == RoomTypes.ROOM4:
-				mapgen[first.x][first.y].double_room = DoubleRoomTypes.ROOM4D
-				match mapgen[first.x][first.y].angle:
-					0.0:
 						mapgen[first.x][first.y].angle = 180.0
-						mapgen[second.x][second.y].angle = 0.0
-					90.0:
-						mapgen[first.x][first.y].angle = 270.0
-						mapgen[second.x][second.y].angle = 90.0
-					180.0:
-						mapgen[second.x][second.y].angle = 0.0
+						mapgen[second.x][second.y].angle = 180.0
 					270.0:
-						mapgen[second.x][second.y].angle = 90.0
-				mapgen[second.x][second.y].double_room = DoubleRoomTypes.ROOM4D
-		elif mapgen[first.x][first.y].room_type == shape[0].double_room_shape && \
-		  mapgen[second.x][second.y].room_type == shape[1].double_room_shape && \
-		  ((shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.LEFT && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.RIGHT) || \
-		  (shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.UP && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.DOWN)):
-			mapgen[first.x][first.y].double_room = shape[0].double_room_shape
-			mapgen[second.x][second.y].double_room = shape[1].double_room_shape
+						mapgen[first.x][first.y].angle = 270.0
+						mapgen[second.x][second.y].angle = 270.0
+				mapgen[second.x][second.y].double_room = DoubleRoomTypes.ROOM2D
+			#elif mapgen[first.x][first.y].room_type == RoomTypes.ROOM4:
+				#mapgen[first.x][first.y].double_room = DoubleRoomTypes.ROOM4D
+				#match mapgen[first.x][first.y].angle:
+					#0.0:
+						#mapgen[first.x][first.y].angle = 180.0
+						#mapgen[second.x][second.y].angle = 0.0
+					#90.0:
+						#mapgen[first.x][first.y].angle = 270.0
+						#mapgen[second.x][second.y].angle = 90.0
+					#180.0:
+						#mapgen[second.x][second.y].angle = 0.0
+					#270.0:
+						#mapgen[second.x][second.y].angle = 90.0
+				#mapgen[second.x][second.y].double_room = DoubleRoomTypes.ROOM4D
+		if mapgen[first.x][first.y].room_type == shape[0].double_room_shape && \
+		  mapgen[second.x][second.y].room_type == shape[1].double_room_shape:
+			if shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.LEFT && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.RIGHT && \
+			  mapgen[first.x][first.y].west && mapgen[second.x][second.y].east:
+				mapgen[first.x][first.y].double_room = shape[0].double_room_shape
+				mapgen[second.x][second.y].double_room = shape[1].double_room_shape
+			elif shape[0].double_room_position == MapGenRoom.DoubleRoomPosition.UP && shape[1].double_room_position == MapGenRoom.DoubleRoomPosition.DOWN && \
+			  mapgen[first.x][first.y].north && mapgen[second.x][second.y].south:
+				mapgen[first.x][first.y].double_room = shape[0].double_room_shape
+				mapgen[second.x][second.y].double_room = shape[1].double_room_shape
 	
 
 ## Clears the map generation

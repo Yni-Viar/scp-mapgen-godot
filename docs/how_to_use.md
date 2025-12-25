@@ -38,7 +38,7 @@ There are some parameters:
 - `Large` mean large room (see Parameters chapter)
 - `Door frames` is a `PackedScene` array, containing all variations of doors.
 - `Checkpoint door frames` is like door frames, but only for checkpoint (if checkpoints are enabled). Added in v.8.0
-- `Double single` - applies only for hallways and X-shaped intersections. Rooms for
+- `Double rooms property` - Double rooms. Their structure: [[MapGenRoom, MapGenRoom], [MapGenRoom, MapGenRoom], ...]. Added in v10.0
 
 
 All parameters in this resource (called `MapGenZone`) (except `Door frames`) are also `Resources` - `MapGenRoom` which also have some parameters:
@@ -50,7 +50,8 @@ All parameters in this resource (called `MapGenZone`) (except `Door frames`) are
 - `Door type` - The default value, -1 means, that any door frame (see MapGenZone doorframes) can be used. Otherwise, only specific door frame can be used with this room (similar mechanic used in SCP: Secret Lab. since 14.0). Added in MapGen v.8.0\
 - `Guaranteed spawn` - ignore Spawn chance property (works only for `Single` room types). Added in v8.1
   - ⚠ If the map size is too small, guaranteed rooms may not spawn.
-- `Double Room Ids` are IDs for double rooms. It searches in map generator `Rooms.<type> Double Single` array where `<type>` is `hallway` or `intersection` to connect first room to room under this index.
+- `Double Room Position` is the rotation of double rooms (added in v10.0). Always check, that the first room is UP - second is DOWN or first room is LEFT - second is RIGHT!
+- `Double Room Shape` is type of double room (added in v10.0).
 
 ## Prepare a room for map generation.
 In Godot editor, make sure, that the exits of rooms faces the axis, seen in this picture:

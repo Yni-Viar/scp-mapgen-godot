@@ -191,20 +191,20 @@ func spawn_rooms() -> void:
 							for shape in double_room_shapes[zone_index]:
 								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM2D:
 									mapgen[n][o].resource = shape[0].duplicate()
-									var double_2d: bool = false
-									var opposite_angle: float = 0.0
+									#var double_2d: bool = false
+									#var opposite_angle: float = 0.0
 									if n < size_x - 1:
-										if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
-											double_2d = true
-											opposite_angle = mapgen[n+1][o].angle
-											mapgen[n+1][o].resource = shape[1].duplicate()
-											selected_room = mapgen[n+1][o].resource.prefab
-											room = selected_room.instantiate()
-											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
-											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
-											add_child(room, true)
-											mapgen[n+1][o].room_name = room.name
-										elif n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+										#if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
+											#double_2d = true
+											#opposite_angle = mapgen[n+1][o].angle
+											#mapgen[n+1][o].resource = shape[1].duplicate()
+											#selected_room = mapgen[n+1][o].resource.prefab
+											#room = selected_room.instantiate()
+											#room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											#room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											#add_child(room, true)
+											#mapgen[n+1][o].room_name = room.name
+										if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
 											mapgen[n+1][o].resource = shape[1].duplicate()
 											selected_room = mapgen[n+1][o].resource.prefab
 											room = selected_room.instantiate()
@@ -212,18 +212,19 @@ func spawn_rooms() -> void:
 											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
 											add_child(room, true)
 											mapgen[n+1][o].room_name = room.name
+											coincidence = true
 									if o < size_y - 1:
-										if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
-											double_2d = true
-											opposite_angle = mapgen[n][o+1].angle
-											mapgen[n][o+1].resource = shape[1].duplicate()
-											selected_room = mapgen[n][o+1].resource.prefab
-											room = selected_room.instantiate()
-											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
-											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
-											add_child(room, true)
-											mapgen[n][o+1].room_name = room.name
-										elif o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										#if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM2D:
+											#double_2d = true
+											#opposite_angle = mapgen[n][o+1].angle
+											#mapgen[n][o+1].resource = shape[1].duplicate()
+											#selected_room = mapgen[n][o+1].resource.prefab
+											#room = selected_room.instantiate()
+											#room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											#room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											#add_child(room, true)
+											#mapgen[n][o+1].room_name = room.name
+										if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
 											mapgen[n][o+1].resource = shape[1].duplicate()
 											selected_room = mapgen[n][o+1].resource.prefab
 											room = selected_room.instantiate()
@@ -231,16 +232,17 @@ func spawn_rooms() -> void:
 											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
 											add_child(room, true)
 											mapgen[n][o+1].room_name = room.name
-									selected_room = mapgen[n][o].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180 if double_2d else mapgen[n][o].angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o].room_name = room.name
-									room2d_count[zone_index] += 1
-									double_room_shapes.erase(shape)
-									coincidence = true
-									break
+											coincidence = true
+									if coincidence:
+										selected_room = mapgen[n][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z) #opposite_angle - 180 if double_2d else mapgen[n][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o].room_name = room.name
+										room2d_count[zone_index] += 1
+										double_room_shapes[zone_index].erase(shape)
+										break
 							if !coincidence:
 								selected_room = room_select(RoomTypes.ROOM2, ready_to_spawn_rooms, zone_index, n, o)
 							else:
@@ -265,7 +267,8 @@ func spawn_rooms() -> void:
 							for shape in double_room_shapes[zone_index]:
 								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM2CD:
 									mapgen[n][o].resource = shape[0].duplicate()
-									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape && \
+									  mapgen[n+1][o].angle in [90.0, 180.0]:
 										mapgen[n+1][o].resource = shape[1].duplicate()
 										selected_room = mapgen[n+1][o].resource.prefab
 										room = selected_room.instantiate()
@@ -273,7 +276,9 @@ func spawn_rooms() -> void:
 										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
 										add_child(room, true)
 										mapgen[n+1][o].room_name = room.name
-									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										coincidence = true
+									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape && \
+									  mapgen[n][o+1].angle in [90.0, 180.0]:
 										mapgen[n][o+1].resource = shape[1].duplicate()
 										selected_room = mapgen[n][o+1].resource.prefab
 										room = selected_room.instantiate()
@@ -281,16 +286,18 @@ func spawn_rooms() -> void:
 										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
 										add_child(room, true)
 										mapgen[n][o+1].room_name = room.name
-									selected_room = mapgen[n][o].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o].room_name = room.name
-									room2d_count[zone_index] += 1
-									double_room_shapes.erase(shape)
-									coincidence = false
-									break
+										coincidence = true
+									if coincidence:
+										selected_room = mapgen[n][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o].room_name = room.name
+										room2d_count[zone_index] += 1
+										double_room_shapes[zone_index].erase(shape)
+										
+										break
 							if !coincidence:
 								selected_room = room_select(RoomTypes.ROOM2C, ready_to_spawn_rooms, zone_index, n, o)
 							else:
@@ -315,7 +322,8 @@ func spawn_rooms() -> void:
 							for shape in double_room_shapes[zone_index]:
 								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM3D:
 									mapgen[n][o].resource = shape[0].duplicate()
-									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+									if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape && \
+									  mapgen[n+1][o].angle == mapgen[n][o].angle:
 										mapgen[n+1][o].resource = shape[1].duplicate()
 										selected_room = mapgen[n+1][o].resource.prefab
 										room = selected_room.instantiate()
@@ -323,7 +331,9 @@ func spawn_rooms() -> void:
 										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
 										add_child(room, true)
 										mapgen[n+1][o].room_name = room.name
-									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										coincidence = true
+									if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape && \
+									  abs(mapgen[n][o+1].angle - mapgen[n][o].angle) == 90.0:
 										mapgen[n][o+1].resource = shape[1].duplicate()
 										selected_room = mapgen[n][o+1].resource.prefab
 										room = selected_room.instantiate()
@@ -331,16 +341,17 @@ func spawn_rooms() -> void:
 										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
 										add_child(room, true)
 										mapgen[n][o+1].room_name = room.name
-									selected_room = mapgen[n][o].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o].room_name = room.name
-									room2d_count[zone_index] += 1
-									double_room_shapes.erase(shape)
-									coincidence = true
-									break
+										coincidence = true
+									if coincidence:
+										selected_room = mapgen[n][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o].room_name = room.name
+										room2d_count[zone_index] += 1
+										double_room_shapes[zone_index].erase(shape)
+										break
 							if !coincidence:
 								selected_room = room_select(RoomTypes.ROOM3, ready_to_spawn_rooms, zone_index, n, o)
 							else:
@@ -360,20 +371,20 @@ func spawn_rooms() -> void:
 							for shape in double_room_shapes[zone_index]:
 								if shape[0].double_room_shape == MapGenCore.DoubleRoomTypes.ROOM4D:
 									mapgen[n][o].resource = shape[0].duplicate()
-									var double_4d: bool = false
-									var opposite_angle: float = 0.0
+									#var double_4d: bool = false
+									#var opposite_angle: float = 0.0
 									if n < size_x - 1:
-										if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
-											double_4d = true
-											opposite_angle = mapgen[n+1][o].angle
-											mapgen[n+1][o].resource = shape[1].duplicate()
-											selected_room = mapgen[n+1][o].resource.prefab
-											room = selected_room.instantiate()
-											room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
-											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
-											add_child(room, true)
-											mapgen[n+1][o].room_name = room.name
-										elif n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
+										#if mapgen[n+1][o].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
+											#double_4d = true
+											#opposite_angle = mapgen[n+1][o].angle
+											#mapgen[n+1][o].resource = shape[1].duplicate()
+											#selected_room = mapgen[n+1][o].resource.prefab
+											#room = selected_room.instantiate()
+											#room.position = Vector3((n + 1) * grid_size, 0, o * grid_size)
+											#room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											#add_child(room, true)
+											#mapgen[n+1][o].room_name = room.name
+										if n < size_x - 1 && mapgen[n+1][o].double_room == shape[1].double_room_shape:
 											mapgen[n+1][o].resource = shape[1].duplicate()
 											selected_room = mapgen[n+1][o].resource.prefab
 											room = selected_room.instantiate()
@@ -381,18 +392,19 @@ func spawn_rooms() -> void:
 											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n+1][o].angle, room.rotation_degrees.z)
 											add_child(room, true)
 											mapgen[n+1][o].room_name = room.name
+											coincidence = true
 									if o < size_y - 1:
-										if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
-											double_4d = true
-											opposite_angle = mapgen[n][o+1].angle
-											mapgen[n][o+1].resource = shape[1].duplicate()
-											selected_room = mapgen[n][o+1].resource.prefab
-											room = selected_room.instantiate()
-											room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
-											room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
-											add_child(room, true)
-											mapgen[n][o+1].room_name = room.name
-										elif o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
+										#if mapgen[n][o+1].double_room == MapGenCore.DoubleRoomTypes.ROOM4D:
+											#double_4d = true
+											#opposite_angle = mapgen[n][o+1].angle
+											#mapgen[n][o+1].resource = shape[1].duplicate()
+											#selected_room = mapgen[n][o+1].resource.prefab
+											#room = selected_room.instantiate()
+											#room.position = Vector3(n * grid_size, 0, (o + 1) * grid_size)
+											#room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle, room.rotation_degrees.z)
+											#add_child(room, true)
+											#mapgen[n][o+1].room_name = room.name
+										if o < size_y - 1 && mapgen[n][o+1].double_room == shape[1].double_room_shape:
 											mapgen[n][o+1].resource = shape[1].duplicate()
 											selected_room = mapgen[n][o+1].resource.prefab
 											room = selected_room.instantiate()
@@ -400,16 +412,17 @@ func spawn_rooms() -> void:
 											room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o+1].angle, room.rotation_degrees.z)
 											add_child(room, true)
 											mapgen[n][o+1].room_name = room.name
-									selected_room = mapgen[n][o].resource.prefab
-									room = selected_room.instantiate()
-									room.position = Vector3(n * grid_size, 0, o * grid_size)
-									room.rotation_degrees = Vector3(room.rotation_degrees.x, opposite_angle - 180 if double_4d else mapgen[n][o].angle, room.rotation_degrees.z)
-									add_child(room, true)
-									mapgen[n][o].room_name = room.name
-									room2d_count[zone_index] += 1
-									double_room_shapes.erase(shape)
-									coincidence = true
-									break
+											coincidence = true
+									if coincidence:
+										selected_room = mapgen[n][o].resource.prefab
+										room = selected_room.instantiate()
+										room.position = Vector3(n * grid_size, 0, o * grid_size)
+										room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z) #opposite_angle - 180 if double_4d else mapgen[n][o].angle, room.rotation_degrees.z)
+										add_child(room, true)
+										mapgen[n][o].room_name = room.name
+										room2d_count[zone_index] += 1
+										double_room_shapes[zone_index].erase(shape)
+										break
 							
 							if !coincidence:
 								selected_room = room_select(RoomTypes.ROOM4, ready_to_spawn_rooms, zone_index, n, o)
