@@ -83,6 +83,10 @@ layout_mode = 2
 text = "20.48"
 virtual_keyboard_type = 2
 
+[node name="CleanRoomPackCache" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Clean room pack cache"
+
 [node name="SetRoomPack" type="Node" parent="."]
 script = ExtResource("4_rgh2o")
 
@@ -102,4 +106,5 @@ filters = PackedStringArray("*.zip")
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
 [connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/CleanRoomPackCache" to="UI" method="_on_clean_room_pack_cache_pressed"]
 [connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]

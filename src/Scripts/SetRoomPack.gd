@@ -67,6 +67,8 @@ func _on_file_dialog_file_selected(path: String) -> void:
 						var prefab: PackedScene = load("user://roompack_packedscenes/" + room.trim_suffix(".glb") + ".tscn")
 						mapgenroom.prefab = prefab
 						array_for_zone.append(mapgenroom)
+						gltf_scene_root_node.queue_free()
+						gltf_scene_root_node = null
 		# Set room type to created array
 		zone.set(alias, array_for_zone)
 	# Pre defined values

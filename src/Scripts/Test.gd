@@ -34,3 +34,11 @@ func _on_room_pack_button_pressed() -> void:
 func _on_room_scale_edit_text_changed(new_text: String) -> void:
 	if new_text.is_valid_float():
 		get_parent().get_node("FacilityGenerator").grid_size = float(new_text)
+
+
+func _on_clean_room_pack_cache_pressed() -> void:
+	if OS.get_name() != "Web":
+		if DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
+			OS.move_to_trash("user://roompack_packedscenes")
+		if DirAccess.dir_exists_absolute("user://roompack_temp/"):
+			OS.move_to_trash("user://roompack_temp")
