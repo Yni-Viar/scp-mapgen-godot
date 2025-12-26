@@ -1,11 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://6l8r5fy0ymqt"]
+[gd_scene load_steps=8 format=3 uid="uid://6l8r5fy0ymqt"]
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
-[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="2_5d2s6"]
-[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/EvacuationShelter.tres" id="4_v1gob"]
+[ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="5_8xs74"]
-[ext_resource type="Resource" uid="uid://c7t6xojhj4u1l" path="res://MapGen/MaintenanceTunnels.tres" id="5_jw32o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbml1"]
 
@@ -21,11 +19,8 @@ script = ExtResource("1_v1gob")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
-rooms = Array[ExtResource("2_5d2s6")]([ExtResource("4_v1gob"), ExtResource("5_jw32o")])
-map_size_y = 1
 large_rooms = true
 checkpoints_enabled = true
-double_room_support = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")
@@ -39,51 +34,72 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_8xs74")
 
-[node name="Generate" type="Button" parent="UI"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -82.5
-offset_top = -33.0
-offset_right = 82.5
-grow_horizontal = 2
-grow_vertical = 0
-text = "Generate map"
-
-[node name="Seed" type="LineEdit" parent="UI"]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -72.0
-offset_right = 80.0
-offset_bottom = -41.0
-grow_horizontal = 2
-grow_vertical = 0
-placeholder_text = "Seed"
-
 [node name="Label" type="Label" parent="UI"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -364.0
-offset_top = -75.0
-grow_horizontal = 0
+offset_top = -49.0
+offset_right = 364.0
 grow_vertical = 0
 text = "Map generation by Yni.
 Camera Gimbal by kidscancode (MIT License)."
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -256.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="RoomPackButton" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Load room pack"
+
+[node name="Seed" type="LineEdit" parent="UI/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Seed"
+
+[node name="Generate" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Generate map"
+
+[node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Double room support"
+
+[node name="RoomScaleLabel" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Room scale"
+
+[node name="RoomScaleEdit" type="LineEdit" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "20.48"
+virtual_keyboard_type = 2
+
+[node name="SetRoomPack" type="Node" parent="."]
+script = ExtResource("4_rgh2o")
+
+[node name="FileDialog" type="FileDialog" parent="SetRoomPack"]
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+ok_button_text = "Open room pack (please, wait for a while...)"
+file_mode = 0
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.zip")
+
 [connection signal="generated" from="FacilityGenerator" to="." method="_on_facility_generator_generated"]
-[connection signal="pressed" from="UI/Generate" to="UI" method="_on_generate_pressed"]
-[connection signal="text_changed" from="UI/Seed" to="UI" method="_on_seed_text_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
+[connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
+[connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
+[connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
+[connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]

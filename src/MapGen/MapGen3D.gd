@@ -73,6 +73,9 @@ func _ready() -> void:
 
 func generate_rooms():
 	clear()
+	if rooms == null || rooms.size() == 0:
+		printerr("There are no zones, cannot spawn.")
+		return
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
 	# Initialize, what double room shapes are being used
@@ -156,7 +159,7 @@ func spawn_rooms() -> void:
 				room2cd_count.append(0)
 				room3d_count.append(0)
 				zone_index += 1
-			var room: StaticBody3D
+			var room: Node3D
 			if mapgen[n][o].resource == null:
 				match mapgen[n][o].room_type:
 					RoomTypes.ROOM1:

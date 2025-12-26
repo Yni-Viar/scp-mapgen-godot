@@ -4,6 +4,8 @@
 SCP-like facility map generator
 [How to use?](./docs/how_to_use.md)
 
+[Room pack tutorial](./docs/runtime_loader.md)
+
 [SCP: Containment Procedures uses this map generator](https://github.com/Yni-Viar/scp-containmentprocedures)
 
 ## Other editions
@@ -33,6 +35,9 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.10.1.0 (2025.12.26)
+- No generic map generation changes (except now room scene root can be every node3d), but...
+- Added room previewer, which can load room packs.
 ### v.10.0.0 (2025.12.25)
 - Double room overhaul - Double room creation became easier + supported also Room2C and Room3
 ### v.9.1.0 (2025.09.29)
