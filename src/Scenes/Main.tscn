@@ -1,9 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://6l8r5fy0ymqt"]
+[gd_scene load_steps=11 format=3 uid="uid://6l8r5fy0ymqt"]
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="3_v1gob"]
+[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/SimpleTest.tres" id="4_jw32o"]
 [ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="5_8xs74"]
+[ext_resource type="Script" uid="uid://bjt0w0pvlhm7u" path="res://Scripts/RoomSaver.gd" id="5_pbw6q"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbml1"]
 
@@ -19,7 +22,9 @@ script = ExtResource("1_v1gob")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
+rooms = Array[ExtResource("3_v1gob")]([ExtResource("4_jw32o")])
 large_rooms = true
+enable_door_generation = false
 checkpoints_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -43,8 +48,8 @@ offset_top = -49.0
 offset_right = 364.0
 grow_vertical = 0
 text = "Map generation by Yni.
+GLTF load and save functions are used from Godot documentation.
 Camera Gimbal by kidscancode (MIT License)."
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
@@ -74,6 +79,10 @@ text = "Generate map"
 layout_mode = 2
 text = "Double room support"
 
+[node name="Door" type="CheckBox" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Spawn sample doors"
+
 [node name="RoomScaleLabel" type="Label" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Room scale"
@@ -83,9 +92,18 @@ layout_mode = 2
 text = "20.48"
 virtual_keyboard_type = 2
 
-[node name="CleanRoomPackCache" type="Button" parent="UI/VBoxContainer"]
+[node name="ZoneSizeLabel" type="Label" parent="UI/VBoxContainer"]
 layout_mode = 2
-text = "Clean room pack cache"
+text = "Zone size"
+
+[node name="ZoneSizeEdit" type="LineEdit" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "8"
+virtual_keyboard_type = 2
+
+[node name="SaveResult" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Save generation result to GLTF"
 
 [node name="SetRoomPack" type="Node" parent="."]
 script = ExtResource("4_rgh2o")
@@ -100,11 +118,24 @@ display_mode = 1
 access = 2
 filters = PackedStringArray("*.zip")
 
+[node name="RoomSaver" type="Node" parent="."]
+script = ExtResource("5_pbw6q")
+
+[node name="FileDialog" type="FileDialog" parent="RoomSaver"]
+oversampling_override = 1.0
+initial_position = 1
+display_mode = 1
+access = 2
+filters = PackedStringArray("*.gltf")
+
 [connection signal="generated" from="FacilityGenerator" to="." method="_on_facility_generator_generated"]
 [connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
 [connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
+[connection signal="toggled" from="UI/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
 [connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
-[connection signal="pressed" from="UI/VBoxContainer/CleanRoomPackCache" to="UI" method="_on_clean_room_pack_cache_pressed"]
+[connection signal="text_changed" from="UI/VBoxContainer/ZoneSizeEdit" to="UI" method="_on_zone_size_edit_text_changed"]
+[connection signal="pressed" from="UI/VBoxContainer/SaveResult" to="UI" method="_on_save_result_pressed"]
 [connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]
+[connection signal="file_selected" from="RoomSaver/FileDialog" to="RoomSaver" method="_on_file_dialog_file_selected"]

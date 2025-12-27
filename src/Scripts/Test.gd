@@ -36,9 +36,14 @@ func _on_room_scale_edit_text_changed(new_text: String) -> void:
 		get_parent().get_node("FacilityGenerator").grid_size = float(new_text)
 
 
-func _on_clean_room_pack_cache_pressed() -> void:
-	if OS.get_name() != "Web":
-		if DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
-			OS.move_to_trash("user://roompack_packedscenes")
-		if DirAccess.dir_exists_absolute("user://roompack_temp/"):
-			OS.move_to_trash("user://roompack_temp")
+func _on_save_result_pressed() -> void:
+	get_parent().get_node("RoomSaver/FileDialog").show()
+
+
+func _on_zone_size_edit_text_changed(new_text: String) -> void:
+	if new_text.is_valid_int():
+		get_parent().get_node("FacilityGenerator").zone_size = int(new_text)
+
+
+func _on_door_toggled(toggled_on: bool) -> void:
+	get_parent().get_node("FacilityGenerator").enable_door_generation = toggled_on

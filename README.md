@@ -33,6 +33,7 @@ Unity (Coming soon...)
 - [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
 - [x] Variable room spawn, based on room chance / guaranteed spawn.
 - [x] Seamless double rooms *(All non-endroom types supported since v10)*
+- [x] This sample also includes room pack loader and layout saver (from GLTF to GLTF) (since v10.2)
 
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
