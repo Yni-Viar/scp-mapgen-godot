@@ -24,7 +24,6 @@
 [ext_resource type="Resource" uid="uid://dyq6octeegrb5" path="res://MapGen/Resources/EvacuationShelter/room2_maze.tres" id="11_fekca"]
 [ext_resource type="Resource" uid="uid://ipleyr50tc6l" path="res://MapGen/Resources/EvacuationShelter/room1_testroom.tres" id="12_67l4x"]
 [ext_resource type="PackedScene" uid="uid://st8lcetkk8ec" path="res://Assets/Rooms/room2/room2_checkpoint_duplicate.tscn" id="12_uee10"]
-[ext_resource type="Resource" uid="uid://cb1xwajyfp8vf" path="res://MapGen/Resources/EvacuationShelter/room2d_test.tres" id="15_u2on3"]
 
 [sub_resource type="Resource" id="Resource_qp815"]
 script = ExtResource("1_obfoh")
@@ -36,6 +35,9 @@ icon_180_degrees = ExtResource("9_8wtrs")
 icon_270_degrees = ExtResource("10_ujiw5")
 double_room_shape = 2
 metadata/_custom_type_script = "uid://b15b7mhits7ot"
+
+[sub_resource type="Resource" id="Resource_03qgs"]
+metadata/__load_path__ = "res://MapGen/Resources/EvacuationShelter/room2d_test.tres"
 
 [resource]
 script = ExtResource("1_mti3u")
@@ -49,4 +51,4 @@ trooms = Array[ExtResource("1_obfoh")]([ExtResource("11_bo67y")])
 crossrooms = Array[ExtResource("1_obfoh")]([ExtResource("4_7ex6p")])
 door_frames = Array[PackedScene]([ExtResource("4_fekca"), ExtResource("5_1woyu")])
 checkpoint_door_frames = Array[PackedScene]([ExtResource("1_b0doq")])
-double_rooms = Array[Array]([[SubResource("Resource_qp815"), ExtResource("15_u2on3")], [ExtResource("9_hiyka"), ExtResource("10_o24mr")]])
+double_rooms = Array[Array]([[SubResource("Resource_qp815"), SubResource("Resource_03qgs")], [ExtResource("9_hiyka"), ExtResource("10_o24mr")]])

@@ -17,6 +17,9 @@ const CONVERSION_ALIASES: Dictionary[String, String] = {
 	"crossrooms_single": "Room4Single"
 }
 
+var roompack_temp: DirAccess = DirAccess.create_temp("roompack_temp")
+var roompack_packedscenes: DirAccess = DirAccess.create_temp("roompack_packedscenes")
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass
@@ -29,31 +32,33 @@ func _process(delta: float) -> void:
 
 func _on_file_dialog_file_selected(path: String) -> void:
 	# Create temp folders
-	if !DirAccess.dir_exists_absolute("user://roompack_temp/"):
-		var temp: DirAccess = DirAccess.open("user://")
-		temp.make_dir("roompack_temp")
-	if !DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
-		var temp: DirAccess = DirAccess.open("user://")
-		temp.make_dir("roompack_packedscenes")
-	var current_index: int = DirAccess.get_directories_at("user://roompack_temp/").size()
-	if !DirAccess.dir_exists_absolute("user://roompack_temp/" + str(current_index) + "/"):
-		var temp: DirAccess = DirAccess.open("user://roompack_temp/")
-		temp.make_dir(str(current_index))
+	#if !DirAccess.dir_exists_absolute("user://roompack_temp/"):
+		#var temp: DirAccess = DirAccess.open("user://")
+		#temp.make_dir("roompack_temp")
+	#if !DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
+		#var temp: DirAccess = DirAccess.open("user://")
+		#temp.make_dir("roompack_packedscenes")
+	var current_index: int = roompack_temp.get_directories().size() #DirAccess.get_directories_at("user://roompack_temp/").size()
+	#if !DirAccess.dir_exists_absolute("user://roompack_temp/" + str(current_index) + "/"):
+		#var temp: DirAccess = DirAccess.open("user://roompack_temp/")
+		#temp.make_dir(str(current_index))
+	if !roompack_temp.dir_exists(str(current_index)):
+		roompack_temp.make_dir(str(current_index))
 	# Extract all files from zip to first temp folder
-	extract_all_from_zip(path, "roompack_temp/" + str(current_index) + "/")
+	extract_all_from_zip(path, roompack_temp.get_current_dir() + "/" + str(current_index))
 	var zone: MapGenZone = MapGenZone.new()
 	for alias in CONVERSION_ALIASES:
 		# create array for room type 
 		var array_for_zone: Array[MapGenRoom] = []
-		if DirAccess.dir_exists_absolute("user://roompack_temp/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
-			for room in DirAccess.get_files_at("user://roompack_temp/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
+		if DirAccess.dir_exists_absolute(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
+			for room in DirAccess.get_files_at(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
 				# Load an existing glTF scene.
 				# GLTFState is used by GLTFDocument to store the loaded scene's state.
 				# GLTFDocument is the class that handles actually loading glTF data into a Godot node tree,
 				# which means it supports glTF features such as lights and cameras.
 				var gltf_document_load = GLTFDocument.new()
 				var gltf_state_load = GLTFState.new()
-				var error = gltf_document_load.append_from_file("user://roompack_temp/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/" + room, gltf_state_load)
+				var error = gltf_document_load.append_from_file(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/" + room, gltf_state_load)
 				if error == OK:
 					var gltf_scene_root_node = gltf_document_load.generate_scene(gltf_state_load)
 					var scene = PackedScene.new()
@@ -62,9 +67,9 @@ func _on_file_dialog_file_selected(path: String) -> void:
 					var result = scene.pack(gltf_scene_root_node)
 					if result == OK:
 						# Save packed scenes to second temp folder and set to mapgenroom
-						ResourceSaver.save(scene, "user://roompack_packedscenes/" + room.trim_suffix(".glb") + ".tscn")
+						ResourceSaver.save(scene, roompack_packedscenes.get_current_dir() + "/" + room.trim_suffix(".glb") + ".tscn")
 						var mapgenroom: MapGenRoom = MapGenRoom.new()
-						var prefab: PackedScene = load("user://roompack_packedscenes/" + room.trim_suffix(".glb") + ".tscn")
+						var prefab: PackedScene = load(roompack_packedscenes.get_current_dir() + "/" + room.trim_suffix(".glb") + ".tscn")
 						mapgenroom.prefab = prefab
 						array_for_zone.append(mapgenroom)
 						gltf_scene_root_node.queue_free()
@@ -90,7 +95,7 @@ func extract_all_from_zip(path: String, extraction_path: String):
 	# Destination directory for the extracted files (this folder must exist before extraction).
 	# Not all ZIP archives put everything in a single root folder,
 	# which means several files/folders may be created in `root_dir` after extraction.
-	var root_dir = DirAccess.open("user://" + extraction_path)
+	var root_dir = DirAccess.open(extraction_path)
 
 	var files = reader.get_files()
 	for file_path in files:
@@ -106,11 +111,3 @@ func extract_all_from_zip(path: String, extraction_path: String):
 		var file = FileAccess.open(root_dir.get_current_dir().path_join(file_path), FileAccess.WRITE)
 		var buffer = reader.read_file(file_path)
 		file.store_buffer(buffer)
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		if OS.get_name() != "Web":
-			if DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
-				OS.move_to_trash("user://roompack_packedscenes")
-			if DirAccess.dir_exists_absolute("user://roompack_temp/"):
-				OS.move_to_trash("user://roompack_temp")

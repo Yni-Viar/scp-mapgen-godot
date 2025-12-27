@@ -644,5 +644,21 @@ func clear():
 	mapgen.clear()
 	size_x = 0
 	size_y = 0
+	# regular rooms
+	room1_count = [0]
+	room2_count = [0]
+	room2c_count = [0]
+	room3_count = [0]
+	room4_count = [0]
+# large rooms
+	room1l_count = [0]
+	room2l_count = [0]
+	room2cl_count = [0]
+	room3l_count = [0]
+# double rooms
+	room2d_count = [0]
+	room4d_count = [0]
+	room2cd_count = [0]
+	room3d_count = [0]
 	for node in get_children():
 		node.queue_free()
