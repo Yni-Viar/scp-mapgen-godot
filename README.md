@@ -8,6 +8,8 @@ SCP-like facility map generator
 
 [SCP: Containment Procedures uses this map generator](https://github.com/Yni-Viar/scp-containmentprocedures)
 
+[Example room packs](https://drive.google.com/drive/folders/1EqaKQqM_al0BOgujvAMRs1fyXB7-FTHM?usp=sharing)
+
 ## Other editions
 
 [CLI version](https://github.com/Yni-Viar/scp-mapgen-cli)
