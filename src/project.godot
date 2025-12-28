@@ -12,12 +12,16 @@ config_version=5
 
 config/name="SCP-like Map Generator v10"
 config/description="A procedural map generator, inspired from SCP-Containment Breach one."
-config/version="10.2.1"
+config/version="10.3.0"
 config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
 run/main_scene="res://Scenes/Main.tscn"
 config/custom_user_dir_name="SCPMapGenDemo"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon_64.png"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [dotnet]
 
@@ -40,3 +44,5 @@ toggle_mode={
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_s3tc_bptc=true
+textures/vram_compression/import_etc2_astc=true

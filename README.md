@@ -37,9 +37,15 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.10.3.0 (2025.12.28)
+- \[MapGen Room Previewer\] Android support
+- Added support for native GLTF load in map generator + implemented cache for this feature.
+### v.10.2.0 (2025.12.27)
+- \[MapGen Room Previewer\] Added zoom in-zoom out from SCP: Containment Procedures
+- \[MapGen Room Previewer\] Added layout exporter
 ### v.10.1.0 (2025.12.26)
 - No generic map generation changes (except now room scene root can be every node3d), but...
-- Added room previewer, which can load room packs.
+- \[MapGen Room Previewer\] Added room previewer, which can load room packs.
 ### v.10.0.0 (2025.12.25)
 - Double room overhaul - Double room creation became easier + supported also Room2C and Room3
 ### v.9.1.0 (2025.09.29)

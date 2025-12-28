@@ -25,6 +25,9 @@ enum DoubleRoomPosition {UP, DOWN, LEFT, RIGHT}
 ## /!\ WARNING!!! If the map is too small, guaranteed rooms may not spawn.
 @export var guaranteed_spawn: bool = false
 ## Added in mapgen v9. Requires "Double room support" to be enabled.
+@export_group("Optional properties")
+## Exported GLTF path, used when PackedScene is not available
+@export var gltf_path: String = ""
 @export_group("Double rooms")
 @export var double_room_position: DoubleRoomPosition = DoubleRoomPosition.UP
 ## Room shape for double room generation

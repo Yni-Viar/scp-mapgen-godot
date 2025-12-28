@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://6l8r5fy0ymqt"]
+[gd_scene load_steps=12 format=3 uid="uid://6l8r5fy0ymqt"]
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
+[ext_resource type="PackedScene" uid="uid://cxqtyje2n7opp" path="res://PlayerScript/StaticPlayer.tscn" id="2_50glp"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="3_v1gob"]
 [ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/SimpleTest.tres" id="4_jw32o"]
 [ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
@@ -19,6 +20,8 @@ sky = SubResource("Sky_nttp5")
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_v1gob")
+
+[node name="StaticPlayer" parent="." instance=ExtResource("2_50glp")]
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
@@ -79,6 +82,10 @@ placeholder_text = "Seed"
 layout_mode = 2
 text = "Generate map"
 
+[node name="CameraToggle" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Toggle camera view"
+
 [node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Double room support"
@@ -120,7 +127,7 @@ ok_button_text = "Open room pack (please, wait for a while...)"
 file_mode = 0
 display_mode = 1
 access = 2
-filters = PackedStringArray("*.zip")
+filters = PackedStringArray("*.zip", "application/zip", "application/x-zip-compressed")
 
 [node name="RoomSaver" type="Node" parent="."]
 script = ExtResource("5_pbw6q")
@@ -130,12 +137,13 @@ oversampling_override = 1.0
 initial_position = 1
 display_mode = 1
 access = 2
-filters = PackedStringArray("*.gltf")
+filters = PackedStringArray("*.glb", "model/gltf-binary")
 
 [connection signal="generated" from="FacilityGenerator" to="." method="_on_facility_generator_generated"]
 [connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
 [connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
+[connection signal="pressed" from="UI/VBoxContainer/CameraToggle" to="UI" method="_on_camera_toggle_pressed"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
 [connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]

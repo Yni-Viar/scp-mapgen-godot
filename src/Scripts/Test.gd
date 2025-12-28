@@ -28,6 +28,8 @@ func _on_double_room_toggled(toggled_on: bool) -> void:
 
 
 func _on_room_pack_button_pressed() -> void:
+	if OS.get_name() == "Android":
+		OS.request_permission("android.permissions.MANAGE_EXTERNAL_STORAGE")
 	get_parent().get_node("SetRoomPack/FileDialog").show()
 
 
@@ -37,6 +39,8 @@ func _on_room_scale_edit_text_changed(new_text: String) -> void:
 
 
 func _on_save_result_pressed() -> void:
+	if OS.get_name() == "Android":
+		OS.request_permission("android.permissions.WRITE_EXTERNAL_STORAGE")
 	get_parent().get_node("RoomSaver/FileDialog").show()
 
 
@@ -47,3 +51,7 @@ func _on_zone_size_edit_text_changed(new_text: String) -> void:
 
 func _on_door_toggled(toggled_on: bool) -> void:
 	get_parent().get_node("FacilityGenerator").enable_door_generation = toggled_on
+
+
+func _on_camera_toggle_pressed() -> void:
+	get_parent().get_node("StaticPlayer").toggle_switcher()
