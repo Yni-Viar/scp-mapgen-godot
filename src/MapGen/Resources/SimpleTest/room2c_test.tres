@@ -8,3 +8,7 @@ script = ExtResource("4_vufst")
 name = "room2_maze"
 prefab = ExtResource("1_utndt")
 spawn_chance = 50.0
+door_type = -1
+guaranteed_spawn = false
+double_room_position = 0
+double_room_shape = 0
