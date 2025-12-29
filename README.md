@@ -60,7 +60,7 @@ Unity (Coming soon...)
 ### v.8.0.0 (2025.04.24)
 - Finally added checkpoints!
 - Room can have a specific door set (as seen in *SCP: Secret Lab 14.0 and newer*)
-- Reworked better zone generator again (it was reverted to brevious behavior, but without hanging (tried multiple seeds))
+- Reworked better zone generator again (it was reverted to previous behavior, but without hanging (tried multiple seeds))
 - Separated MapGeneration core from 2D and 3D version, making it more portable. Now 2D and 3D frontend are representing only room spawn, while core backend does all.
 ### v.7.3.0 (2025.04.23)
 - Fixed a generation error when generating many-zone facility (especially, when zone amount was >= 4).
