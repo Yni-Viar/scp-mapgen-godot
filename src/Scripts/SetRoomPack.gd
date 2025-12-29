@@ -35,17 +35,9 @@ func _process(delta: float) -> void:
 
 
 func _on_file_dialog_file_selected(path: String) -> void:
-	# Create temp folders
-	#if !DirAccess.dir_exists_absolute("user://roompack_temp/"):
-		#var temp: DirAccess = DirAccess.open("user://")
-		#temp.make_dir("roompack_temp")
-	#if !DirAccess.dir_exists_absolute("user://roompack_packedscenes/"):
-		#var temp: DirAccess = DirAccess.open("user://")
-		#temp.make_dir("roompack_packedscenes")
-	var current_index: int = roompack_temp.get_directories().size() #DirAccess.get_directories_at("user://roompack_temp/").size()
-	#if !DirAccess.dir_exists_absolute("user://roompack_temp/" + str(current_index) + "/"):
-		#var temp: DirAccess = DirAccess.open("user://roompack_temp/")
-		#temp.make_dir(str(current_index))
+	var result_array: Array[MapGenZone]
+	# Disable reloading room packs, if there is no enough memory
+	var current_index: int = roompack_temp.get_directories().size()
 	if !roompack_temp.dir_exists(str(current_index)):
 		roompack_temp.make_dir(str(current_index))
 	# Extract all files from zip to first temp folder
@@ -61,6 +53,17 @@ func _on_file_dialog_file_selected(path: String) -> void:
 				array_for_zone.append(mapgenroom)
 		# Set room type to created array
 		zone.set(alias, array_for_zone)
+	if zone.endrooms.size() > 0 && zone.hallways.size() > 0 && zone.corners.size() > 0 && zone.trooms.size() > 0 && zone.crossrooms.size() > 0:
+		# Disable room pack loading at this instance, if there are < 2GB free space, or total memory <= 4GB
+		if OS.get_memory_info()["physical"] < 4294967296 || OS.get_memory_info()["free"] < 2147483648:
+			get_parent().get_node("UI/VBoxContainer/RoomPackButton").disabled = true
+	else:
+		# If archive is wrong - say it.
+		OS.alert("Selected archive has wrong folder structure.")
+		result_array = [load("res://MapGen/SimpleTest.tres")]
+		get_parent().get_node("FacilityGenerator").rooms = result_array
+		return
+	
 	# Pre defined values
 	zone.double_rooms = [
 		[load("res://MapGen/Resources/EvacuationShelter/room2d_test2.tres"), load("res://MapGen/Resources/EvacuationShelter/room2d_test1.tres")],
@@ -68,7 +71,7 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	]
 	zone.door_frames = [load("res://Assets/Doors/door.tscn"), load("res://Assets/Doors/door_alt.tscn")]
 	zone.checkpoint_door_frames = [load("res://Assets/Doors/doorcheckpoint.tscn")]
-	var result_array: Array[MapGenZone] = [zone]
+	result_array = [zone]
 	get_parent().get_node("FacilityGenerator").rooms = result_array
 
 # Extract all files from a ZIP archive, preserving the directories within.
