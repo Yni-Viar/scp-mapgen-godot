@@ -93,7 +93,7 @@ text = "Enable lighting"
 
 [node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
-text = "Double room support"
+text = "Test double rooms"
 
 [node name="Door" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
