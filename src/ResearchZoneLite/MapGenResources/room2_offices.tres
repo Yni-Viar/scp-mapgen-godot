@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=5 format=3 uid="uid://ta8w4bwf4p4e"]
+
+[ext_resource type="Texture2D" uid="uid://bdohqm7yw00if" path="res://Assets/HUD/room2_90.png" id="1_erlv7"]
+[ext_resource type="Texture2D" uid="uid://8etimuikkbyb" path="res://Assets/HUD/room2.png" id="2_jbihy"]
+[ext_resource type="PackedScene" uid="uid://bufywbmtjs4q2" path="res://ResearchZoneLite/Rooms/Room2/rz_room_2_offices.tscn" id="3_erlv7"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="4_sfi4k"]
+
+[resource]
+script = ExtResource("4_sfi4k")
+name = "room2_maze"
+prefab = ExtResource("3_erlv7")
+icon_0_degrees = ExtResource("1_erlv7")
+icon_90_degrees = ExtResource("2_jbihy")
+icon_180_degrees = ExtResource("1_erlv7")
+icon_270_degrees = ExtResource("2_jbihy")

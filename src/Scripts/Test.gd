@@ -62,3 +62,11 @@ func _on_enable_lighting_toggled(toggled_on: bool) -> void:
 		get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED
 	else:
 		get_viewport().debug_draw = Viewport.DEBUG_DRAW_UNSHADED
+
+
+func _on_enable_checkpoints_toggled(toggled_on: bool) -> void:
+	get_parent().get_node("FacilityGenerator").checkpoints_enabled = toggled_on
+
+
+func _on_hints_toggled(toggled_on: bool) -> void:
+	$Label.visible = toggled_on

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=3 format=3 uid="uid://cvcvaqde4080x"]
+
+[ext_resource type="PackedScene" uid="uid://dra22yuydn1p0" path="res://ResearchZoneLite/Rooms/Room2c/rz_room_2c.tscn" id="1_bgntt"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="2_wc04a"]
+
+[resource]
+script = ExtResource("2_wc04a")
+name = "room2_maze"
+prefab = ExtResource("1_bgntt")

@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cskcubrpgfxip"]
+
+[ext_resource type="Texture2D" uid="uid://gw33fcypq4l2" path="res://ResearchZoneLite/Materials/OfficeCeiling001_2K_Color.png" id="1_w27my"]
+[ext_resource type="Texture2D" uid="uid://dp5lxw4d82hd7" path="res://ResearchZoneLite/Materials/OfficeCeiling001_2K_Roughness.png" id="2_qa4r2"]
+
+[resource]
+resource_name = "Ceiling"
+albedo_texture = ExtResource("1_w27my")
+metallic_texture = ExtResource("2_qa4r2")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_qa4r2")
+roughness_texture_channel = 1

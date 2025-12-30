@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
 [ext_resource type="PackedScene" uid="uid://cxqtyje2n7opp" path="res://PlayerScript/StaticPlayer.tscn" id="2_50glp"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="3_v1gob"]
-[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://MapGen/SimpleTest.tres" id="4_jw32o"]
+[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://Assets/Rooms/SimpleTest.tres" id="4_jw32o"]
 [ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="5_8xs74"]
 [ext_resource type="Script" uid="uid://bjt0w0pvlhm7u" path="res://Scripts/RoomSaver.gd" id="5_pbw6q"]
@@ -43,20 +43,25 @@ grow_vertical = 2
 script = ExtResource("5_8xs74")
 
 [node name="Label" type="RichTextLabel" parent="UI"]
+visible = false
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = 9
 anchor_bottom = 1.0
-offset_top = -120.0
-offset_right = 517.0
-grow_vertical = 0
+offset_right = 256.0
+offset_bottom = -40.0
+grow_vertical = 2
 bbcode_enabled = true
 text = "Map generation by Yni.
 GLTF load and save functions are used from Godot documentation.
 Camera Gimbal by kidscancode (MIT License).
 [hr]
 Right mouse button - rotate, Space - zoom
-"
+Scroll to see more tips.
+[hr]
+Tip: if you have multi-zone facility, but there are no checkpoints,
+you can place empty .glb scene
+(exported with 3D modelling software) into Room2Checkpoint
+folder and toggle off \"Enable checkpoints\""
 vertical_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
@@ -91,6 +96,11 @@ layout_mode = 2
 button_pressed = true
 text = "Enable lighting"
 
+[node name="EnableCheckpoints" type="CheckBox" parent="UI/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable checkpoints"
+
 [node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Test double rooms"
@@ -121,6 +131,17 @@ virtual_keyboard_type = 2
 layout_mode = 2
 text = "Save generation result to GLTF"
 
+[node name="Hints" type="Button" parent="UI"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 256.0
+grow_vertical = 0
+toggle_mode = true
+text = "Toggle hints and credits"
+
 [node name="SetRoomPack" type="Node" parent="."]
 script = ExtResource("4_rgh2o")
 
@@ -150,10 +171,12 @@ filters = PackedStringArray("*.glb", "model/gltf-binary")
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/CameraToggle" to="UI" method="_on_camera_toggle_pressed"]
 [connection signal="toggled" from="UI/VBoxContainer/EnableLighting" to="UI" method="_on_enable_lighting_toggled"]
+[connection signal="toggled" from="UI/VBoxContainer/EnableCheckpoints" to="UI" method="_on_enable_checkpoints_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
 [connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
 [connection signal="text_changed" from="UI/VBoxContainer/ZoneSizeEdit" to="UI" method="_on_zone_size_edit_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/SaveResult" to="UI" method="_on_save_result_pressed"]
+[connection signal="toggled" from="UI/Hints" to="UI" method="_on_hints_toggled"]
 [connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]
 [connection signal="file_selected" from="RoomSaver/FileDialog" to="RoomSaver" method="_on_file_dialog_file_selected"]

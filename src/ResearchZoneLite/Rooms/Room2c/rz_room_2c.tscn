@@ -1,0 +1,88 @@
+[gd_scene load_steps=6 format=4 uid="uid://dra22yuydn1p0"]
+
+[ext_resource type="Material" uid="uid://bw25e3o8phw6h" path="res://ResearchZoneLite/Materials/Walls.tres" id="1_u0h1k"]
+[ext_resource type="Material" uid="uid://cskcubrpgfxip" path="res://ResearchZoneLite/Materials/Ceiling.tres" id="2_u0h1k"]
+[ext_resource type="Material" uid="uid://liq73q23u8hq" path="res://ResearchZoneLite/Materials/Floor.tres" id="3_thbfc"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_pqtb0"]
+_surfaces = [{
+"aabb": AABB(-4.003636, -2.1302288, -3.9956453, 14.244076, 7.2607317, 14.231286),
+"format": 34896613377,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAgADAAAAAgAEAAMAAAAFAAEABQAGAAEABQAHAAYACAAJAAoACQALAAoACQAMAAsACAANAAkACAAOAA0ACAAPAA4A"),
+"name": "Walls",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("08wuAAAAAAAAAPz/Mc0AANbM//8AAAAA7P8uAAAAAADv////AAAAAAAAAAAxzQAAAAD8////AAAAAAAA//8AAKqP/P/xzAAA5cwAABOQAADlzPz/E5AAAP///P8TkAAA//8AABOQAACqjwAA8cwAAKqPAAC+/wAAqo/8/77/AAA=")
+}, {
+"aabb": AABB(-4.003636, 5.130229, -3.9956453, 14.244076, 0.00027418137, 14.231286),
+"format": 34896613377,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAAACAAQAAAAEAAUABAAGAAUABAAHAAYA"),
+"name": "Ceiling",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("5cwAABOQAADv////AAAAANbM//8AAAAA//8AABOQAAAAAAAAMc0AAKqPAADxzAAAqo8AAL7/AAAAAAAA//8AAA==")
+}, {
+"aabb": AABB(-4.003636, -2.1302288, -3.9956453, 14.244076, 0.0051567554, 14.231286),
+"format": 34896613377,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAgADAAAAAgAEAAMAAAAFAAEABQAGAAEABQAHAAYA"),
+"name": "Floor",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAADHNAADlzAAAE5AAAKqPAADxzAAAAAAAAP//AACqjwAAvv8AANPM//8AAAAA//8AABOQAADs////AAAAAA==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nk6uh"]
+resource_name = "rz_room2c_Cube_001"
+_surfaces = [{
+"aabb": AABB(-4.003636, -2.1302288, -3.9956453, 14.244076, 7.2607317, 14.231286),
+"attribute_data": PackedByteArray("K4A97e/+yVbv/j7tK4A97RWAyFbv/slWxH9Li/7/lrjEf5a4/v9Li/7/lrjEf53LxH+WuP//ncvv/j7tK4D9/yuAPe3v/v//FYDIVu/+JETv/slWFYAkRMR/S4v+/4Z4/v9Li8R/hng="),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgABgAJAAcACgALAAwACgANAAsADgAPABAADgARAA8AEgATABQAEgAVABMAFgAXABgAFgAZABcA"),
+"material": ExtResource("1_u0h1k"),
+"name": "Walls",
+"primitive": 3,
+"uv_scale": Vector4(2.006309, 3.7567477, 0, 0),
+"vertex_count": 26,
+"vertex_data": PackedByteArray("08wuAAAA/cUAAPz/Mc39xdbM//8AAP3F08wuAAAA/cUAAAAAMc39xQAA/P8xzf3Fqo/8//HMwunlzAAAE5DC6eXM/P8TkMLpqo8AAPHMwunlzAAAE5D//////P8TkP//5cz8/xOQ/////wAAE5D//9bM//8AAP+/7P8uAAAA/7/TzC4AAAD/v+////8AAP+/AAAAADHNVNUAAPz///9U1QAA/P8xzVTVAAAAAP//VNWqj/z/8cxU1aqPAAC+/1TVqo8AAPHMVNWqj/z/vv9U1QAdAh0AHQIdAB0CHQEdAR0BHQEdAR0BHe9KD7XvSg+170oPte9KD7X/v/8//7//P/+//z//P/+//////////////////////6oqqiqqKqoqqiqqKqoqqipUVaqqVFWpqlRVqapUVaqq")
+}, {
+"aabb": AABB(-4.003636, 5.130229, -3.9956453, 14.244076, 0.00027418137, 14.231286),
+"attribute_data": PackedByteArray("/d2gtfT/5FXy3eRV//+gtaBVPd48tRLePLXU/6BV//8="),
+"format": 34896613399,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAAADAAEAAAACAAQAAAAEAAUABAAGAAUABAAHAAYA"),
+"material": ExtResource("2_u0h1k"),
+"name": "Ceiling",
+"primitive": 3,
+"uv_scale": Vector4(3.0051692, 3.0072155, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("5cwAABOQ/z/v////AAD/P9bM//8AAP8///8AABOQ/z8AAAAAMc3/P6qPAADxzP8/qo8AAL7//z8AAAAA////PwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/")
+}, {
+"aabb": AABB(-4.003636, -2.1302288, -3.9956453, 14.244076, 0.0051567554, 14.231286),
+"attribute_data": PackedByteArray("oFU93v3doLU8tRLeoFU93vHd5FX93aC18d3kVf//oLX93aC18v/kVTy1Et6gVf//oFU93jy11P8="),
+"format": 34896613399,
+"index_count": 18,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgABgAJAAcACgALAAwACgANAAsA"),
+"material": ExtResource("3_thbfc"),
+"name": "Floor",
+"primitive": 3,
+"uv_scale": Vector4(3.0051692, 3.0072155, 0, 0),
+"vertex_count": 14,
+"vertex_data": PackedByteArray("AAAAADHN+r/lzAAAE5D6v6qPAADxzPq/AAAAADHN+L/TzP//AAD4v+XMAAATkPi/08z//wAA+L///wAAE5D4v+XMAAATkPi/7P///wAA+L+qjwAA8cz/vwAAAAD///+/AAAAADHN/7+qjwAAvv//v/v//X/7//1/+//9f/j//H/4//x/+P/8f////3////9/////f////3////9/////f////3////9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_pqtb0")
+
+[node name="rz_room2c" type="Node3D"]
+
+[node name="Cube" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.86066204, 0)
+mesh = SubResource("ArrayMesh_nk6uh")
+skeleton = NodePath("")

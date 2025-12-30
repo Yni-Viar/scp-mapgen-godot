@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://liq73q23u8hq"]
+
+[ext_resource type="Texture2D" uid="uid://bkmhyw7vt7sir" path="res://ResearchZoneLite/Materials/Tiles133A_2K-PNG_Color.png" id="1_wn2se"]
+[ext_resource type="Texture2D" uid="uid://2q1cdejqyf2g" path="res://ResearchZoneLite/Materials/Tiles133A_2K-PNG_Roughness.png" id="2_ron2l"]
+
+[resource]
+resource_name = "Floor"
+albedo_texture = ExtResource("1_wn2se")
+metallic_texture = ExtResource("2_ron2l")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("2_ron2l")
+roughness_texture_channel = 1

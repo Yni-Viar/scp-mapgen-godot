@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MapGenRoom" load_steps=3 format=3 uid="uid://dkax2pgmsnpbr"]
+
+[ext_resource type="PackedScene" uid="uid://chu0ubeopg7d2" path="res://Assets/Rooms/room2c/room2c_test.tscn" id="1_utndt"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="4_vufst"]
+
+[resource]
+script = ExtResource("4_vufst")
+name = "room2_maze"
+prefab = ExtResource("1_utndt")
+spawn_chance = 50.0
+door_type = -1
+guaranteed_spawn = false
+double_room_position = 0
+double_room_shape = 0

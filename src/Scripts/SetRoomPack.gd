@@ -36,6 +36,10 @@ func _process(delta: float) -> void:
 
 
 func _on_file_dialog_file_selected(path: String) -> void:
+	load_pack(path)
+
+## Loads pack from ZIP file
+func load_pack(path: String):
 	var result_array: Array[MapGenZone]
 	# Disable reloading room packs, if there is no enough memory
 	var current_index: int = roompack_temp.get_directories().size()
@@ -50,7 +54,6 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	if result_array.size() > 1:
 		get_parent().get_node("FacilityGenerator").map_size_x = result_array.size() - 1
 	get_parent().get_node("FacilityGenerator").rooms = result_array
-	
 
 # Extract all files from a ZIP archive, preserving the directories within.
 # This acts like the "Extract all" functionality from most archive managers.
@@ -110,7 +113,10 @@ func room_pack_v1(current_index: int) -> Array[MapGenZone]:
 	else:
 		# If archive is wrong - say it.
 		OS.alert("Selected archive has wrong folder structure.")
-		result_array = [load("res://MapGen/SimpleTest.tres")]
+		if ResourceLoader.exists("res://ResearchZoneLite/RZLite.tres"):
+			result_array = [load("res://ResearchZoneLite/RZLite.tres")]
+		else:
+			result_array = [load("res://Assets/Rooms/SimpleTest.tres")]
 	
 	return result_array
 
@@ -143,7 +149,10 @@ func room_pack_v2(current_index: int) -> Array[MapGenZone]:
 		else:
 			# If archive is wrong - say it.
 			OS.alert("Selected archive has wrong folder structure.")
-			zones = [load("res://MapGen/SimpleTest.tres")]
+			if ResourceLoader.exists("res://ResearchZoneLite/RZLite.tres"):
+				zones = [load("res://ResearchZoneLite/RZLite.tres")]
+			else:
+				zones = [load("res://Assets/Rooms/SimpleTest.tres")]
 			return zones
 		
 		zones.append(zone)

@@ -1,0 +1,63 @@
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=26 format=3 uid="uid://4npyag42fu1c"]
+
+[ext_resource type="PackedScene" uid="uid://105i1oyu3cya" path="res://Assets/Doors/doorcheckpoint.tscn" id="1_hntrs"]
+[ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="2_o87w3"]
+[ext_resource type="Resource" uid="uid://dv3w0shq1lt3k" path="res://ResearchZoneLite/MapGenResources/ckpt2.tres" id="3_inx4g"]
+[ext_resource type="Resource" uid="uid://cvcvaqde4080x" path="res://ResearchZoneLite/MapGenResources/room2c.tres" id="4_s04hh"]
+[ext_resource type="PackedScene" uid="uid://dn0xabdbgcdnh" path="res://Assets/Doors/door.tscn" id="5_46n7u"]
+[ext_resource type="Resource" uid="uid://dx1atqhqsg75k" path="res://ResearchZoneLite/MapGenResources/cont2c_178.tres" id="5_vulxy"]
+[ext_resource type="PackedScene" uid="uid://ydlptdlabm0e" path="res://Assets/Doors/door_alt.tscn" id="6_1n4my"]
+[ext_resource type="Resource" uid="uid://c8w0n47i0c1c3" path="res://ResearchZoneLite/MapGenResources/room4.tres" id="6_5x6y8"]
+[ext_resource type="Resource" uid="uid://cqb4jx20mf4vq" path="res://Assets/Rooms/MapGenResources/SimpleTest/room3d_test.tres" id="7_f5tkg"]
+[ext_resource type="Resource" uid="uid://chxn2gv3ahlno" path="res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test1.tres" id="8_bnxv6"]
+[ext_resource type="Resource" uid="uid://dgxjyo1irblbl" path="res://ResearchZoneLite/MapGenResources/room1.tres" id="11_8qfir"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="11_hw74a"]
+[ext_resource type="Resource" uid="uid://5yomupp8togd" path="res://ResearchZoneLite/MapGenResources/cont1_173.tres" id="12_spd55"]
+[ext_resource type="Resource" uid="uid://bq82uo5kv3m5u" path="res://ResearchZoneLite/MapGenResources/cont1_testroom.tres" id="13_n3odn"]
+[ext_resource type="Resource" uid="uid://bcmgiicdcyfx" path="res://ResearchZoneLite/MapGenResources/room2.tres" id="14_dvukd"]
+[ext_resource type="Resource" uid="uid://ta8w4bwf4p4e" path="res://ResearchZoneLite/MapGenResources/room2_offices.tres" id="15_m4nlq"]
+[ext_resource type="Resource" uid="uid://5x1kqungyuma" path="res://ResearchZoneLite/MapGenResources/room3_a.tres" id="17_m467h"]
+[ext_resource type="Resource" uid="uid://bqq8t5wac5rd4" path="res://ResearchZoneLite/MapGenResources/room3_b.tres" id="18_2pwh4"]
+
+[sub_resource type="Resource" id="Resource_o2dvc"]
+metadata/__load_path__ = "res://Assets/HUD/room2checkpoint_90.png"
+
+[sub_resource type="Resource" id="Resource_b53ij"]
+metadata/__load_path__ = "res://Assets/HUD/room2checkpoint_270.png"
+
+[sub_resource type="Resource" id="Resource_q88qg"]
+metadata/__load_path__ = "res://Assets/HUD/room2checkpoint_180.png"
+
+[sub_resource type="Resource" id="Resource_mknx0"]
+metadata/__load_path__ = "res://Assets/HUD/room2checkpoint.png"
+
+[sub_resource type="Resource" id="Resource_f2tuu"]
+metadata/__load_path__ = "res://Assets/Rooms/room2/room2_checkpoint_duplicate.tscn"
+
+[sub_resource type="Resource" id="Resource_qp815"]
+script = ExtResource("2_o87w3")
+name = "Checkpoint room"
+prefab = SubResource("Resource_f2tuu")
+icon_0_degrees = SubResource("Resource_o2dvc")
+icon_90_degrees = SubResource("Resource_mknx0")
+icon_180_degrees = SubResource("Resource_b53ij")
+icon_270_degrees = SubResource("Resource_q88qg")
+double_room_shape = 2
+metadata/_custom_type_script = "uid://b15b7mhits7ot"
+
+[sub_resource type="Resource" id="Resource_03qgs"]
+metadata/__load_path__ = "res://MapGen/Resources/EvacuationShelter/room2d_test.tres"
+
+[resource]
+script = ExtResource("11_hw74a")
+endrooms = Array[ExtResource("2_o87w3")]([ExtResource("11_8qfir")])
+endrooms_single = Array[ExtResource("2_o87w3")]([ExtResource("12_spd55"), ExtResource("13_n3odn")])
+hallways = Array[ExtResource("2_o87w3")]([ExtResource("14_dvukd"), ExtResource("15_m4nlq")])
+checkpoint_hallway = Array[ExtResource("2_o87w3")]([ExtResource("3_inx4g")])
+corners = Array[ExtResource("2_o87w3")]([ExtResource("4_s04hh")])
+corners_single = Array[ExtResource("2_o87w3")]([ExtResource("5_vulxy")])
+trooms = Array[ExtResource("2_o87w3")]([ExtResource("17_m467h"), ExtResource("18_2pwh4")])
+crossrooms = Array[ExtResource("2_o87w3")]([ExtResource("6_5x6y8")])
+door_frames = Array[PackedScene]([ExtResource("5_46n7u"), ExtResource("6_1n4my")])
+checkpoint_door_frames = Array[PackedScene]([ExtResource("1_hntrs")])
+double_rooms = Array[Array]([[SubResource("Resource_qp815"), SubResource("Resource_03qgs")], [ExtResource("7_f5tkg"), ExtResource("8_bnxv6")]])
