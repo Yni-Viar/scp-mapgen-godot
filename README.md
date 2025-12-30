@@ -37,6 +37,9 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.10.4.0 (2025.12.30)
+- [MapGen Room Previewer] Introduced v2 package format, but v1 is still supported.
+- [MapGen Room Previewer] Added lighting toggle (because Blender lights are too bright for Godot (incompatibility))
 ### v.10.3.0 (2025.12.28)
 - \[MapGen Room Previewer\] Android support
 - Added support for native GLTF load in map generator + implemented cache for this feature.

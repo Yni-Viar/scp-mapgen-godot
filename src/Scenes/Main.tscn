@@ -86,6 +86,11 @@ text = "Generate map"
 layout_mode = 2
 text = "Toggle camera view"
 
+[node name="EnableLighting" type="CheckBox" parent="UI/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable lighting"
+
 [node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Double room support"
@@ -144,6 +149,7 @@ filters = PackedStringArray("*.glb", "model/gltf-binary")
 [connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/CameraToggle" to="UI" method="_on_camera_toggle_pressed"]
+[connection signal="toggled" from="UI/VBoxContainer/EnableLighting" to="UI" method="_on_enable_lighting_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
 [connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]

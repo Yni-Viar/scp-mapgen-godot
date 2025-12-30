@@ -55,3 +55,10 @@ func _on_door_toggled(toggled_on: bool) -> void:
 
 func _on_camera_toggle_pressed() -> void:
 	get_parent().get_node("StaticPlayer").toggle_switcher()
+
+
+func _on_enable_lighting_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		get_viewport().debug_draw = Viewport.DEBUG_DRAW_DISABLED
+	else:
+		get_viewport().debug_draw = Viewport.DEBUG_DRAW_UNSHADED
