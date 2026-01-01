@@ -1,9 +1,13 @@
 extends Control
 
+var forward_pressed: bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	if DisplayServer.is_touchscreen_available():
+		$CameraForward.show()
+	else:
+		$CameraForward.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -53,8 +57,6 @@ func _on_door_toggled(toggled_on: bool) -> void:
 	get_parent().get_node("FacilityGenerator").enable_door_generation = toggled_on
 
 
-func _on_camera_toggle_pressed() -> void:
-	get_parent().get_node("StaticPlayer").toggle_switcher()
 
 
 func _on_enable_lighting_toggled(toggled_on: bool) -> void:
@@ -70,3 +72,11 @@ func _on_enable_checkpoints_toggled(toggled_on: bool) -> void:
 
 func _on_hints_toggled(toggled_on: bool) -> void:
 	$Label.visible = toggled_on
+
+
+func _on_camera_forward_button_down() -> void:
+	get_parent().get_node("Camera3D")._w = true
+
+
+func _on_camera_forward_button_up() -> void:
+	get_parent().get_node("Camera3D")._w = false

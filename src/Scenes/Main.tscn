@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
-[ext_resource type="PackedScene" uid="uid://cxqtyje2n7opp" path="res://PlayerScript/StaticPlayer.tscn" id="2_50glp"]
+[ext_resource type="Script" uid="uid://dxgnqbgfkcfxh" path="res://Thirdparty/SimpleFreeLookCamera/camera.gd" id="2_50glp"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="3_v1gob"]
 [ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://Assets/Rooms/SimpleTest.tres" id="4_jw32o"]
 [ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
@@ -21,7 +21,9 @@ sky = SubResource("Sky_nttp5")
 [node name="Game" type="Node3D"]
 script = ExtResource("1_v1gob")
 
-[node name="StaticPlayer" parent="." instance=ExtResource("2_50glp")]
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 96, 0)
+script = ExtResource("2_50glp")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
@@ -52,8 +54,10 @@ offset_bottom = -40.0
 grow_vertical = 2
 bbcode_enabled = true
 text = "Map generation by Yni.
+[hr]
+Thirdparty credits:
 GLTF load and save functions are used from Godot documentation.
-Camera Gimbal by kidscancode (MIT License).
+Free Look Camera by Adam Viola (MIT License).
 [hr]
 Right mouse button - rotate, Space - zoom
 Scroll to see more tips.
@@ -63,6 +67,21 @@ you can place empty .glb scene
 (exported with 3D modelling software) into Room2Checkpoint
 folder and toggle off \"Enable checkpoints\""
 vertical_alignment = 1
+
+[node name="CameraForward" type="Button" parent="UI"]
+visible = false
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.84000003
+anchor_right = 0.5
+anchor_bottom = 0.84000003
+offset_left = -192.0
+offset_top = -32.320007
+offset_right = 192.0
+offset_bottom = 31.679993
+text = "Move forward"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
 layout_mode = 1
@@ -86,10 +105,6 @@ placeholder_text = "Seed"
 [node name="Generate" type="Button" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Generate map"
-
-[node name="CameraToggle" type="Button" parent="UI/VBoxContainer"]
-layout_mode = 2
-text = "Toggle camera view"
 
 [node name="EnableLighting" type="CheckBox" parent="UI/VBoxContainer"]
 layout_mode = 2
@@ -165,11 +180,11 @@ display_mode = 1
 access = 2
 filters = PackedStringArray("*.glb", "model/gltf-binary")
 
-[connection signal="generated" from="FacilityGenerator" to="." method="_on_facility_generator_generated"]
+[connection signal="button_down" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_down"]
+[connection signal="button_up" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_up"]
 [connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
 [connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
-[connection signal="pressed" from="UI/VBoxContainer/CameraToggle" to="UI" method="_on_camera_toggle_pressed"]
 [connection signal="toggled" from="UI/VBoxContainer/EnableLighting" to="UI" method="_on_enable_lighting_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/EnableCheckpoints" to="UI" method="_on_enable_checkpoints_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
