@@ -37,6 +37,8 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.11.0.0 (2026.01.04)
+- Added support for infinite facility (tweaked backend and added new 3d front-end) (room previewer not supported for semi-infinite map generation)
 ### v.10.4.0 (2025.12.30)
 - \[MapGen Room Previewer\] Introduced v2 package format, but v1 is still supported.
 - \[MapGen Room Previewer\] Added lighting toggle (because Blender lights are too bright for Godot (incompatibility))
@@ -87,3 +89,7 @@ Unity (Coming soon...)
 ### v.5.1.0 (2024.11.03)
 - Add support for custom doors, as seen in *SCP: Secret Lab 14.0*
 - Removed SCP-CB rooms (Research, or Entrance zone)
+### v.5.0.0 (2024.XX.XX)
+- Rewrite the entire algorithm to new one.
+### v.3.0.0 (2023.06.01)
+- Actually, the first version of my own map generator, map generator v2 and v1 are just third-party map generators (and v2 was under unknown license)

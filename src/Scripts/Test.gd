@@ -80,3 +80,7 @@ func _on_camera_forward_button_down() -> void:
 
 func _on_camera_forward_button_up() -> void:
 	get_parent().get_node("Camera3D")._w = false
+
+
+func _on_test_semi_infinite_mapgen_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/InfinityGen.tscn")

@@ -1,0 +1,63 @@
+[gd_scene load_steps=12 format=3 uid="uid://cxuhv0wuf613d"]
+
+[ext_resource type="Script" uid="uid://dxgnqbgfkcfxh" path="res://Thirdparty/SimpleFreeLookCamera/camera.gd" id="2_1iyfk"]
+[ext_resource type="Script" uid="uid://b5deke6guv3p7" path="res://MapGen/MapGenInfinite.gd" id="3_3g03m"]
+[ext_resource type="Script" uid="uid://cu3d1g432j3nm" path="res://MapGen/InfiniteGen/MapGenInfinite3D.gd" id="3_oc0ol"]
+[ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="4_40e7y"]
+[ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://Assets/Rooms/SimpleTest.tres" id="6_3g03m"]
+[ext_resource type="Resource" uid="uid://4npyag42fu1c" path="res://ResearchZoneLite/RZLite.tres" id="6_oc0ol"]
+[ext_resource type="Script" uid="uid://bxdkvf3jm5gd8" path="res://Scripts/FPSCounter.gd" id="7_oc0ol"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_oc0ol"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbml1"]
+
+[sub_resource type="Sky" id="Sky_nttp5"]
+sky_material = SubResource("ProceduralSkyMaterial_hbml1")
+
+[sub_resource type="Environment" id="Environment_mvdmi"]
+background_mode = 2
+sky = SubResource("Sky_nttp5")
+
+[node name="Game" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 96, 0)
+script = ExtResource("2_1iyfk")
+
+[node name="CollisionChecker" type="CharacterBody3D" parent="Camera3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Camera3D/CollisionChecker"]
+shape = SubResource("SphereShape3D_oc0ol")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_mvdmi")
+
+[node name="InfiniteGenerator" type="Node3D" parent="."]
+script = ExtResource("3_3g03m")
+
+[node name="FacilityGenInfinite" type="Node3D" parent="InfiniteGenerator"]
+script = ExtResource("3_oc0ol")
+rooms = Array[ExtResource("4_40e7y")]([ExtResource("6_oc0ol"), ExtResource("6_3g03m")])
+zone_size = 10
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("7_oc0ol")

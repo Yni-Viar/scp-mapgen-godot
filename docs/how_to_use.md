@@ -56,3 +56,7 @@ All parameters in this resource (called `MapGenZone`) (except `Door frames`) are
 ## Prepare a room for map generation.
 In Godot editor, make sure, that the exits of rooms faces the axis, seen in this picture:
 ![Axis for map generation](imgs/room_rotations.png)
+
+## Infinite generator set-up
+Firstly, you need to change parameters in code for Area3D - you need to properly set `layer` and `mask` inside `_ready()` (write your function instead of `# customize detection types here` line)
+Secondly, you need to specify detection Node (functions `_on_optimizator_body_entered(body: Node3D)` and `_on_optimizator_body_exited(body: Node3D)`) (replace `CharacterBody3D` with your `PhysicsBody3D`-derived node (for example you can set your player script instead of `CharacterBody3D`))

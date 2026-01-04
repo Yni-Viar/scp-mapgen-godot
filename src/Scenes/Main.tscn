@@ -94,6 +94,11 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_constants/separation = 12
 
+[node name="TestSemiInfiniteMapgen" type="Button" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Test semi-infinite mapgen
+(no wayback)"
+
 [node name="RoomPackButton" type="Button" parent="UI/VBoxContainer"]
 layout_mode = 2
 text = "Load room pack"
@@ -182,6 +187,7 @@ filters = PackedStringArray("*.glb", "model/gltf-binary")
 
 [connection signal="button_down" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_down"]
 [connection signal="button_up" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_up"]
+[connection signal="pressed" from="UI/VBoxContainer/TestSemiInfiniteMapgen" to="UI" method="_on_test_semi_infinite_mapgen_pressed"]
 [connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
 [connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]

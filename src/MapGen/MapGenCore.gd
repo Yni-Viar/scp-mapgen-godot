@@ -33,6 +33,8 @@ const MAX_ROOMS_SPAWN: int = 512
 ## Better zone generation.
 ## Sometimes, the generation will return "dull" path(e.g where there are only 3 ways to go)
 ## This fixes these generations, at a little cost of generation time
+## If infinite generator is used, this option also
+## places random "disabled points", so Room2C can spawn
 @export var better_zone_generation: bool = true
 ## How many additional rooms should spawn map generator
 ## /!\ WARNING! Higher value may hang the game.
@@ -45,6 +47,10 @@ const MAX_ROOMS_SPAWN: int = 512
 @export var debug_print: bool = false
 ## Enable double rooms support (single rooms only). Available since mapgen v9.
 @export var double_room_support: bool = false
+
+## Infinite generation is actually limited only by Godot's floating point errors
+## DO NOT SET THIS PROPERTY MANUALLY, IT IS AUTOMATIC.
+var infinite_generation: bool = false
 
 var mapgen: Array[Array] = []
 ## Cells, where a room will never spawn due to large room overriden
@@ -102,6 +108,9 @@ func start_generation() -> Array[Array]:
 func prepare_generation() -> void:
 	if debug_print:
 		print("Preparing generation...")
+	if infinite_generation && better_zone_generation:
+		for i in range(zone_size / 2):
+			disabled_points.append(Vector2i(rng.randi_range(1, zone_size - 2), rng.randi_range(1, zone_size - 2)))
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
 	if rng_seed != -1:
@@ -185,14 +194,21 @@ func generate_zone_astar() -> void:
 					continue
 				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), random_room)
 				number_of_rooms -= 1
-				
-			## Connect two zones
-			if zone_counter.x < map_size_x:
-				var zone_center_x: int = roundi(zone_center + (zone_size * (zone_counter.x + 1)))
-				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(zone_center_x, roundi(current_zone_center.y)))
-			if zone_counter.y < map_size_y:
-				var zone_center_y: int = roundi(zone_center + (zone_size * (zone_counter.y + 1)))
-				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(roundi(current_zone_center.x), zone_center_y))
+			
+			## If infinite generation, go for all 4 directions
+			if infinite_generation && map_size_x == 0 && map_size_y == 0:
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(current_zone_center.x, zone_size - 1), true)
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(current_zone_center.x, 0), true)
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(zone_size - 1, current_zone_center.y), true)
+				walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(0, current_zone_center.y), true)
+			else:
+				## Connect two zones
+				if zone_counter.x < map_size_x:
+					var zone_center_x: int = roundi(zone_center + (zone_size * (zone_counter.x + 1)))
+					walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(zone_center_x, roundi(current_zone_center.y)))
+				if zone_counter.y < map_size_y:
+					var zone_center_y: int = roundi(zone_center + (zone_size * (zone_counter.y + 1)))
+					walk_astar(Vector2(roundi(current_zone_center.x), roundi(current_zone_center.y)), Vector2(roundi(current_zone_center.x), zone_center_y))
 			zone_index += 1
 		zone_index_default += map_size_y
 		zone_counter.y = 0
@@ -474,7 +490,8 @@ func check_room_dimensions(x: int, y: int, type: int) -> bool:
 			return false
 
 ## Main walker function, using AStarGrid2D
-func walk_astar(from: Vector2, to: Vector2) -> void:
+## infinite_gen "continues" generation at the end of chunk
+func walk_astar(from: Vector2, to: Vector2, infinite_gen: bool = false) -> void:
 	# Initialization
 	var astar_grid: AStarGrid2D = AStarGrid2D.new()
 	astar_grid.region = Rect2i(0, 0, size_x, size_y)
@@ -511,6 +528,16 @@ func walk_astar(from: Vector2, to: Vector2) -> void:
 				if mapgen[map.x][map.y + 1].exist:
 					mapgen[map.x][map.y + 1].south = true
 					mapgen[map.x][map.y].north = true
+			
+		if infinite_gen:
+			if map.x == to.x && map.y == to.y && map.x == zone_size - 1:
+				mapgen[map.x][map.y].east = true
+			elif map.x == to.x && map.y == to.y && map.x == 0:
+				mapgen[map.x][map.y].west = true
+			if map.x == to.x && map.y == to.y && map.y == zone_size - 1:
+				mapgen[map.x][map.y].north = true
+			elif map.x == to.x && map.y == to.y && map.y == 0:
+				mapgen[map.x][map.y].south = true
 	endroom_amount += 1
 ## Places information about rooms
 func place_room_positions() -> void:
