@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cxuhv0wuf613d"]
+[gd_scene load_steps=13 format=3 uid="uid://cxuhv0wuf613d"]
 
 [ext_resource type="Script" uid="uid://dxgnqbgfkcfxh" path="res://Thirdparty/SimpleFreeLookCamera/camera.gd" id="2_1iyfk"]
 [ext_resource type="Script" uid="uid://b5deke6guv3p7" path="res://MapGen/MapGenInfinite.gd" id="3_3g03m"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="4_40e7y"]
 [ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://Assets/Rooms/SimpleTest.tres" id="6_3g03m"]
 [ext_resource type="Resource" uid="uid://4npyag42fu1c" path="res://ResearchZoneLite/RZLite.tres" id="6_oc0ol"]
+[ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="7_iy216"]
 [ext_resource type="Script" uid="uid://bxdkvf3jm5gd8" path="res://Scripts/FPSCounter.gd" id="7_oc0ol"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_oc0ol"]
@@ -48,6 +49,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("7_iy216")
 
 [node name="Label" type="Label" parent="UI"]
 layout_mode = 1
@@ -61,3 +63,20 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 script = ExtResource("7_oc0ol")
+
+[node name="CameraForward" type="Button" parent="UI"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.84000003
+anchor_right = 0.5
+anchor_bottom = 0.84000003
+offset_left = -192.0
+offset_top = -32.320007
+offset_right = 192.0
+offset_bottom = 31.679993
+text = "Move forward"
+
+[connection signal="button_down" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_down"]
+[connection signal="button_up" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_up"]
