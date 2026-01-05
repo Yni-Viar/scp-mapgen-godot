@@ -19,11 +19,10 @@ const CONVERSION_ALIASES: Dictionary[String, String] = {
 }
 
 var roompack_temp: DirAccess = DirAccess.create_temp("roompack_temp")
-var roompack_packedscenes: DirAccess = DirAccess.create_temp("roompack_packedscenes")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if roompack_temp == null || roompack_packedscenes == null:
+	if roompack_temp == null:
 		OS.alert("Loading room packs is not supported on your device.")
 		get_parent().get_node("UI/VBoxContainer/RoomPackButton").hide()
 	elif OS.get_name() == "Android":

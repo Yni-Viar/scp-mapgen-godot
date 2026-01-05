@@ -740,6 +740,7 @@ func _on_optimizator_body_exited(body: Node3D):
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE:
-		for key in cached_scenes:
-			cached_scenes[key].queue_free()
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_WM_GO_BACK_REQUEST:
+			for key in cached_scenes:
+				cached_scenes[key].queue_free()
