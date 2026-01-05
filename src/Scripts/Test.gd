@@ -90,10 +90,3 @@ func _on_hide_testing_functions_toggled(toggled_on: bool) -> void:
 	$VBoxContainer/TestSemiInfiniteMapgen.visible = !toggled_on
 	$VBoxContainer/DoubleRoom.visible = !toggled_on
 	$VBoxContainer/Door.visible = !toggled_on
-
-
-func _on_clean_cache_pressed() -> void:
-	get_parent().get_node("SetRoomPack").roompack_temp = null
-	get_parent().reset_settings()
-	if !$VBoxContainer/RoomPackButton.disabled:
-		get_parent().get_node("SetRoomPack").roompack_temp = DirAccess.create_temp("roompack_temp")

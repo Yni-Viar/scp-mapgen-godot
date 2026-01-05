@@ -156,3 +156,8 @@ func room_pack_v2(current_index: int) -> Array[MapGenZone]:
 		
 		zones.append(zone)
 	return zones
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_WM_GO_BACK_REQUEST:
+			roompack_temp = null
