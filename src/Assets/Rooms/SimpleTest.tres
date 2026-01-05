@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="MapGenZone" load_steps=20 format=3 uid="uid://7prvjngodfs1"]
+[gd_resource type="Resource" script_class="MapGenZone" load_steps=21 format=3 uid="uid://7prvjngodfs1"]
 
 [ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="1_gf8c7"]
 [ext_resource type="PackedScene" uid="uid://105i1oyu3cya" path="res://Assets/Doors/doorcheckpoint.tscn" id="1_i6i4i"]
 [ext_resource type="Script" uid="uid://d0tlgr0c6w7gq" path="res://MapGen/MapGenZone.gd" id="2_gnutr"]
 [ext_resource type="Resource" uid="uid://dkax2pgmsnpbr" path="res://Assets/Rooms/MapGenResources/SimpleTest/room2c_test.tres" id="3_hflm6"]
+[ext_resource type="Resource" uid="uid://dvjmkqanp0xes" path="res://Assets/Rooms/MapGenResources/SimpleTest/ckpt2_test.tres" id="3_n77ha"]
 [ext_resource type="Resource" uid="uid://defw3e0yk60rh" path="res://Assets/Rooms/MapGenResources/SimpleTest/room4_test.tres" id="4_n77ha"]
 [ext_resource type="PackedScene" uid="uid://dn0xabdbgcdnh" path="res://Assets/Doors/door.tscn" id="5_bfo08"]
 [ext_resource type="PackedScene" uid="uid://ydlptdlabm0e" path="res://Assets/Doors/door_alt.tscn" id="6_ylh68"]
@@ -46,6 +47,7 @@ metadata/__load_path__ = "res://MapGen/Resources/EvacuationShelter/room2d_test.t
 script = ExtResource("2_gnutr")
 endrooms = Array[ExtResource("1_gf8c7")]([ExtResource("9_3re5h")])
 hallways = Array[ExtResource("1_gf8c7")]([ExtResource("10_yb3ak")])
+checkpoint_hallway = Array[ExtResource("1_gf8c7")]([ExtResource("3_n77ha")])
 corners = Array[ExtResource("1_gf8c7")]([ExtResource("3_hflm6")])
 trooms = Array[ExtResource("1_gf8c7")]([ExtResource("12_n44tn")])
 crossrooms = Array[ExtResource("1_gf8c7")]([ExtResource("4_n77ha")])

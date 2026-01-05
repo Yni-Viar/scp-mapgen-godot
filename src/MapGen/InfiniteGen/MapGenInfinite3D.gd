@@ -161,8 +161,8 @@ func spawn_rooms() -> void:
 							# Checkpoint room spawn
 							mapgen[n][o].resource = rooms[zone_index].checkpoint_hallway[rng.randi_range(0, rooms[zone_index].checkpoint_hallway.size() - 1)]
 							selected_room = rooms[zone_index].checkpoint_hallway[rng.randi_range(0, rooms[zone_index].checkpoint_hallway.size() - 1)].prefab
-							room2_count[zone_index] += 1
-						if mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D && double_room_support:
+							room2_count[0] += 1
+						elif mapgen[n][o].double_room == MapGenCore.DoubleRoomTypes.ROOM2D && double_room_support:
 							var coincidence: bool = false
 							# Double room.
 							# At first, we spawn mirror room, next we spawn original room.

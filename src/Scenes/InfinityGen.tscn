@@ -41,6 +41,7 @@ script = ExtResource("3_3g03m")
 script = ExtResource("3_oc0ol")
 rooms = Array[ExtResource("4_40e7y")]([ExtResource("6_oc0ol"), ExtResource("6_3g03m")])
 zone_size = 10
+checkpoints_enabled = true
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3

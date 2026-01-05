@@ -110,7 +110,9 @@ func prepare_generation() -> void:
 		print("Preparing generation...")
 	if infinite_generation && better_zone_generation:
 		for i in range(zone_size / 2):
-			disabled_points.append(Vector2i(rng.randi_range(1, zone_size - 2), rng.randi_range(1, zone_size - 2)))
+			var random_point: Vector2i = Vector2i(rng.randi_range(2, zone_size - 3), rng.randi_range(2, zone_size - 3))
+			if random_point.x != zone_size / 2 && random_point.y != zone_size / 2:
+				disabled_points.append(random_point)
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
 	if rng_seed != -1:
@@ -678,6 +680,14 @@ func place_room_positions() -> void:
 							else: #generic vertical room2
 								var room_angle: Array[float] = [0, 180]
 								mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
+						#upper checkpoint room2
+						elif m == 0 && infinite_generation && checkpoints_enabled:
+							mapgen[l][m].checkpoint = true
+							mapgen[l][m].angle = 180
+						#lower checkpoint room2
+						elif m == zone_size - 1 && infinite_generation && checkpoints_enabled:
+							mapgen[l][m].checkpoint = true
+							mapgen[l][m].angle = 0
 						else: #generic vertical room2
 							var room_angle: Array[float] = [0, 180]
 							mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
@@ -709,16 +719,24 @@ func place_room_positions() -> void:
 					else:#room2
 						if l < size_x - 1 && l > 0:
 							#right checkpoint room2
-							if l == size_x / (map_size_x + 1) * zone_counter.x && mapgen[l-1][m].exist:
+							if l == size_x / (map_size_x + 1) * zone_counter.x && mapgen[l-1][m].exist && checkpoints_enabled:
 								mapgen[l][m].checkpoint = true
 								mapgen[l][m].angle = 270
 							#left checkpoint room2
-							elif l == size_x / (map_size_x + 1) * (zone_counter.x + 1) - 1 && mapgen[l+1][m].exist:
+							elif l == size_x / (map_size_x + 1) * (zone_counter.x + 1) - 1 && mapgen[l+1][m].exist && checkpoints_enabled:
 								mapgen[l][m].checkpoint = true
 								mapgen[l][m].angle = 90
 							else: #generic horizontal room2
 								var room_angle: Array[float] = [90, 270]
 								mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
+						#right checkpoint room2
+						elif l == 0 && infinite_generation && checkpoints_enabled:
+							mapgen[l][m].checkpoint = true
+							mapgen[l][m].angle = 270
+						#left checkpoint room2
+						elif l == zone_size - 1 && infinite_generation && checkpoints_enabled:
+							mapgen[l][m].checkpoint = true
+							mapgen[l][m].angle = 90
 						else: #generic horizontal room2
 							var room_angle: Array[float] = [90, 270]
 							mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
