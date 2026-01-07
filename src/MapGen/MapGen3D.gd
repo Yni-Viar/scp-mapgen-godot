@@ -75,6 +75,8 @@ func _ready() -> void:
 
 func generate_rooms():
 	clear()
+	if rng_seed != -1:
+		rng.seed = rng_seed
 	if rooms == null || rooms.size() == 0:
 		printerr("There are no zones, cannot spawn.")
 		return

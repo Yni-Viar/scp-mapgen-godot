@@ -12,12 +12,15 @@ config_version=5
 
 config/name="SCP-like Map Generator v11"
 config/description="A procedural map generator, inspired from SCP-Containment Breach one."
-config/version="11.0.5"
+config/version="11.1.0"
 config/tags=PackedStringArray("map_generation", "scp_foundation", "template")
-run/main_scene="res://Scenes/Main.tscn"
+run/main_scene="uid://6l8r5fy0ymqt"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="SCPMapGenDemo"
 config/features=PackedStringArray("4.5", "Forward Plus")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/fullsize=false
+boot_splash/image="uid://briqd2cwrsxem"
 config/icon="res://icon_64.png"
 
 [display]
@@ -27,6 +30,10 @@ window/stretch/mode="canvas_items"
 [dotnet]
 
 project/assembly_name="SCP Map Generator v2"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/FileAccessWeb/plugin.cfg")
 
 [input]
 

@@ -1,5 +1,8 @@
 extends Node
 
+signal pack_loading_start
+signal pack_loading_finished
+
 const CONVERSION_ALIASES: Dictionary[String, String] = {
 	"endrooms": "Room1",
 	"endrooms_single": "Room1Single",
@@ -39,6 +42,7 @@ func _on_file_dialog_file_selected(path: String) -> void:
 
 ## Loads pack from ZIP file
 func load_pack(path: String):
+	pack_loading_start.emit()
 	var result_array: Array[MapGenZone]
 	# Disable reloading room packs, if there is no enough memory
 	var current_index: int = roompack_temp.get_directories().size()
@@ -46,13 +50,16 @@ func load_pack(path: String):
 		roompack_temp.make_dir(str(current_index))
 	# Extract all files from zip to first temp folder
 	extract_all_from_zip(path, roompack_temp.get_current_dir() + "/" + str(current_index))
-	if DirAccess.dir_exists_absolute(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES["endrooms"] + "/"):
+	# Use legacy version of room pack, if there is no v1 structure
+	# or it is a Web platform, where you need to care about performance
+	if DirAccess.dir_exists_absolute(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES["endrooms"] + "/") || \
+	 OS.get_name() == "Web":
 		result_array = room_pack_v1(current_index)
 	else:
 		result_array = room_pack_v2(current_index)
-	if result_array.size() > 1:
-		get_parent().get_node("FacilityGenerator").map_size_x = result_array.size() - 1
+	get_parent().get_node("FacilityGenerator").map_size_x = result_array.size() - 1
 	get_parent().get_node("FacilityGenerator").rooms = result_array
+	pack_loading_finished.emit()
 
 # Extract all files from a ZIP archive, preserving the directories within.
 # This acts like the "Extract all" functionality from most archive managers.
@@ -79,6 +86,7 @@ func extract_all_from_zip(path: String, extraction_path: String):
 		var file = FileAccess.open(root_dir.get_current_dir().path_join(file_path), FileAccess.WRITE)
 		var buffer = reader.read_file(file_path)
 		file.store_buffer(buffer)
+	reader.close()
 
 ## Extract room pack, made for v10.1-10.3
 func room_pack_v1(current_index: int) -> Array[MapGenZone]:
@@ -91,15 +99,16 @@ func room_pack_v1(current_index: int) -> Array[MapGenZone]:
 		var array_for_zone: Array[MapGenRoom] = []
 		if DirAccess.dir_exists_absolute(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
 			for room in DirAccess.get_files_at(roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/"):
-				var mapgenroom: MapGenRoom = MapGenRoom.new()
-				mapgenroom.gltf_path = roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/" + room
-				array_for_zone.append(mapgenroom)
+				if room.ends_with(".glb") || room.ends_with(".gltf"):
+					var mapgenroom: MapGenRoom = MapGenRoom.new()
+					mapgenroom.gltf_path = roompack_temp.get_current_dir() + "/" + str(current_index) + "/" + CONVERSION_ALIASES[alias] + "/" + room
+					array_for_zone.append(mapgenroom)
 		# Set room type to created array
 		zone.set(alias, array_for_zone)
 	# Pre defined values
 	zone.double_rooms = [
-		[load("res://MapGen/Resources/EvacuationShelter/room2d_test2.tres"), load("res://MapGen/Resources/EvacuationShelter/room2d_test1.tres")],
-		[load("res://MapGen/Resources/EvacuationShelter/room3d_test.tres"), load("res://MapGen/Resources/EvacuationShelter/room2d_test1.tres")]
+		[load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test2.tres"), load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test1.tres")],
+		[load("res://Assets/Rooms/MapGenResources/SimpleTest/room3d_test.tres"), load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test1.tres")]
 	]
 	zone.door_frames = [load("res://Assets/Doors/door.tscn"), load("res://Assets/Doors/door_alt.tscn")]
 	zone.checkpoint_door_frames = [load("res://Assets/Doors/doorcheckpoint.tscn")]
@@ -136,8 +145,8 @@ func room_pack_v2(current_index: int) -> Array[MapGenZone]:
 			zone.set(alias, array_for_zone)
 		# Pre defined values
 		zone.double_rooms = [
-			[load("res://MapGen/Resources/EvacuationShelter/room2d_test2.tres"), load("res://MapGen/Resources/EvacuationShelter/room2d_test1.tres")],
-			[load("res://MapGen/Resources/EvacuationShelter/room3d_test.tres"), load("res://MapGen/Resources/EvacuationShelter/room2d_test1.tres")]
+			[load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test2.tres"), load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test1.tres")],
+			[load("res://Assets/Rooms/MapGenResources/SimpleTest/room3d_test.tres"), load("res://Assets/Rooms/MapGenResources/SimpleTest/room2d_test1.tres")]
 		]
 		zone.door_frames = [load("res://Assets/Doors/door.tscn"), load("res://Assets/Doors/door_alt.tscn")]
 		

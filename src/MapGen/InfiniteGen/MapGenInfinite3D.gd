@@ -74,6 +74,7 @@ var cached_scenes: Dictionary[String, Node3D]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	
 	# We'll create chunk loading/unloading via Area3D
 	# It is for optimization
 	var chunk_area: Area3D = Area3D.new()
@@ -91,6 +92,8 @@ func _ready() -> void:
 
 func generate_rooms():
 	clear()
+	if rng_seed != -1:
+		rng.seed = rng_seed
 	if rooms == null || rooms.size() == 0:
 		printerr("There are no zones, cannot spawn.")
 		return
@@ -122,7 +125,8 @@ func generate_rooms():
 	add_child(mapgen_core)
 	mapgen = mapgen_core.start_generation()
 	spawn_rooms()
-	
+	if rng_seed == -1:
+		rng_seed = rng.seed
 
 ## Spawns room prefab on the grid
 func spawn_rooms() -> void:

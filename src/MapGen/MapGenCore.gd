@@ -82,8 +82,7 @@ var double_room_shapes: Array[Array]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#rng = get_parent().rng
-	rng = RandomNumberGenerator.new()
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -92,6 +91,7 @@ func _process(delta: float) -> void:
 
 func start_generation() -> Array[Array]:
 	clear()
+	rng = RandomNumberGenerator.new()
 	prepare_generation()
 	# Determines, if the generation is too large to stop it.
 	# You can change the limit in MAX_ROOM_SPAWN const.
@@ -108,6 +108,8 @@ func start_generation() -> Array[Array]:
 func prepare_generation() -> void:
 	if debug_print:
 		print("Preparing generation...")
+	if rng_seed != -1:
+		rng.seed = rng_seed
 	if infinite_generation && better_zone_generation:
 		for i in range(zone_size / 2):
 			var random_point: Vector2i = Vector2i(rng.randi_range(2, zone_size - 3), rng.randi_range(2, zone_size - 3))
@@ -115,8 +117,6 @@ func prepare_generation() -> void:
 				disabled_points.append(random_point)
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
-	if rng_seed != -1:
-		rng.seed = rng_seed
 	# Fill mapgen with zeros
 	for g in range(size_x):
 		mapgen.append([])

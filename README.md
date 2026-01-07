@@ -37,6 +37,9 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.11.1.0 (2026.01.07)
+- \[MapGen Room Previewer\] Added support for Web platform **(only handles preview, large >1GB ZIP files still NOT recommended to use in Web editor)**
+- Synchronized map generator random.
 ### v.11.0.0 (2026.01.04)
 - Added support for infinite facility (tweaked backend and added new 3d front-end) (room previewer not supported for semi-infinite map generation)
 ### v.10.4.0 (2025.12.30)

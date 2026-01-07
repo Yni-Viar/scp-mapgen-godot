@@ -58,6 +58,7 @@ text = "Map generation by Yni.
 Thirdparty credits:
 GLTF load and save functions are used from Godot documentation.
 Free Look Camera by Adam Viola (MIT License).
+FileAccessWeb by Scrawach (MIT License)
 [hr]
 Right mouse button - rotate, Space - zoom
 Scroll to see more tips.
@@ -170,6 +171,33 @@ grow_vertical = 0
 toggle_mode = true
 text = "Toggle hints and credits"
 
+[node name="LoadingPanel" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LoadingLabel" type="Label" parent="UI/LoadingPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.5
+offset_top = -24.5
+offset_right = 64.5
+offset_bottom = 24.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Loading rooms...
+Please, wait."
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="SetRoomPack" type="Node" parent="."]
 script = ExtResource("4_rgh2o")
 
@@ -208,5 +236,7 @@ filters = PackedStringArray("*.glb", "model/gltf-binary")
 [connection signal="text_changed" from="UI/VBoxContainer/ZoneSizeEdit" to="UI" method="_on_zone_size_edit_text_changed"]
 [connection signal="pressed" from="UI/VBoxContainer/SaveResult" to="UI" method="_on_save_result_pressed"]
 [connection signal="toggled" from="UI/Hints" to="UI" method="_on_hints_toggled"]
+[connection signal="pack_loading_finished" from="SetRoomPack" to="UI" method="_on_set_room_pack_pack_loading_finished"]
+[connection signal="pack_loading_start" from="SetRoomPack" to="UI" method="_on_set_room_pack_pack_loading_start"]
 [connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]
 [connection signal="file_selected" from="RoomSaver/FileDialog" to="RoomSaver" method="_on_file_dialog_file_selected"]
