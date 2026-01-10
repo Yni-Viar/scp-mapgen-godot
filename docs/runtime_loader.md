@@ -25,6 +25,7 @@ For runtime load, you need a ZIP file with folders in this format
 Put your GLTF/GLB files into folders (Room1, Room2, Room2Checkpoint, Room2c, Room3, Room4 should have at least 1 gltf/glb file!)
 
 ## File structure (v1 legacy, used in versions 10.1-10.3)
+```
 |- room_pack.zip
 |  |- Room1
 |  |- Room1Single
@@ -40,6 +41,7 @@ Put your GLTF/GLB files into folders (Room1, Room2, Room2Checkpoint, Room2c, Roo
 |  |- Room3SingleLarge
 |  |- Room4
 |  |- Room4Single
+```
 
 Put your GLTF/GLB files into folders (Room1, Room2, Room2c, Room3, Room4 should have at least 1 gltf/glb file!)
 
