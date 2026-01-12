@@ -37,6 +37,8 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 @export var debug_print: bool = false
 ## Enable double rooms support (single rooms only). Available since mapgen v9.
 @export var double_room_support: bool = false
+## Setting to optimize GLTF loading. Is not necessary for map generation
+@export var use_gltf_optimizator = false
 
 var mapgen: Array[Array] = []
 
@@ -70,7 +72,7 @@ var room4d_count: Array[int] = [0]
 var room2cd_count: Array[int] = [0]
 var room3d_count: Array[int] = [0]
 
-var cached_scenes: Dictionary[String, Node3D]
+var cached_scenes: Dictionary[String, PackedScene]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -691,19 +693,6 @@ func clear():
 	unloaded.emit()
 	rooms_are_generated = false
 
-func load_gltf(path: String) -> Node3D:
-	if cached_scenes.has(path):
-		return cached_scenes[path].duplicate()
-	var gltf_document_load = GLTFDocument.new()
-	var gltf_state_load = GLTFState.new()
-	var error = gltf_document_load.append_from_file(path, gltf_state_load)
-	if error == OK:
-		var gltf_scene_root_node = gltf_document_load.generate_scene(gltf_state_load)
-		cached_scenes[path] = gltf_scene_root_node.duplicate()
-		return gltf_scene_root_node
-	else:
-		return null
-
 func _on_optimizator_body_entered(body: Node3D):
 	if body is CharacterBody3D:
 		if !rooms_are_generated:
@@ -742,9 +731,26 @@ func _on_optimizator_body_exited(body: Node3D):
 		if rooms_are_generated:
 			clear()
 
+func load_gltf(path: String) -> Node3D:
+	if cached_scenes.has(path):
+		return cached_scenes[path].instantiate()
+	var gltf_document_load = GLTFDocument.new()
+	var gltf_state_load = GLTFState.new()
+	var error = gltf_document_load.append_from_file(path, gltf_state_load)
+	if error == OK:
+		var gltf_scene_root_node = gltf_document_load.generate_scene(gltf_state_load)
+		var packed_scene:PackedScene = PackedScene.new()
+		packed_scene.pack(gltf_scene_root_node)
+		#if !DirAccess.dir_exists_absolute("user://temporary_scenes/"):
+			#DirAccess.make_dir_absolute("user://temporary_scenes/")
+		#ResourceSaver.save(packed_scene, "user://temporary_scenes/" + path.get_file().split(".")[0] + ".tscn")
+		cached_scenes[path] = packed_scene
+		return gltf_scene_root_node
+	else:
+		return null
 
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_WM_GO_BACK_REQUEST:
 			for key in cached_scenes:
-				cached_scenes[key].queue_free()
+				cached_scenes.clear()

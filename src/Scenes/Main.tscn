@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://6l8r5fy0ymqt"]
+[gd_scene load_steps=13 format=3 uid="uid://6l8r5fy0ymqt"]
 
 [ext_resource type="Script" uid="uid://bu7shnqhd7um8" path="res://MapGen/MapGen3D.gd" id="1_l22lh"]
 [ext_resource type="Script" uid="uid://k3xvlffr17rf" path="res://Scripts/GameCore.gd" id="1_v1gob"]
@@ -7,7 +7,8 @@
 [ext_resource type="Resource" uid="uid://7prvjngodfs1" path="res://Assets/Rooms/SimpleTest.tres" id="4_jw32o"]
 [ext_resource type="Script" uid="uid://dxkuuaidtb7bf" path="res://Scripts/SetRoomPack.gd" id="4_rgh2o"]
 [ext_resource type="Script" uid="uid://brnmrs6xlpyic" path="res://Scripts/Test.gd" id="5_8xs74"]
-[ext_resource type="Script" uid="uid://bjt0w0pvlhm7u" path="res://Scripts/RoomSaver.gd" id="5_pbw6q"]
+[ext_resource type="Script" uid="uid://ba15xci8dll8n" path="res://MapGen/RenderOnly/MapGenRender3D.gd" id="6_vy5pj"]
+[ext_resource type="Script" uid="uid://dxyukxxne5y0j" path="res://Scripts/RoomGeneratorAndSaver.gd" id="10_bmxlf"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hbml1"]
 
@@ -22,7 +23,7 @@ sky = SubResource("Sky_nttp5")
 script = ExtResource("1_v1gob")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 96, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 64, 0)
 script = ExtResource("2_50glp")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
@@ -31,6 +32,16 @@ rooms = Array[ExtResource("3_v1gob")]([ExtResource("4_jw32o")])
 large_rooms = true
 enable_door_generation = false
 checkpoints_enabled = true
+use_gltf_optimizator = true
+gltf_visibility_radius = 96.0
+
+[node name="FacilityGeneratorRender" type="Node3D" parent="."]
+script = ExtResource("6_vy5pj")
+rooms = Array[ExtResource("3_v1gob")]([ExtResource("4_jw32o")])
+large_rooms = true
+enable_door_generation = false
+checkpoints_enabled = true
+debug_print = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")
@@ -82,83 +93,91 @@ offset_left = -192.0
 offset_top = -32.320007
 offset_right = 192.0
 offset_bottom = 31.679993
+grow_horizontal = 0
+grow_vertical = 2
 text = "Move forward"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -256.0
+offset_left = -288.0
 grow_horizontal = 0
 grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="HideTestingFunctions" type="CheckBox" parent="UI/VBoxContainer"]
+[node name="HideTestingFunctions" type="CheckBox" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 button_pressed = true
-text = "Hide testing functions"
+text = "Hide testing and legacy functions"
 
-[node name="TestSemiInfiniteMapgen" type="Button" parent="UI/VBoxContainer"]
+[node name="TestSemiInfiniteMapgen" type="Button" parent="UI/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 text = "Test semi-infinite mapgen
 (no wayback)"
 
-[node name="RoomPackButton" type="Button" parent="UI/VBoxContainer"]
+[node name="RoomPackButton" type="Button" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Load room pack"
 
-[node name="Seed" type="LineEdit" parent="UI/VBoxContainer"]
+[node name="Seed" type="LineEdit" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 placeholder_text = "Seed"
 
-[node name="Generate" type="Button" parent="UI/VBoxContainer"]
+[node name="Generate" type="Button" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Generate map"
+text = "Preview map"
 
-[node name="EnableLighting" type="CheckBox" parent="UI/VBoxContainer"]
+[node name="EnableLighting" type="CheckBox" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 button_pressed = true
 text = "Enable lighting"
 
-[node name="EnableCheckpoints" type="CheckBox" parent="UI/VBoxContainer"]
+[node name="EnableCheckpoints" type="CheckBox" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 button_pressed = true
 text = "Enable checkpoints"
 
-[node name="DoubleRoom" type="CheckBox" parent="UI/VBoxContainer"]
+[node name="DoubleRoom" type="CheckBox" parent="UI/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 text = "Test double rooms"
 
-[node name="Door" type="CheckBox" parent="UI/VBoxContainer"]
+[node name="Door" type="CheckBox" parent="UI/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
 text = "Spawn sample doors"
 
-[node name="RoomScaleLabel" type="Label" parent="UI/VBoxContainer"]
+[node name="RoomScaleLabel" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Room scale"
 
-[node name="RoomScaleEdit" type="LineEdit" parent="UI/VBoxContainer"]
+[node name="RoomScaleEdit" type="LineEdit" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "20.48"
 virtual_keyboard_type = 2
 
-[node name="ZoneSizeLabel" type="Label" parent="UI/VBoxContainer"]
+[node name="ZoneSizeLabel" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Zone size"
 
-[node name="ZoneSizeEdit" type="LineEdit" parent="UI/VBoxContainer"]
+[node name="ZoneSizeEdit" type="LineEdit" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "8"
 virtual_keyboard_type = 2
 
-[node name="SaveResult" type="Button" parent="UI/VBoxContainer"]
+[node name="GenerateAndSave" type="Button" parent="UI/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Save generation result to GLTF"
+text = "Generate and save to GLTF"
+
+[node name="CurrentSeed" type="Label" parent="UI/ScrollContainer/VBoxContainer"]
+layout_mode = 2
 
 [node name="Hints" type="Button" parent="UI"]
 layout_mode = 1
@@ -211,32 +230,32 @@ display_mode = 1
 access = 2
 filters = PackedStringArray("*.zip", "application/zip", "application/x-zip-compressed")
 
-[node name="RoomSaver" type="Node" parent="."]
-script = ExtResource("5_pbw6q")
+[node name="RoomQuickSaver" type="Node" parent="."]
+script = ExtResource("10_bmxlf")
 
-[node name="FileDialog" type="FileDialog" parent="RoomSaver"]
+[node name="FileDialog" type="FileDialog" parent="RoomQuickSaver"]
 oversampling_override = 1.0
 initial_position = 1
 display_mode = 1
 access = 2
-filters = PackedStringArray("*.glb", "model/gltf-binary")
+filters = PackedStringArray("*.glb", "model/gltf-binary", "*.gltf", "model/gltf+json")
 
 [connection signal="button_down" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_down"]
 [connection signal="button_up" from="UI/CameraForward" to="UI" method="_on_camera_forward_button_up"]
-[connection signal="toggled" from="UI/VBoxContainer/HideTestingFunctions" to="UI" method="_on_hide_testing_functions_toggled"]
-[connection signal="pressed" from="UI/VBoxContainer/TestSemiInfiniteMapgen" to="UI" method="_on_test_semi_infinite_mapgen_pressed"]
-[connection signal="pressed" from="UI/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
-[connection signal="text_changed" from="UI/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
-[connection signal="pressed" from="UI/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
-[connection signal="toggled" from="UI/VBoxContainer/EnableLighting" to="UI" method="_on_enable_lighting_toggled"]
-[connection signal="toggled" from="UI/VBoxContainer/EnableCheckpoints" to="UI" method="_on_enable_checkpoints_toggled"]
-[connection signal="toggled" from="UI/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
-[connection signal="toggled" from="UI/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
-[connection signal="text_changed" from="UI/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
-[connection signal="text_changed" from="UI/VBoxContainer/ZoneSizeEdit" to="UI" method="_on_zone_size_edit_text_changed"]
-[connection signal="pressed" from="UI/VBoxContainer/SaveResult" to="UI" method="_on_save_result_pressed"]
+[connection signal="toggled" from="UI/ScrollContainer/VBoxContainer/HideTestingFunctions" to="UI" method="_on_hide_testing_functions_toggled"]
+[connection signal="pressed" from="UI/ScrollContainer/VBoxContainer/TestSemiInfiniteMapgen" to="UI" method="_on_test_semi_infinite_mapgen_pressed"]
+[connection signal="pressed" from="UI/ScrollContainer/VBoxContainer/RoomPackButton" to="UI" method="_on_room_pack_button_pressed"]
+[connection signal="text_changed" from="UI/ScrollContainer/VBoxContainer/Seed" to="UI" method="_on_seed_text_changed"]
+[connection signal="pressed" from="UI/ScrollContainer/VBoxContainer/Generate" to="UI" method="_on_generate_pressed"]
+[connection signal="toggled" from="UI/ScrollContainer/VBoxContainer/EnableLighting" to="UI" method="_on_enable_lighting_toggled"]
+[connection signal="toggled" from="UI/ScrollContainer/VBoxContainer/EnableCheckpoints" to="UI" method="_on_enable_checkpoints_toggled"]
+[connection signal="toggled" from="UI/ScrollContainer/VBoxContainer/DoubleRoom" to="UI" method="_on_double_room_toggled"]
+[connection signal="toggled" from="UI/ScrollContainer/VBoxContainer/Door" to="UI" method="_on_door_toggled"]
+[connection signal="text_changed" from="UI/ScrollContainer/VBoxContainer/RoomScaleEdit" to="UI" method="_on_room_scale_edit_text_changed"]
+[connection signal="text_changed" from="UI/ScrollContainer/VBoxContainer/ZoneSizeEdit" to="UI" method="_on_zone_size_edit_text_changed"]
+[connection signal="pressed" from="UI/ScrollContainer/VBoxContainer/GenerateAndSave" to="UI" method="_on_generate_and_save_pressed"]
 [connection signal="toggled" from="UI/Hints" to="UI" method="_on_hints_toggled"]
 [connection signal="pack_loading_finished" from="SetRoomPack" to="UI" method="_on_set_room_pack_pack_loading_finished"]
 [connection signal="pack_loading_start" from="SetRoomPack" to="UI" method="_on_set_room_pack_pack_loading_start"]
 [connection signal="file_selected" from="SetRoomPack/FileDialog" to="SetRoomPack" method="_on_file_dialog_file_selected"]
-[connection signal="file_selected" from="RoomSaver/FileDialog" to="RoomSaver" method="_on_file_dialog_file_selected"]
+[connection signal="file_selected" from="RoomQuickSaver/FileDialog" to="RoomQuickSaver" method="_on_file_dialog_file_selected"]

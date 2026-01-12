@@ -27,7 +27,7 @@ var roompack_temp: DirAccess = DirAccess.create_temp("roompack_temp")
 func _ready() -> void:
 	if roompack_temp == null:
 		OS.alert("Loading room packs is not supported on your device.")
-		get_parent().get_node("UI/VBoxContainer/RoomPackButton").hide()
+		get_parent().get_node("UI/ScrollContainer/VBoxContainer/RoomPackButton").hide()
 	elif OS.get_name() == "Android":
 		$FileDialog.use_native_dialog = true
 
@@ -59,6 +59,8 @@ func load_pack(path: String):
 		result_array = room_pack_v2(current_index)
 	get_parent().get_node("FacilityGenerator").map_size_x = result_array.size() - 1
 	get_parent().get_node("FacilityGenerator").rooms = result_array
+	get_parent().get_node("FacilityGeneratorRender").map_size_x = result_array.size() - 1
+	get_parent().get_node("FacilityGeneratorRender").rooms = result_array
 	pack_loading_finished.emit()
 
 # Extract all files from a ZIP archive, preserving the directories within.
@@ -71,6 +73,14 @@ func extract_all_from_zip(path: String, extraction_path: String):
 	# Not all ZIP archives put everything in a single root folder,
 	# which means several files/folders may be created in `root_dir` after extraction.
 	var root_dir = DirAccess.open(extraction_path)
+	
+	if root_dir == null:
+		OS.alert("Nowhere to extract the files.")
+		get_parent().get_node("FacilityGenerator").map_size_x = 0
+		if ResourceLoader.exists("res://ResearchZoneLite/RZLite.tres"):
+			get_parent().get_node("FacilityGenerator").rooms = [load("res://ResearchZoneLite/RZLite.tres")]
+		else:
+			get_parent().get_node("FacilityGenerator").rooms = [load("res://Assets/Rooms/SimpleTest.tres")]
 
 	var files = reader.get_files()
 	for file_path in files:
@@ -117,7 +127,7 @@ func room_pack_v1(current_index: int) -> Array[MapGenZone]:
 	if zone.endrooms.size() > 0 && zone.hallways.size() > 0 && zone.corners.size() > 0 && zone.trooms.size() > 0 && zone.crossrooms.size() > 0:
 		# Disable room pack loading at this instance, if there are < 2GB free RAM, or total memory <= 4GB
 		if OS.get_memory_info()["physical"] < 4294967296 || OS.get_memory_info()["free"] < 2147483648:
-			get_parent().get_node("UI/VBoxContainer/RoomPackButton").disabled = true
+			get_parent().get_node("UI/ScrollContainer/VBoxContainer/RoomPackButton").disabled = true
 	else:
 		# If archive is wrong - say it.
 		OS.alert("Selected archive has wrong folder structure.")
@@ -153,7 +163,7 @@ func room_pack_v2(current_index: int) -> Array[MapGenZone]:
 		if zone.endrooms.size() > 0 && zone.hallways.size() > 0 && zone.corners.size() > 0 && zone.trooms.size() > 0 && zone.crossrooms.size() > 0 && zone.checkpoint_hallway.size() > 0:
 			# Disable room pack loading at this instance, if there are < 2GB free RAM, or total memory <= 4GB
 			if OS.get_memory_info()["physical"] < 4294967296 || OS.get_memory_info()["free"] < 2147483648:
-				get_parent().get_node("UI/VBoxContainer/RoomPackButton").disabled = true
+				get_parent().get_node("UI/ScrollContainer/VBoxContainer/RoomPackButton").disabled = true
 		else:
 			# If archive is wrong - say it.
 			OS.alert("Selected archive has wrong folder structure.")

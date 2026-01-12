@@ -25,18 +25,28 @@ Unity (Coming soon...)
 
 ## What works:
 - [x] Random generation (NOT Layout based)
+- [x] Single room support *\(supported only in Regular and Renderer map generator\)*
+- [x] Large room support *\(supported only in Regular and Renderer map generator\)*
 - [x] Door support (currently only in 3D version)
 - [x] Modular.
 - [x] Randomized door + assign specific door to a room
 - [x] Checkpoint support *Note, that these checkpoints work differently from Containment Breach ones*
 - [x] Many zone support (both in x and y directions) (currently, there is a limit of 512 rooms in a single generator node, you can increase it in code, but this may affect the performance (especcialy in 3D))
 - [x] Variable room spawn, based on room chance / guaranteed spawn.
-- [x] Seamless double rooms *(All non-endroom types supported since v10)*
+- [x] Seamless double rooms *\(All non-endroom types supported since v10\), \(supported only in Regular and Infinite map generator\)*
 - [x] This sample also includes room pack loader and layout saver (from GLTF to GLTF) (since v10.2)
 
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.11.2.0 (2026.01.12)
+- \[MapGen 3D frontend\] Add HLOD support for 3D models (it is `off` by default, and is `on` in `Demo app`)
+- \[MapGen Room Previewer\] Refactor scene saver; introduce new Renderer frontend to save rooms as GLTF.
+- \[MapGen Room Previewer\] You can no longer generate gltf scene on Android (because it requires multiple file creation AND for performance)
+
+---
+
+These changes improve performance A LOT!
 ### v.11.1.0 (2026.01.07)
 - \[MapGen Room Previewer\] Added support for Web platform **(only handles preview, large >1GB ZIP files still NOT recommended to use in Web editor)**
 - Synchronized map generator random.

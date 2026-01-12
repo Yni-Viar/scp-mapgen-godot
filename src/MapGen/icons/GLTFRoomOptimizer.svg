@@ -7,7 +7,7 @@
    viewBox="0 0 16.0 16.0"
    version="1.1"
    id="SVGRoot"
-   sodipodi:docname="MapGenRoom.svg"
+   sodipodi:docname="GLTFRoomOptimizer.svg"
    inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
    xml:space="preserve"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -39,9 +39,13 @@
      inkscape:label="Слой 1"
      inkscape:groupmode="layer"
      id="layer1"><path
-       style="fill:none;fill-opacity:1;stroke:#e0e0e0;stroke-width:1.00157;stroke-dasharray:none;stroke-opacity:1"
-       d="M 5.6242639,1.4723204 H 3.5041225 V 14.458187 h 2.0318021"
+       style="fill:none;fill-opacity:1;stroke:#fc7f7f;stroke-width:1.00157;stroke-dasharray:none;stroke-opacity:1"
+       d="M 5.5948175,1.5017668 H 3.4746761 V 14.487633 h 2.0318021"
        id="path11537" /><path
-       style="fill:none;fill-opacity:1;stroke:#e0e0e0;stroke-width:1.00142;stroke-dasharray:none;stroke-opacity:1"
-       d="m 10.409403,14.471935 h 2.119823 V 1.4880179 h -2.031497"
-       id="path11537-6" /></g></svg>
+       style="fill:none;fill-opacity:1;stroke:#fc7f7f;stroke-width:1.00142;stroke-dasharray:none;stroke-opacity:1"
+       d="M 10.379957,14.442489 H 12.49978 V 1.4585715 h -2.031497"
+       id="path11537-6" /><path
+       fill="#e0e0e0"
+       d="M 5.8071219,6.6599535 A 0.36900559,0.36900559 0 0 0 5.6030618,6.9905825 V 9.204616 a 0.36900559,0.36900559 0 0 0 0.2040601,0.33026 l 2.2140336,1.107017 a 0.36900559,0.36900559 0 0 0 0.329891,0 L 10.56508,9.534876 a 0.36900559,0.36900559 0 0 0 0.20406,-0.33026 V 6.9905825 A 0.36900559,0.36900559 0 0 0 10.56508,6.6606915 L 8.3510465,5.5536747 a 0.36900559,0.36900559 0 0 0 -0.329891,0 z M 8.186101,6.2909479 9.5750379,6.9854164 8.186101,7.679885 6.7971639,6.9854164 Z M 6.341073,7.5824675 7.8170954,8.3204787 v 1.389675 L 6.341073,8.9721425 Z"
+       id="path182"
+       style="stroke-width:0.369006;fill:#fc7f7f;fill-opacity:1" /></g></svg>

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cca1oos3wu62u"
-path="res://.godot/imported/MapGenRoom.svg-5f5384e0c1abf12f9749cb7edefdddcc.ctex"
+uid="uid://4aa6cpkjqfh"
+path="res://.godot/imported/MapGenRender3D.svg-2e403ed35383ff169bd65d7b47b66903.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MapGen/icons/MapGenRoom.svg"
-dest_files=["res://.godot/imported/MapGenRoom.svg-5f5384e0c1abf12f9749cb7edefdddcc.ctex"]
+source_file="res://MapGen/icons/MapGenRender3D.svg"
+dest_files=["res://.godot/imported/MapGenRender3D.svg-2e403ed35383ff169bd65d7b47b66903.ctex"]
 
 [params]
 
