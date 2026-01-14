@@ -1,5 +1,5 @@
 @icon("res://MapGen/icons/MapGenNode.svg")
-extends Node
+extends Object
 class_name MapGenCore
 
 var rng: RandomNumberGenerator
@@ -14,16 +14,12 @@ const NUMBER_OF_TRIES_TO_SPAWN: int = 4
 const MAX_ROOMS_SPAWN: int = 512
 
 @export var rng_seed: int = -1
-## Rooms that will be used
-@export var rooms: Array[MapGenZone]
 ## Zone size (values before 8 NOT recommended, may lead to unexpected behavior)
 @export_range(8, 256, 2) var zone_size: int = 8
 ## Amount of zones by X coordinate
 @export_range(0, 3) var map_size_x: int = 0
 ## Amount of zones by Y coordinate
 @export_range(0, 3) var map_size_y: int = 0
-## Room in grid size
-@export var grid_size: float = 64
 ## Large rooms support
 @export var large_rooms: bool = false
 ## How much the map will be filled with rooms
@@ -47,7 +43,8 @@ const MAX_ROOMS_SPAWN: int = 512
 @export var debug_print: bool = false
 ## Enable double rooms support (single rooms only). Available since mapgen v9.
 @export var double_room_support: bool = false
-
+## Amount of single large endrooms in all zones
+@export var endrooms_single_large_amount: PackedInt32Array = PackedInt32Array()
 ## Infinite generation is actually limited only by Godot's floating point errors
 ## DO NOT SET THIS PROPERTY MANUALLY, IT IS AUTOMATIC.
 var infinite_generation: bool = false
@@ -80,16 +77,16 @@ var endroom_amount: int = 0
 ## Structure is like: [[[DoubleRoomTypes, DoubleRoomTypes]]] (since enum is actually named int)
 var double_room_shapes: Array[Array]
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass
+## Called when the node enters the scene tree for the first time.
+#func _ready() -> void:
+	#pass
+#
+#
+## Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta: float) -> void:
+	#pass
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-func start_generation() -> Array[Array]:
+func start_generation() -> void:
 	clear()
 	rng = RandomNumberGenerator.new()
 	prepare_generation()
@@ -102,7 +99,6 @@ func start_generation() -> Array[Array]:
 	else:
 		generate_zone_astar()
 		place_room_positions()
-	return mapgen
 
 ## Prepares room generation
 func prepare_generation() -> void:
@@ -117,11 +113,12 @@ func prepare_generation() -> void:
 				disabled_points.append(random_point)
 	size_x = zone_size * (map_size_x + 1)
 	size_y = zone_size * (map_size_y + 1)
+	mapgen.resize(size_x)
 	# Fill mapgen with zeros
 	for g in range(size_x):
-		mapgen.append([])
+		mapgen[g].resize(size_y)
 		for h in range(size_y):
-			mapgen[g].append(Room.new())
+			mapgen[g][h] = Room.new()
 			mapgen[g][h].exist = false
 			mapgen[g][h].north = false
 			mapgen[g][h].south = false
@@ -172,7 +169,7 @@ func generate_zone_astar() -> void:
 			# Random room position. If large rooms enabled, also used for large room coordinates
 			var random_room: Vector2
 			## Reworked large rooms module
-			if large_rooms && rooms[zone_index].endrooms_single_large.size() > 0:
+			if large_rooms && endrooms_single_large_amount[zone_index] > 0:
 				for k in range(large_room_amount):
 					for l in range(NUMBER_OF_TRIES_TO_SPAWN):
 						if checkpoints_enabled:
@@ -551,87 +548,42 @@ func place_room_positions() -> void:
 				debug_string += str(int(mapgen[j][k].exist))
 			print(debug_string)
 		print("Connecting rooms...")
-	# Regular rooms amount (needed for better generation)
-	var room1_amount: Array[int] = []
-	var room2_amount: Array[int] = []
-	var room2c_amount: Array[int] = []
-	var room3_amount: Array[int] = []
-	var room4_amount: Array[int] = []
-	# Large rooms amount
-	var room2l_amount: Array[int] = []
-	var room2cl_amount: Array[int] = []
-	var room3l_amount: Array[int] = []
-	
-	# Double room amount
-	
-	# Double hallway
-	var room2d_amount: Array[int] = []
-	# Double curve room
-	var room2cd_amount: Array[int] = []
-	# Double T-shape room
-	var room3d_amount: Array[int] = []
-	# Double crossrooms
-	var room4d_amount: Array[int] = []
+	var room_amount: Dictionary[String, PackedInt32Array] = {
+	# single rooms
+		"room1_amount": PackedInt32Array([0]),
+		"room2_amount": PackedInt32Array([0]),
+		"room2c_amount": PackedInt32Array([0]),
+		"room3_amount": PackedInt32Array([0]),
+		"room4_amount": PackedInt32Array([0]),
+	# large rooms
+		"room1l_amount": PackedInt32Array([0]),
+		"room2l_amount": PackedInt32Array([0]),
+		"room2cl_amount": PackedInt32Array([0]),
+		"room3l_amount": PackedInt32Array([0]),
+	# double rooms
+		"room2d_amount": PackedInt32Array([0]),
+		"room4d_amount": PackedInt32Array([0]),
+		"room2cd_amount": PackedInt32Array([0]),
+		"room3d_amount": PackedInt32Array([0])
+	}
 	
 	var zone_counter: Vector2i = Vector2i.ZERO
 	var room_index: int = 0
 	var room_index_default: int = 0
-	# Initialize values
-	room1_amount.append(0)
-	room2_amount.append(0)
-	room2c_amount.append(0)
-	room3_amount.append(0)
-	room4_amount.append(0)
-	
-	room2l_amount.append(0)
-	room2cl_amount.append(0)
-	room3l_amount.append(0)
-	
-	if double_room_support:
-		room2d_amount.append(0)
-		room2cd_amount.append(0)
-		room3d_amount.append(0)
-		room4d_amount.append(0)
 	
 	for l in range(size_x):
 		#append zone horizontal
 		if l >= size_x / (map_size_x + 1) * (zone_counter.x + 1):
 			zone_counter.x += 1
-			room1_amount.append(0)
-			room2_amount.append(0)
-			room2c_amount.append(0)
-			room3_amount.append(0)
-			room4_amount.append(0)
-			
-			room2l_amount.append(0)
-			room2cl_amount.append(0)
-			room3l_amount.append(0)
-			
-			if double_room_support:
-				room2d_amount.append(0)
-				room2cd_amount.append(0)
-				room3d_amount.append(0)
-				room4d_amount.append(0)
+			for key in room_amount:
+				room_amount[key].append(0)
 			room_index_default += 1
 		for m in range(size_y):
 			#append zone vertical
 			if m >= size_y / (map_size_y + 1) * (zone_counter.y + 1):
 				zone_counter.y += 1
-				room1_amount.append(0)
-				room2_amount.append(0)
-				room2c_amount.append(0)
-				room3_amount.append(0)
-				room4_amount.append(0)
-				
-				room2l_amount.append(0)
-				room2cl_amount.append(0)
-				room3l_amount.append(0)
-				
-				if double_room_support:
-					room2d_amount.append(0)
-					room2cd_amount.append(0)
-					room3d_amount.append(0)
-					room4d_amount.append(0)
+				for key in room_amount:
+					room_amount[key].append(0)
 				room_index += 1
 			var north: bool
 			var east: bool
@@ -648,25 +600,25 @@ func place_room_positions() -> void:
 						var room_angle: Array[float] = [0, 90, 180, 270]
 						mapgen[l][m].room_type = RoomTypes.ROOM4
 						mapgen[l][m].angle = room_angle[rng.randi_range(0, 3)]
-						room4_amount[room_index] += 1
+						room_amount["room4_amount"][room_index] += 1
 					elif east && !west:
 						#room3, pointing east
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 90
 						if large_rooms:
-							if check_room_dimensions(l, m, 3) && room3l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 3) && room_amount["room3l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room3l_amount[room_index] += 1
-						room3_amount[room_index] += 1
+								room_amount["room3l_amount"][room_index] += 1
+						room_amount["room3_amount"][room_index] += 1
 					elif !east && west:
 						#room3, pointing west
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 270
 						if large_rooms:
-							if check_room_dimensions(l, m, 3) && room3l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 3) && room_amount["room3l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room3l_amount[room_index] += 1
-						room3_amount[room_index] += 1
+								room_amount["room3l_amount"][room_index] += 1
+						room_amount["room3_amount"][room_index] += 1
 					else: #room2
 						if m < size_y - 1 && m > 0:
 							#upper checkpoint room2
@@ -693,29 +645,29 @@ func place_room_positions() -> void:
 							mapgen[l][m].angle = room_angle[rng.randi_range(0, 1)]
 						mapgen[l][m].room_type = RoomTypes.ROOM2
 						if large_rooms:
-							if check_room_dimensions(l, m, 1) && room2l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 1) && room_amount["room2l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2l_amount[room_index] += 1
-						room2_amount[room_index] += 1
+								room_amount["room2l_amount"][room_index] += 1
+						room_amount["room2_amount"][room_index] += 1
 				elif east && west:
 					if north && !south:
 						#room3, pointing north
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 0
 						if large_rooms:
-							if check_room_dimensions(l, m, 3) && room3l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 3) && room_amount["room3l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room3l_amount[room_index] += 1
-						room3_amount[room_index] += 1
+								room_amount["room3l_amount"][room_index] += 1
+						room_amount["room3_amount"][room_index] += 1
 					elif !north && south:
 					#room3, pointing south
 						mapgen[l][m].room_type = RoomTypes.ROOM3
 						mapgen[l][m].angle = 180
 						if large_rooms:
-							if check_room_dimensions(l, m, 3) && room3l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 3) && room_amount["room3l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room3l_amount[room_index] += 1
-						room3_amount[room_index] += 1
+								room_amount["room3l_amount"][room_index] += 1
+						room_amount["room3_amount"][room_index] += 1
 					else:#room2
 						if l < size_x - 1 && l > 0:
 							#right checkpoint room2
@@ -744,68 +696,68 @@ func place_room_positions() -> void:
 						mapgen[l][m].room_type = RoomTypes.ROOM2
 						
 						if large_rooms:
-							if check_room_dimensions(l, m, 1) && room2l_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 1) && room_amount["room2l_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2l_amount[room_index] += 1
-						room2_amount[room_index] += 1
+								room_amount["room2l_amount"][room_index] += 1
+						room_amount["room2_amount"][room_index] += 1
 				elif north:
 					if east:
 					#room2c, north-east
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 0
 						if large_rooms:
-							if check_room_dimensions(l, m, 2) && room2cl_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 2) && room_amount["room2cl_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2cl_amount[room_index] += 1
-						room2c_amount[room_index] += 1
+								room_amount["room2cl_amount"][room_index] += 1
+						room_amount["room2c_amount"][room_index] += 1
 					elif west:
 					#room2c, north-west
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 270
 						if large_rooms:
-							if check_room_dimensions(l, m, 2) && room2cl_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 2) && room_amount["room2cl_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2cl_amount[room_index] += 1
-						room2c_amount[room_index] += 1
+								room_amount["room2cl_amount"][room_index] += 1
+						room_amount["room2c_amount"][room_index] += 1
 					else:
 					#room1, north
 						mapgen[l][m].room_type = RoomTypes.ROOM1
 						mapgen[l][m].angle = 0
-						room1_amount[room_index] += 1
+						room_amount["room1_amount"][room_index] += 1
 				elif south:
 					if east:
 					#room2c, south-east
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 90
 						if large_rooms:
-							if check_room_dimensions(l, m, 2) && room2cl_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 2) && room_amount["room2cl_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2cl_amount[room_index] += 1
-						room2c_amount[room_index] += 1
+								room_amount["room2cl_amount"][room_index] += 1
+						room_amount["room2c_amount"][room_index] += 1
 					elif west:
 					#room2c, south-west
 						mapgen[l][m].room_type = RoomTypes.ROOM2C
 						mapgen[l][m].angle = 180
 						if large_rooms:
-							if check_room_dimensions(l, m, 2) && room2cl_amount[room_index] < zone_size / 6:
+							if check_room_dimensions(l, m, 2) && room_amount["room2cl_amount"][room_index] < zone_size / 6:
 								mapgen[l][m].large = true
-								room2cl_amount[room_index] += 1
-						room2c_amount[room_index] += 1
+								room_amount["room2cl_amount"][room_index] += 1
+						room_amount["room2c_amount"][room_index] += 1
 					else:
 					#room1, south
 						mapgen[l][m].room_type = RoomTypes.ROOM1
 						mapgen[l][m].angle = 180
-						room1_amount[room_index] += 1
+						room_amount["room1_amount"][room_index] += 1
 				elif east:
 					#room1, east
 					mapgen[l][m].room_type = RoomTypes.ROOM1
 					mapgen[l][m].angle = 90
-					room1_amount[room_index] += 1
+					room_amount["room1_amount"][room_index] += 1
 				else:
 					#room1, west
 					mapgen[l][m].room_type = RoomTypes.ROOM1
 					mapgen[l][m].angle = 270
-					room1_amount[room_index] += 1
+					room_amount["room1_amount"][room_index] += 1
 			if double_room_support:
 				# If both rooms exist and not double - then they can be double
 				if l > 0:
@@ -833,7 +785,7 @@ func place_room_positions() -> void:
 	#if better_zone_generation:
 		#for j in range(room_index + 1):
 			## Stop better zone generation if there is 2x2 zone and higher
-			#if room1_amount[j] < better_zone_generation_min_amount && (map_size_x + 1) * (map_size_y + 1) < 4:
+			#if room_amount["room1_amount"][j] < better_zone_generation_min_amount && (map_size_x + 1) * (map_size_y + 1) < 4:
 				#rng_seed = -1
 				#rng.randomize()
 				#start_generation()

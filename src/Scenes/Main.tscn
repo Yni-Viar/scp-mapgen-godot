@@ -29,9 +29,9 @@ script = ExtResource("2_50glp")
 [node name="FacilityGenerator" type="Node3D" parent="."]
 script = ExtResource("1_l22lh")
 rooms = Array[ExtResource("3_v1gob")]([ExtResource("4_jw32o")])
-large_rooms = true
 enable_door_generation = false
 checkpoints_enabled = true
+debug_print = true
 use_gltf_optimizator = true
 gltf_visibility_radius = 96.0
 
