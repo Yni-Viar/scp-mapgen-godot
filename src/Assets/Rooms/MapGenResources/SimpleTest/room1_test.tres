@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://gbjkjbslq5ys" path="res://Assets/Rooms/room1/room1_test.tscn" id="5_qlgvw"]
 [ext_resource type="Script" uid="uid://b15b7mhits7ot" path="res://MapGen/MapGenRoom.gd" id="6_ighxj"]
 
-
 [resource]
 script = ExtResource("6_ighxj")
 name = "room1"

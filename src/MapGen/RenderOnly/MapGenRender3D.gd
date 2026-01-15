@@ -120,6 +120,11 @@ var cached_scenes: Dictionary[String, PackedScene]
 
 var gltf_document: GLTFDocument
 var gltf_state:GLTFState
+
+# temporary variables
+var selected_room: PackedScene
+var room: Node3D
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	parameter_changed.connect(refresh_mapgen)
@@ -170,13 +175,11 @@ func generate_rooms(path: String):
 func spawn_rooms(path_to_save: String) -> void:
 	if debug_print:
 		print("Spawning rooms...")
-	unused_rooms = rooms.duplicate()
+	unused_rooms.resize(rooms.size())
 	for i in range(unused_rooms.size()):
 		unused_rooms[i] = rooms[i].duplicate(true)
 	# Checks the zone
 	var zone_counter: Vector2i = Vector2i.ZERO
-	var selected_room: PackedScene
-
 	
 	var zone_index_default: int = 0
 	var zone_index: int = 0
@@ -199,8 +202,8 @@ func spawn_rooms(path_to_save: String) -> void:
 				for key in room_count:
 					room_count[key].append(0)
 				zone_index += 1
-			var room: Node3D
 			#if mapgen[n][o].resource == null:
+			
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].endrooms_single_large.size() > 0 && room_count["room1l_count"][zone_index] < rooms[zone_index].endrooms_single_large.size():
@@ -209,38 +212,9 @@ func spawn_rooms(path_to_save: String) -> void:
 						mapgen[n][o].resource = rooms[zone_index].endrooms_single_large[room_count["room1l_count"][zone_index]]
 						room_count["room1l_count"][zone_index] += 1
 					else:
-						selected_room = room_select(RoomTypes.ROOM1, zone_index, n, o)
+						room_select(RoomTypes.ROOM1, zone_index, n, o)
 					
-					if selected_room != null:
-						room = selected_room.instantiate()
-						room.position = Vector3(n * grid_size, 0, o * grid_size)
-						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-						
-						
-						gltf_document.append_from_scene(room, gltf_state)
-						gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-						room.free()
-						await get_tree().process_frame
-						if debug_print:
-							print(gltf_state.get_reference_count())
-						
-						gltf_state = GLTFState.new()
-					elif selected_room == null && (mapgen[n][o].resource.gltf_path != null || !mapgen[n][o].resource.gltf_path.is_empty()):
-						#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
-						#threaded_gltf_parser_args["position_x"] = n
-						#treaded_gltf_parser_args["position_y"] = o
-						#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
-						#thread.start(load_gltf)
-						#threads_to_finish += 1
-						load_gltf(mapgen[n][o].resource.gltf_path, path_to_save, n, o, mapgen[n][o].angle)
-					else:
-						printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
-						return
-					
-					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-					add_child(room, true)
-					mapgen[n][o].room_name = room.name
+					add_room_to_the_map(n, o, path_to_save)
 				RoomTypes.ROOM2:
 					if mapgen[n][o].checkpoint && checkpoints_enabled:
 						# Checkpoint room spawn
@@ -253,38 +227,9 @@ func spawn_rooms(path_to_save: String) -> void:
 						mapgen[n][o].resource = rooms[zone_index].hallways_single_large[room_count["room2l_count"][zone_index]]
 						room_count["room2l_count"][zone_index] += 1
 					else:
-						selected_room = room_select(RoomTypes.ROOM2, zone_index, n, o)
+						room_select(RoomTypes.ROOM2, zone_index, n, o)
 					
-					if selected_room != null:
-						room = selected_room.instantiate()
-						room.position = Vector3(n * grid_size, 0, o * grid_size)
-						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-						
-						
-						gltf_document.append_from_scene(room, gltf_state)
-						gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-						room.free()
-						await get_tree().process_frame
-						if debug_print:
-							print(gltf_state.get_reference_count())
-						
-						gltf_state = GLTFState.new()
-					elif selected_room == null && (mapgen[n][o].resource.gltf_path != null || !mapgen[n][o].resource.gltf_path.is_empty()):
-						#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
-						#threaded_gltf_parser_args["position_x"] = n
-						#treaded_gltf_parser_args["position_y"] = o
-						#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
-						#thread.start(load_gltf)
-						#threads_to_finish += 1
-						load_gltf(mapgen[n][o].resource.gltf_path, path_to_save, n, o, mapgen[n][o].angle)
-					else:
-						printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
-						return
-					
-					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-					add_child(room, true)
-					mapgen[n][o].room_name = room.name
+					add_room_to_the_map(n, o, path_to_save)
 				RoomTypes.ROOM2C:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].corners_single_large.size() > 0 && room_count["room2cl_count"][zone_index] < rooms[zone_index].corners_single_large.size():
 						# Large rooms spawn, when large_rooms enabled
@@ -292,38 +237,10 @@ func spawn_rooms(path_to_save: String) -> void:
 						mapgen[n][o].resource = rooms[zone_index].corners_single_large[room_count["room2cl_count"][zone_index]]
 						room_count["room2cl_count"][zone_index] += 1
 					else:
-						selected_room = room_select(RoomTypes.ROOM2C, zone_index, n, o)
+						room_select(RoomTypes.ROOM2C, zone_index, n, o)
 					
-					if selected_room != null:
-						room = selected_room.instantiate()
-						room.position = Vector3(n * grid_size, 0, o * grid_size)
-						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-						
-						
-						gltf_document.append_from_scene(room, gltf_state)
-						gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-						room.free()
-						await get_tree().process_frame
-						if debug_print:
-							print(gltf_state.get_reference_count())
-						
-						gltf_state = GLTFState.new()
-					elif selected_room == null && (mapgen[n][o].resource.gltf_path != null || !mapgen[n][o].resource.gltf_path.is_empty()):
-						#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
-						#threaded_gltf_parser_args["position_x"] = n
-						#treaded_gltf_parser_args["position_y"] = o
-						#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
-						#thread.start(load_gltf)
-						#threads_to_finish += 1
-						load_gltf(mapgen[n][o].resource.gltf_path, path_to_save, n, o, mapgen[n][o].angle)
-					else:
-						printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
-						return
+					add_room_to_the_map(n, o, path_to_save)
 					
-					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-					add_child(room, true)
-					mapgen[n][o].room_name = room.name
 				RoomTypes.ROOM3:
 					if mapgen[n][o].large && large_rooms && rooms[zone_index].trooms_single_large.size() > 0 && room_count["room3l_count"][zone_index] < rooms[zone_index].trooms_single_large.size():
 						# Large rooms spawn, when large_rooms enabled
@@ -331,71 +248,13 @@ func spawn_rooms(path_to_save: String) -> void:
 						mapgen[n][o].resource = rooms[zone_index].trooms_single_large[room_count["room3l_count"][zone_index]]
 						room_count["room3l_count"][zone_index] += 1
 					else:
-						selected_room = room_select(RoomTypes.ROOM3, zone_index, n, o)
+						room_select(RoomTypes.ROOM3, zone_index, n, o)
 					
-					if selected_room != null:
-						room = selected_room.instantiate()
-						room.position = Vector3(n * grid_size, 0, o * grid_size)
-						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-						
-						
-						gltf_document.append_from_scene(room, gltf_state)
-						gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-						room.free()
-						await get_tree().process_frame
-						if debug_print:
-							print(gltf_state.get_reference_count())
-						
-						gltf_state = GLTFState.new()
-					elif selected_room == null && (mapgen[n][o].resource.gltf_path != null || !mapgen[n][o].resource.gltf_path.is_empty()):
-						#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
-						#threaded_gltf_parser_args["position_x"] = n
-						#treaded_gltf_parser_args["position_y"] = o
-						#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
-						#thread.start(load_gltf)
-						#threads_to_finish += 1
-						load_gltf(mapgen[n][o].resource.gltf_path, path_to_save, n, o, mapgen[n][o].angle)
-					else:
-						printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
-						return
-					
-					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-					add_child(room, true)
-					mapgen[n][o].room_name = room.name
+					add_room_to_the_map(n, o, path_to_save)
 				RoomTypes.ROOM4:
-					selected_room = room_select(RoomTypes.ROOM4, zone_index, n, o)
+					room_select(RoomTypes.ROOM4, zone_index, n, o)
 					
-					if selected_room != null:
-						room = selected_room.instantiate()
-						room.position = Vector3(n * grid_size, 0, o * grid_size)
-						room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-						
-						
-						gltf_document.append_from_scene(room, gltf_state)
-						gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-						room.free()
-						await get_tree().process_frame
-						if debug_print:
-							print(gltf_state.get_reference_count())
-						
-						gltf_state = GLTFState.new()
-					elif selected_room == null && (mapgen[n][o].resource.gltf_path != null || !mapgen[n][o].resource.gltf_path.is_empty()):
-						#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
-						#threaded_gltf_parser_args["position_x"] = n
-						#treaded_gltf_parser_args["position_y"] = o
-						#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
-						#thread.start(load_gltf)
-						#threads_to_finish += 1
-						load_gltf(mapgen[n][o].resource.gltf_path, path_to_save, n, o, mapgen[n][o].angle)
-					else:
-						printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
-						return
-					
-					room.position = Vector3(n * grid_size, 0, o * grid_size)
-					room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[n][o].angle, room.rotation_degrees.z)
-					add_child(room, true)
-					mapgen[n][o].room_name = room.name
+					add_room_to_the_map(n, o, path_to_save)
 		zone_index = zone_index_default
 		zone_counter.y = 0
 	#if enable_door_generation:
@@ -404,8 +263,39 @@ func spawn_rooms(path_to_save: String) -> void:
 	unused_rooms.clear()
 	generated.emit()
 
-func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> PackedScene:
-	var selected_room: PackedScene
+func add_room_to_the_map(x: int, y: int, path_to_save: String) -> void:
+	if selected_room != null:
+		room = selected_room.instantiate()
+		room.position = Vector3(x * grid_size, 0, y * grid_size)
+		room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[x][y].angle, room.rotation_degrees.z)
+		
+		
+		gltf_document.append_from_scene(room, gltf_state)
+		gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
+		room.free()
+		await get_tree().process_frame
+		if debug_print:
+			print(gltf_state.get_reference_count())
+						
+		gltf_state = GLTFState.new()
+	elif selected_room == null && (mapgen[x][y].resource.gltf_path != null || !mapgen[x][y].resource.gltf_path.is_empty()):
+		#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
+		#threaded_gltf_parser_args["position_x"] = n
+		#treaded_gltf_parser_args["position_y"] = o
+		#threaded_gltf_parser_args["angle"] = mapgen[n][o].angle
+		#thread.start(load_gltf)
+		#threads_to_finish += 1
+		load_gltf(mapgen[x][y].resource.gltf_path, path_to_save, x, y, mapgen[x][y].angle)
+	else:
+		printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
+		return
+	
+	room.position = Vector3(x * grid_size, 0, y * grid_size)
+	room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[x][y].angle, room.rotation_degrees.z)
+	add_child(room, true)
+	mapgen[x][y].room_name = room.name
+
+func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> void:
 	var single_room_data: MapGenRoom
 	var room_data: MapGenRoom
 	var rooms_single: Array[MapGenRoom]
@@ -438,7 +328,7 @@ func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> PackedScen
 			keyword = "room4_count"
 		_:
 			printerr("Wrong room type. Gonna crash :`(")
-			return null
+			return
 	
 	if single_room_data != null:
 		var spawn_chance = rng.randf_range(0.0, single_room_data.spawn_chance + room_data.spawn_chance)
@@ -457,37 +347,36 @@ func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> PackedScen
 		# Generic room spawn
 		mapgen[n][o].resource = room_data
 		selected_room = room_data.prefab
-	return selected_room
 
 ## Returns random room, depending on chance
 func random_room_with_chance(rooms_pack: Array[MapGenRoom], single: bool = false) -> MapGenRoom:
 	var counter: float = 0.0
 	var prev_counter: float = 0.0
-	var room: MapGenRoom
+	var room_res: MapGenRoom
 	var all_spawn_chances: Array[float] = []
 	var spawn_chances: float = 0
 	for j in range(rooms_pack.size()):
 		if j >= rooms_pack.size():
 			break
 		if single && rooms_pack[j].guaranteed_spawn:
-			room = rooms_pack[j]
+			room_res = rooms_pack[j]
 			break
 		all_spawn_chances.append(rooms_pack[j].spawn_chance)
 		spawn_chances += rooms_pack[j].spawn_chance
 	var random_room: float = rng.randf_range(0.0, spawn_chances)
-	if room == null:
+	if room_res == null:
 		for i in range(all_spawn_chances.size()):
 			counter += all_spawn_chances[i]
 			if (random_room < counter && random_room >= prev_counter) || i == all_spawn_chances.size() - 1:
-				room = rooms_pack[i]
+				room_res = rooms_pack[i]
 				break
 			prev_counter = counter
 		all_spawn_chances.clear()
 	counter = 0
 	prev_counter = 0
 	if single:
-		rooms_pack.erase(room)
-	return room
+		rooms_pack.erase(room_res)
+	return room_res
 
 ### Spawn doors
 #func spawn_doors() -> void:

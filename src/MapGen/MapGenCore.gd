@@ -2,7 +2,7 @@
 extends Object
 class_name MapGenCore
 
-var rng: RandomNumberGenerator
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
@@ -13,7 +13,10 @@ const NUMBER_OF_TRIES_TO_SPAWN: int = 4
 ## For performance reasons. Correct the code to increase the limit
 const MAX_ROOMS_SPAWN: int = 512
 
-@export var rng_seed: int = -1
+@export var rng_seed: int = -1:
+	set(val):
+		if rng_seed != -1:
+			rng.seed = rng_seed
 ## Zone size (values before 8 NOT recommended, may lead to unexpected behavior)
 @export_range(8, 256, 2) var zone_size: int = 8
 ## Amount of zones by X coordinate
@@ -88,7 +91,6 @@ var double_room_shapes: Array[Array]
 
 func start_generation() -> void:
 	clear()
-	rng = RandomNumberGenerator.new()
 	prepare_generation()
 	# Determines, if the generation is too large to stop it.
 	# You can change the limit in MAX_ROOM_SPAWN const.
@@ -104,8 +106,6 @@ func start_generation() -> void:
 func prepare_generation() -> void:
 	if debug_print:
 		print("Preparing generation...")
-	if rng_seed != -1:
-		rng.seed = rng_seed
 	if infinite_generation && better_zone_generation:
 		for i in range(zone_size / 2):
 			var random_point: Vector2i = Vector2i(rng.randi_range(2, zone_size - 3), rng.randi_range(2, zone_size - 3))
@@ -839,7 +839,7 @@ func detect_double_room(first: Vector2i, second: Vector2i, zone: int) -> void:
 	
 
 ## Clears the map generation
-func clear():
+func clear() -> void:
 	if debug_print:
 		print("Clearing the map...")
 	disabled_points.clear()
