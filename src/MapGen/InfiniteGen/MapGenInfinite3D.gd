@@ -111,6 +111,7 @@ var cached_scenes: Dictionary[String, PackedScene]
 # temporary variables
 var selected_room: PackedScene
 var room: Node3D
+var zone_index: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -170,6 +171,7 @@ func generate_rooms() -> void:
 	mapgen_core.start_generation()
 	mapgen = mapgen_core.mapgen
 	rng.seed = mapgen_core.rng.seed
+	zone_index = rng.randi_range(0, rooms.size() - 1)
 	spawn_rooms()
 
 ## Spawns room prefab on the grid
@@ -178,19 +180,17 @@ func spawn_rooms() -> void:
 		print("Spawning rooms...")
 	unused_rooms.resize(rooms.size())
 	for i in range(unused_rooms.size()):
+		for key in room_count:
+			room_count[key].append(0)
 		unused_rooms[i] = rooms[i].duplicate(true)
 	# Checks the zone
 	var zone_counter: Vector2i = Vector2i.ZERO
-
-	
-	var zone_index_default: int = 0
-	var zone_index: int = 0
 	#spawn a room
 	for n in range(size_x):
 		for o in range(size_y):
 			match mapgen[n][o].room_type:
 				RoomTypes.ROOM1:
-					selected_room = room_select(RoomTypes.ROOM1, zone_index, n, o)
+					room_select(RoomTypes.ROOM1, zone_index, n, o)
 					
 					add_room_to_the_map(n, o)
 				RoomTypes.ROOM2:
@@ -255,11 +255,11 @@ func spawn_rooms() -> void:
 									double_room_shapes[zone_index].erase(shape)
 									break
 						if !coincidence:
-							selected_room = room_select(RoomTypes.ROOM2, zone_index, n, o)
+							room_select(RoomTypes.ROOM2, zone_index, n, o)
 						else:
 							continue
 					else:
-						selected_room = room_select(RoomTypes.ROOM2, zone_index, n, o)
+						room_select(RoomTypes.ROOM2, zone_index, n, o)
 					
 					add_room_to_the_map(n, o)
 				RoomTypes.ROOM2C:
@@ -316,11 +316,11 @@ func spawn_rooms() -> void:
 									
 									break
 						if !coincidence:
-							selected_room = room_select(RoomTypes.ROOM2C, zone_index, n, o)
+							room_select(RoomTypes.ROOM2C, zone_index, n, o)
 						else:
 							continue
 					else:
-						selected_room = room_select(RoomTypes.ROOM2C, zone_index, n, o)
+						room_select(RoomTypes.ROOM2C, zone_index, n, o)
 					
 					add_room_to_the_map(n, o)
 				RoomTypes.ROOM3:
@@ -375,11 +375,11 @@ func spawn_rooms() -> void:
 									double_room_shapes[zone_index].erase(shape)
 									break
 						if !coincidence:
-							selected_room = room_select(RoomTypes.ROOM3, zone_index, n, o)
+							room_select(RoomTypes.ROOM3, zone_index, n, o)
 						else:
 							continue
 					else:
-						selected_room = room_select(RoomTypes.ROOM3, zone_index, n, o)
+						room_select(RoomTypes.ROOM3, zone_index, n, o)
 					
 					add_room_to_the_map(n, o)
 				RoomTypes.ROOM4:
@@ -435,15 +435,13 @@ func spawn_rooms() -> void:
 									break
 						
 						if !coincidence:
-							selected_room = room_select(RoomTypes.ROOM4,  zone_index, n, o)
+							room_select(RoomTypes.ROOM4,  zone_index, n, o)
 						else:
 							continue
 					else:
-						selected_room = room_select(RoomTypes.ROOM4, zone_index, n, o)
+						room_select(RoomTypes.ROOM4, zone_index, n, o)
 					
 					add_room_to_the_map(n, o)
-		zone_index = zone_index_default
-		zone_counter.y = 0
 	#if enable_door_generation:
 		#spawn_doors()
 	if first_time:
@@ -470,8 +468,7 @@ func add_room_to_the_map(x: int, y: int) -> void:
 	add_child(room)
 	mapgen[x][y].room_name = mapgen[x][y].resource.name
 
-func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> PackedScene:
-	var selected_room: PackedScene
+func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> void:
 	match type:
 		RoomTypes.ROOM1:
 			var room_data: MapGenRoom = random_room_with_chance(unused_rooms[zone_index].endrooms)
@@ -498,7 +495,6 @@ func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> PackedScen
 			# Generic room spawn
 			mapgen[n][o].resource = room_data
 			selected_room = mapgen[n][o].resource.prefab
-	return selected_room
 
 ## Returns random room, depending on chance
 func random_room_with_chance(rooms_pack: Array[MapGenRoom]) -> MapGenRoom:

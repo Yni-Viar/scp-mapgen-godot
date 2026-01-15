@@ -70,6 +70,18 @@ class Room:
 	var room_name: String
 	var checkpoint: bool
 	var double_room: DoubleRoomTypes
+	
+	func _init() -> void:
+		exist = false
+		north = false
+		south = false
+		east = false
+		west = false
+		room_type = RoomTypes.EMPTY
+		angle = -1
+		large = false
+		checkpoint = false
+		double_room = DoubleRoomTypes.NONE
 
 var size_x: int
 var size_y: int
@@ -119,16 +131,18 @@ func prepare_generation() -> void:
 		mapgen[g].resize(size_y)
 		for h in range(size_y):
 			mapgen[g][h] = Room.new()
-			mapgen[g][h].exist = false
-			mapgen[g][h].north = false
-			mapgen[g][h].south = false
-			mapgen[g][h].east = false
-			mapgen[g][h].west = false
-			mapgen[g][h].room_type = RoomTypes.EMPTY
-			mapgen[g][h].angle = -1
-			mapgen[g][h].large = false
-			mapgen[g][h].checkpoint = false
-			mapgen[g][h].double_room = DoubleRoomTypes.NONE
+			
+			# Waiting for Godot struct implementation
+			#mapgen[g][h].exist = false
+			#mapgen[g][h].north = false
+			#mapgen[g][h].south = false
+			#mapgen[g][h].east = false
+			#mapgen[g][h].west = false
+			#mapgen[g][h].room_type = RoomTypes.EMPTY
+			#mapgen[g][h].angle = -1
+			#mapgen[g][h].large = false
+			#mapgen[g][h].checkpoint = false
+			#mapgen[g][h].double_room = DoubleRoomTypes.NONE
 	
 
 ## Main function, that generate the zones. Rewritten in 7.0
