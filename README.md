@@ -39,6 +39,8 @@ Unity (Coming soon...)
 *[See MapGen comparison for more information](./docs/scp-mapgen-comparison.md)*
 
 ## Changelog
+### v.11.3.0 (2026.01.15)
+- EVEN MORE PERFORMANCE!!! Lowered average map generation time to ~ 1.1 ms (both backend and 3d frontend, tested on default 8x8 map x 1 zone)
 ### v.11.2.0 (2026.01.12)
 - \[MapGen 3D frontend\] Add HLOD support for 3D models (it is `off` by default, and is `on` in `Demo app`)
 - \[MapGen Room Previewer\] Refactor scene saver; introduce new Renderer frontend to save rooms as GLTF.

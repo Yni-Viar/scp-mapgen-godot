@@ -13,37 +13,37 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
 @export var rng_seed: int = -1:
 	set(val):
-		parameter_changed.emit()
 		rng_seed = val
+		parameter_changed.emit()
 ## Rooms that will be used
 @export var rooms: Array[MapGenZone]
 ## Zone size
 @export_range(8, 256, 2) var zone_size: int = 8:
 	set(val):
-		parameter_changed.emit()
 		zone_size = val
+		parameter_changed.emit()
 ## Amount of zones by X coordinate
 @export_range(0, 3) var map_size_x: int = 0:
 	set(val):
-		parameter_changed.emit()
 		map_size_x = val
+		parameter_changed.emit()
 ## Amount of zones by Y coordinate
 @export_range(0, 3) var map_size_y: int = 0:
 	set(val):
-		parameter_changed.emit()
 		map_size_y = val
+		parameter_changed.emit()
 ## Room in grid size
 @export var grid_size: float = 20.48
 ## Large rooms support
 @export var large_rooms: bool = false:
 	set(val):
-		parameter_changed.emit()
 		large_rooms = val
+		parameter_changed.emit()
 ## How much the map will be filled with rooms
 @export_range(0.25, 1) var room_amount: float = 0.75:
 	set(val):
-		parameter_changed.emit()
 		room_amount = val
+		parameter_changed.emit()
 ## Sets the door generation. Not recommended to disable, if your map uses SCP:SL 14.0-like door frames!
 @export var enable_door_generation: bool = true
 ## Better zone generation.
@@ -51,39 +51,39 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 ## This fixes these generations, at a little cost of generation time
 @export var better_zone_generation: bool = true:
 	set(val):
-		parameter_changed.emit()
 		better_zone_generation = val
+		parameter_changed.emit()
 ## How many additional rooms should spawn map generator
 ## /!\ WARNING! Higher value may hang the game.
 @export_range(0, 5) var better_zone_generation_min_amount: int = 4:
 	set(val):
-		parameter_changed.emit()
 		better_zone_generation_min_amount = val
+		parameter_changed.emit()
 ## Enable checkpoint rooms.
 ## /!\ WARNING! The checkpoint room behaves differently, than SCP - Cont. Breach checkpoints,
 ## they behave like SCP: Secret Lab. HCZ-EZ checkpoints, with two rooms.
 @export var checkpoints_enabled: bool = false:
 	set(val):
-		parameter_changed.emit()
 		checkpoints_enabled = val
+		parameter_changed.emit()
 ## Prints map seed
 @export var debug_print: bool = false:
 	set(val):
-		parameter_changed.emit()
 		debug_print = val
+		parameter_changed.emit()
 ## Enable double rooms support (single rooms only). Available since mapgen v9.
 @export var double_room_support: bool = false:
 	set(val):
-		parameter_changed.emit()
 		double_room_support = val
+		parameter_changed.emit()
 @export_group("External loading settings")
 ## Setting to optimize GLTF loading. Is not necessary for map generation
 @export var use_gltf_optimizator = false
 ## Range, after which room will be hidden.
 @export_range(8.0, 256.0) var gltf_visibility_radius: float = 64.0
-## Enable havy room unloading performance
+## Enable heavy room unloading performance
 ## Enabling affect performance on each re-generate
-@export var enable_heavy_room_unloading_pause: bool = false
+#@export var enable_heavy_room_unloading_pause: bool = false
 
 var mapgen: Array[Array] = []
 
@@ -123,7 +123,7 @@ var gltf_state:GLTFState
 
 # temporary variables
 var selected_room: PackedScene
-var room: Node3D
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -146,9 +146,7 @@ func refresh_mapgen():
 
 func generate_rooms(path: String):
 	clear()
-	if enable_heavy_room_unloading_pause:
-		if OS.get_memory_info()["physical"] - OS.get_memory_info()["free"] > OS.get_memory_info()["free"]:
-			await get_tree().create_timer(0.375).timeout
+
 	if rng_seed != -1:
 		rng.seed = rng_seed
 	if rooms == null || rooms.size() == 0:
@@ -265,18 +263,19 @@ func spawn_rooms(path_to_save: String) -> void:
 
 func add_room_to_the_map(x: int, y: int, path_to_save: String) -> void:
 	if selected_room != null:
-		room = selected_room.instantiate()
+		var room: Node3D = selected_room.instantiate()
 		room.position = Vector3(x * grid_size, 0, y * grid_size)
 		room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[x][y].angle, room.rotation_degrees.z)
 		
-		
+		gltf_state = GLTFState.new()
 		gltf_document.append_from_scene(room, gltf_state)
 		gltf_document.write_to_filesystem(gltf_state, path_to_save.get_basename() + "-" + str(file_counter) + "." + path_to_save.get_extension())
-		room.free()
+		file_counter += 1
+		#room.free()
 		await get_tree().process_frame
+		room.free()
 		if debug_print:
 			print(gltf_state.get_reference_count())
-						
 		gltf_state = GLTFState.new()
 	elif selected_room == null && (mapgen[x][y].resource.gltf_path != null || !mapgen[x][y].resource.gltf_path.is_empty()):
 		#threaded_gltf_parser_args["path"] = mapgen[n][o].resource.gltf_path
@@ -290,10 +289,6 @@ func add_room_to_the_map(x: int, y: int, path_to_save: String) -> void:
 		printerr("No PackedScene or GLTF path are valid. Stopping map generator.")
 		return
 	
-	room.position = Vector3(x * grid_size, 0, y * grid_size)
-	room.rotation_degrees = Vector3(room.rotation_degrees.x, mapgen[x][y].angle, room.rotation_degrees.z)
-	add_child(room, true)
-	mapgen[x][y].room_name = room.name
 
 func room_select(type: RoomTypes, zone_index: int, n: int, o: int) -> void:
 	var single_room_data: MapGenRoom
@@ -479,6 +474,7 @@ func load_gltf(gltf_path: String, output_path: String, position_x: int, position
 		#var path_to_save: String = threaded_gltf_parser_args["path_to_save"] as String
 		gltf_document.write_to_filesystem(gltf_state, output_path.get_basename() + "-" + str(file_counter) + "." + output_path.get_extension())
 		gltf_scene_root_node.free()
+		file_counter += 1
 		await get_tree().process_frame
 		if debug_print:
 			print(gltf_state.get_reference_count())

@@ -23,7 +23,7 @@ sky = SubResource("Sky_nttp5")
 script = ExtResource("1_v1gob")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 64, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48, 0)
 script = ExtResource("2_50glp")
 
 [node name="FacilityGenerator" type="Node3D" parent="."]
@@ -41,7 +41,6 @@ rooms = Array[ExtResource("3_v1gob")]([ExtResource("4_jw32o")])
 large_rooms = true
 enable_door_generation = false
 checkpoints_enabled = true
-debug_print = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_mvdmi")

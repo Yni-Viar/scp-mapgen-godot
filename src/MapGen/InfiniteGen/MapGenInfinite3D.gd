@@ -15,22 +15,22 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 
 @export var rng_seed: int = -1:
 	set(val):
-		parameter_changed.emit()
 		rng_seed = val
+		parameter_changed.emit()
 ## Rooms that will be used
 @export var rooms: Array[MapGenZone]
 ## Zone size
 @export_range(8, 256, 2) var zone_size: int = 8:
 	set(val):
-		parameter_changed.emit()
 		zone_size = val
+		parameter_changed.emit()
 ## Room in grid size
 @export var grid_size: float = 20.48
 ## How much the map will be filled with rooms
 @export_range(0.25, 1) var room_amount: float = 0.75:
 	set(val):
-		parameter_changed.emit()
 		room_amount = val
+		parameter_changed.emit()
 ## Sets the door generation. Not recommended to disable, if your map uses SCP:SL 14.0-like door frames!
 #@export var enable_door_generation: bool = true
 ## Better zone generation.
@@ -38,37 +38,34 @@ enum RoomTypes {EMPTY, ROOM1, ROOM2, ROOM2C, ROOM3, ROOM4}
 ## This fixes these generations, at a little cost of generation time
 @export var better_zone_generation: bool = true:
 	set(val):
-		parameter_changed.emit()
 		better_zone_generation = val
+		parameter_changed.emit()
 ## How many additional rooms should spawn map generator
 ## /!\ WARNING! Higher value may hang the game.
 @export_range(0, 5) var better_zone_generation_min_amount: int = 4:
 	set(val):
-		parameter_changed.emit()
 		better_zone_generation_min_amount = val
+		parameter_changed.emit()
 ## Enable checkpoint rooms.
 ## /!\ WARNING! The checkpoint room behaves differently, than SCP - Cont. Breach checkpoints,
 ## they behave like SCP: Secret Lab. HCZ-EZ checkpoints, with two rooms.
 @export var checkpoints_enabled: bool = false:
 	set(val):
-		parameter_changed.emit()
 		checkpoints_enabled = val
+		parameter_changed.emit()
 ## Prints map seed
 @export var debug_print: bool = false:
 	set(val):
-		parameter_changed.emit()
 		debug_print = val
+		parameter_changed.emit()
 ## Enable double rooms support (single rooms only). Available since mapgen v9.
 @export var double_room_support: bool = false:
 	set(val):
-		parameter_changed.emit()
 		double_room_support = val
+		parameter_changed.emit()
 @export_group("External loading settings")
 ## Setting to optimize GLTF loading. Is not necessary for map generation
 @export var use_gltf_optimizator = false
-## Enable havy room unloading performance
-## Enabling affect performance on each re-generate
-@export var enable_heavy_room_unloading_pause: bool = false
 
 var mapgen: Array[Array] = []
 
@@ -147,9 +144,6 @@ func refresh_mapgen():
 
 func generate_rooms() -> void:
 	clear()
-	if enable_heavy_room_unloading_pause:
-		if OS.get_memory_info()["physical"] - OS.get_memory_info()["free"] > OS.get_memory_info()["free"]:
-			await get_tree().create_timer(0.375).timeout
 	if rng_seed != -1:
 		rng.seed = rng_seed
 	if rooms == null || rooms.size() == 0:
