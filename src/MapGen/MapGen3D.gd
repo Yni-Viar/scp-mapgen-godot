@@ -598,7 +598,7 @@ func spawn_doors() -> void:
 		if i >= size_x / (map_size_x + 1) * (zone_counter.x + 1) - 1:
 			if checkpoints_enabled && rooms[zone_index].door_frames.size() > 0:
 				for k in range(size_y):
-					if mapgen[i][k].east:
+					if mapgen[i][k].coordinate & 1 << 2:
 						var door: Node3D = rooms[zone_index].checkpoint_door_frames[rng.randi_range(0, rooms[zone_index].checkpoint_door_frames.size() - 1)].instantiate()
 						door.position = global_position + Vector3(i * grid_size + grid_size / 2, 0, k * grid_size)
 						door.rotation_degrees = Vector3(0, 0, 0)
@@ -608,7 +608,7 @@ func spawn_doors() -> void:
 		for j in range(size_y):
 			if j >= size_y / (map_size_y + 1) * (zone_counter.y + 1) - 1:
 				if checkpoints_enabled && rooms[zone_index].door_frames.size() > 0:
-					if mapgen[i][j].north:
+					if mapgen[i][j].coordinate & 1 << 0:
 						var door: Node3D = rooms[zone_index].checkpoint_door_frames[rng.randi_range(0, rooms[zone_index].checkpoint_door_frames.size() - 1)].instantiate()
 						door.position = global_position + Vector3(i * grid_size, 0, j * grid_size + grid_size / 2)
 						door.rotation_degrees = Vector3(0, 0, 0)
@@ -617,7 +617,7 @@ func spawn_doors() -> void:
 				zone_index += 1
 			elif rooms[zone_index].door_frames.size() > 0:
 				var available_frames: Array[PackedScene] = rooms[zone_index].door_frames
-				if mapgen[i][j].east:
+				if mapgen[i][j].coordinate & 1 << 2:
 					var door: Node3D
 					if mapgen[i+1][j].double_room && mapgen[i][j].double_room:
 						continue
@@ -631,7 +631,7 @@ func spawn_doors() -> void:
 						door.position = global_position + Vector3(i * grid_size + grid_size / 2, 0, j * grid_size)
 						door.rotation_degrees = Vector3(0, 90, 0)
 						startup_node.add_child(door)
-				if mapgen[i][j].north:
+				if mapgen[i][j].coordinate & 1 << 0:
 					var door: Node3D
 					if mapgen[i][j+1].double_room && mapgen[i][j].double_room:
 						continue
