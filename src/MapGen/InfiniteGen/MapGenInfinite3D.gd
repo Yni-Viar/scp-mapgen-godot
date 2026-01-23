@@ -131,6 +131,7 @@ func _ready() -> void:
 	refresh_mapgen()
 
 func refresh_mapgen():
+	mapgen_core.rng = rng
 	mapgen_core.zone_size = zone_size
 	mapgen_core.map_size_x = 0
 	mapgen_core.map_size_y = 0
