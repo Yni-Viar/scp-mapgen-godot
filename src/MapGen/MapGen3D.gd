@@ -146,6 +146,8 @@ func generate_rooms() -> void:
 			#await get_tree().create_timer(0.375).timeout
 	if rng_seed != -1:
 		rng.seed = rng_seed
+	else:
+		rng.randomize()
 	if rooms == null || rooms.size() == 0:
 		printerr("There are no zones, cannot spawn.")
 		return
@@ -165,7 +167,8 @@ func generate_rooms() -> void:
 			mapgen_core.endrooms_single_large_amount[i] = rooms[i].endrooms_single_large.size()
 	mapgen_core.start_generation()
 	mapgen = mapgen_core.mapgen
-	rng.seed = mapgen_core.rng.seed
+	#if rng_seed != -1:
+		#rng.seed = mapgen_core.rng.seed
 	spawn_rooms()
 
 ## Spawns room prefab on the grid

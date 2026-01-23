@@ -147,9 +147,10 @@ func refresh_mapgen():
 
 func generate_rooms(path: String):
 	clear()
-
 	if rng_seed != -1:
 		rng.seed = rng_seed
+	else:
+		rng.randomize()
 	if rooms == null || rooms.size() == 0:
 		printerr("There are no zones, cannot spawn.")
 		return
@@ -167,7 +168,7 @@ func generate_rooms(path: String):
 		mapgen_core.endrooms_single_large_amount.append(zone.endrooms_single_large.size())
 	mapgen_core.start_generation()
 	mapgen = mapgen_core.mapgen
-	rng.seed = mapgen_core.rng.seed
+	#rng.seed = mapgen_core.rng.seed
 	spawn_rooms(path)
 
 ## Spawns room prefab on the grid
