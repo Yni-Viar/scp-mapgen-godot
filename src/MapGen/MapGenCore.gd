@@ -1,5 +1,5 @@
 @icon("res://MapGen/icons/MapGenNode.svg")
-extends Object
+extends RefCounted
 class_name MapGenCore
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
