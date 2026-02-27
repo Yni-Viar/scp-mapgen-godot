@@ -161,8 +161,6 @@ func generate_rooms() -> void:
 					double_room_shapes[i].append([double_rooms[0], double_rooms[1]])
 	mapgen_core.infinite_generation = true
 	mapgen_core.double_room_shapes = double_room_shapes
-	for zone in rooms:
-		mapgen_core.endrooms_single_large_amount.append(zone.endrooms_single_large.size())
 	mapgen_core.start_generation()
 	mapgen = mapgen_core.mapgen
 	rng.seed = mapgen_core.rng.seed
@@ -614,7 +612,7 @@ func _on_optimizator_body_entered(body: Node3D):
 					if get_parent().loaded_chunks.has(chunk_pos):
 						continue
 					var facility_generator: FacilityGeneratorInfinite3D = FacilityGeneratorInfinite3D.new()
-					facility_generator.rng_seed = rng_seed + int(sin(deg_to_rad(chunk_pos.x)) * 100) + int(cos(deg_to_rad(chunk_pos.y)) * 100)
+					facility_generator.rng_seed = rng.seed + int(sin(deg_to_rad(chunk_pos.x)) * 100) + int(cos(deg_to_rad(chunk_pos.y)) * 100)
 					facility_generator.rooms = rooms
 					facility_generator.zone_size = zone_size
 					facility_generator.grid_size = grid_size
